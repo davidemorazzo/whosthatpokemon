@@ -1,0 +1,4 @@
+discord.py==1.7.3
+SQLAlchemy==1.4.17
+python-dotenv==0.15.0
+psycopg2==2.8.6
