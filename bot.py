@@ -26,6 +26,7 @@ if __name__ == '__main__':
         try:
             ## => CONNECT TO HEROKU POSTGRESQL
             HEROKU_DB_STRING = os.environ.get("DATABASE_URL")#.replace("postgresql://", "postgresql+psycopg2://")
+            print(HEROKU_DB_STRING)
             engine = init_database(HEROKU_DB_STRING)
         except Exception as e:
             print(e)
