@@ -143,7 +143,7 @@ class whosThatPokemon(commands.Cog):
     async def startGuess(self, ctx):
         ## => CHECK IF ALREADY STARTED
         with Session(self.db_engine, expire_on_commit=False) as session:
-            guildInfo = session.query(botGuilds).filter_by(guild_id=ctx.guild.id)
+            guildInfo = session.query(botGuilds).filter_by(guild_id=ctx.guild.id).first
         if guildInfo.guessing:
             embed = self.embedText("The game is already started! To skip this pokémon use wtp!skip")
             await ctx.send(embed=embed)
