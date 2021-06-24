@@ -6,7 +6,7 @@ from whosThatPokemonCog import whosThatPokemon
 from guildsAuthCog import guildsAuthCog
 from database import init_database
 
-COMMAND_PREFIX = "!"
+COMMAND_PREFIX = ["Wtp!", "wtp!"]
 GIF_DIRECTORY = "./gifs/blacked/"
 LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/postgres'
 
@@ -39,8 +39,8 @@ if __name__ == '__main__':
 
     bot = commands.Bot(command_prefix=COMMAND_PREFIX, member_cache_flags=cache, intents=intents)
     bot.remove_command("help")
-    bot.add_cog(whosThatPokemon(bot, GIF_DIRECTORY, engine))
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
+    bot.add_cog(whosThatPokemon(bot, GIF_DIRECTORY, engine))
     bot.add_check(noDirectMessage)
 
     bot.run(os.getenv("DISCORD_TOKEN"))

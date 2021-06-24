@@ -10,10 +10,10 @@ Base = declarative_base()
 class patreonUsers(Base):
     __tablename__ = "patreon_users"
 
-    discord_id = Column(Integer, primary_key=True, nullable=False)
-    tier = Column(Integer, nullable=False)
+    discord_id = Column(String, primary_key=True, nullable=False)
+    tier = Column(String, nullable=False)
     sub_status = Column(String, nullable=False)
-    guild_id = Column(Integer)
+    guild_id = Column(String)
 
     def __repr__(self):
         return "<User(discord_id=%d, tier=%d, guild_id=%d, status=%d)>" % (
@@ -39,6 +39,7 @@ class userPoints(Base):
     user_id = Column(String, primary_key=True, nullable=False)
     guild_id = Column(String, primary_key=True, nullable=False)
     points = Column(Integer, nullable=False)
+    last_win_date = Column(String)
 
 
 def init_database(url:String):
@@ -50,7 +51,7 @@ def init_database(url:String):
 if __name__ == '__main__':
     session = Session(create_engine('postgresql+psycopg2://postgres:root@localhost/postgres'))
     q = insert(botGuilds).values(guild_id = "822033257142288414", activate=True, joined_utc = str(datetime.utcnow()),
-                                    patreon_discord_id = '1010',
+                                    patreon_discord_id = None,
                                     guessing=False,
                                     currently_joined = True)
     session.execute(q)

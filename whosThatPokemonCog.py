@@ -1,13 +1,15 @@
 from discord.colour import Color
 from discord.ext import commands
 from discord import Embed, File, Colour
+from sqlalchemy.sql.expression import text
 from database import botGuilds, userPoints
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update, insert, desc
+from sqlalchemy import desc
 from os import listdir
 from dotenv import load_dotenv
 from random import choice, shuffle
 from collections import Counter
+from datetime import datetime
 
 class whosThatPokemon(commands.Cog):
     def __init__(self, bot, gif_dir, engine):
@@ -53,7 +55,7 @@ class whosThatPokemon(commands.Cog):
         ## => FINAL COMPARISON
         return compare(wordSolution, wordGuess)
             
-    def createQuestion(self, guild):
+    def createQuestion(self, guild, skip=False):
         gif_name = choice(self.gif_list)
         ## => SEND EMBED
         embed = Embed(color=self.color)
@@ -66,6 +68,8 @@ class whosThatPokemon(commands.Cog):
         ## => MEMORIZE THE SOLUTION
         with Session(self.db_engine) as session:
             thisGuild = session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+            if skip and thisGuild.guessing == False:
+                return None
             thisGuild.guessing = True
             thisGuild.current_pokemon=gif_name.split('.')[0]
             thisGuild.is_guessed=False
@@ -78,25 +82,72 @@ class whosThatPokemon(commands.Cog):
             with Session(self.db_engine) as session:
                 guildInfo = session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
                 return guildInfo.activate
-        
-
-    @commands.command(help="Show this message")
-    async def help(self, ctx):
-        embed = Embed(title="Commands help", colour=self.color)
-        command_names_list = [(x.name, x.signature, x.help) for x in self.bot.commands]
-
-        # If there are no arguments, just list the commands:
-        for i,x in enumerate(self.bot.commands):
-            embed.add_field(
-                name=x.name+' '+x.signature ,
-                value=x.help,
-                inline=False
-            )
-        bot_msg = await ctx.send(embed=embed)
     
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        
+        if message.author == self.bot.user:
+            return
+
+        ## => FETCH GUILD DATA FROM DATABASE
+        with Session(self.db_engine) as session:
+            guildInfo = session.query(botGuilds).filter_by(guild_id=str(message.guild.id)).first()
+
+        ## => CHECK FOR THE CORRECT SOLUTION
+        raw_solution = guildInfo.current_pokemon
+        if not raw_solution or guildInfo.is_guessed or not guildInfo.activate:
+            return
+        if self.correctGuess(message.content, raw_solution):
+           
+            ## => DB OPERATIONS
+            with Session(self.db_engine, expire_on_commit=False) as session:
+                ## => UPDATE GUILD STATUS
+                guildInfo = session.query(botGuilds).filter_by(guild_id=str(message.guild.id)).first()
+                guildInfo.is_guessed = True
+                session.commit()
+                ## => FETCH USER
+                currentUser = session.query(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)).first()
+                if not currentUser:
+                    ## => USER NOT FOUNDED -> ADD IT TO DATABASE
+                    newUser = userPoints(user_id = str(message.author.id), guild_id=str(message.guild.id), points=0)
+                    session.add(newUser)
+                    currentUser = newUser
+                ## => INCREASE POINTS
+                currentUser.points = currentUser.points + 1
+                currentUser.last_win_date = str(datetime.utcnow())
+                serverWins = currentUser.points
+                ## => FETCH USER GLOBALLY
+                userGlobally = session.query(userPoints).filter_by(guild_id=str(message.guild.id)).all()
+                userGlobalPoints = 0
+                for entry in userGlobally:
+                    userGlobalPoints += entry.points
+                session.commit()
+
+            ## => SEND CORRECT-GUESS MESSAGE
+            embed = Embed(color=self.color)
+            embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
+            embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
+            embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
+            file = File("./pikachu.gif", "pikachu.gif")
+            embed.set_thumbnail(url="attachment://pikachu.gif")
+            await message.channel.send(file=file, embed=embed)
+
+            ## => SEND NEW QUESTION
+            if guildInfo.guessing:
+                file, embed = self.createQuestion(message.guild)
+                await message.channel.send(file=file, embed=embed)
+                
+        # await self.bot.process_commands(message)
     
     @commands.command(name="start", help="Start guessing a pokémon")
     async def startGuess(self, ctx):
+        ## => CHECK IF ALREADY STARTED
+        with Session(self.db_engine, expire_on_commit=False) as session:
+            guildInfo = session.query(botGuilds).filter_by(guild_id=ctx.guild.id)
+        if guildInfo.guessing:
+            embed = self.embedText("The game is already started! To skip this pokémon use wtp!skip")
+            await ctx.send(embed=embed)
+            return
         ## => GET NEW POKEMON
         file, embed = self.createQuestion(ctx.guild)
         await ctx.send(file=file, embed=embed)
@@ -127,14 +178,6 @@ class whosThatPokemon(commands.Cog):
         await ctx.send(embed=self.embedText("You are not currently guessing pokémons, use the start command to begin!"))
 
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
-            await ctx.send(embed = embed)
-            print("GUILD WITHOUT PERMISSION DENIED")
-
-
     @commands.command(name="rank", help="Get the list of the best users. Use rank global to see the rank across every server. Specify also a limit of shown users (1-30): rank global 10")
     async def rank(self, ctx, *, args=None):
         ## => PARSE ARGUMENTS
@@ -160,69 +203,51 @@ class whosThatPokemon(commands.Cog):
         with Session(self.db_engine) as session:
             if global_flag:
                 ## => GLOBAL USERS
-                users = session.query(userPoints).all()
+                all_users = session.query(userPoints).all()
+                userDict = {}
+                for user in all_users:
+                    if user.user_id in userDict.keys():
+                       userDict[user.user_id] = userDict[user.user_id] + user.points
+                    else:
+                        userDict[user.user_id] = user.points 
+                userList = [(key, userDict[key]) for key in userDict.keys()]
+                get_points = lambda u: u[1]
+                userList.sort(key=get_points, reverse=True) 
+                for num, line in enumerate(userList):
+                    user_obj = await self.bot.fetch_user(line[0])
+                    text = text + f"#{num+1} {user_obj.name} | Win count: {line[1]}\n"
+                    if num+1 >= number:
+                        break
             else:
                 ## => LOCAL USERS ORDERED BY SQL
                 users = session.query(userPoints).filter_by(guild_id=str(ctx.guild.id)).order_by(desc(userPoints.points)).all()
-            
-            ## => FORMAT TEXT
-            for num, user in enumerate(users):
-                user_obj = ctx.guild.get_member(int(user.user_id))
-                text = text + f"{num+1}) {user_obj.mention}        {user.points}\n"
-                if num > number:
-                    break
+                ## => FORMAT TEXT
+                for num, user in enumerate(users):
+                    user_obj = ctx.guild.get_member(int(user.user_id))
+                    if user_obj:
+                        text = text + f"#{num+1} {user_obj.name} | Win count: {user.points}\n"
+                    if num > number:
+                        break
         if text == '':
             text = '.'       
         ## => SEND EMBED     
-        embed = Embed(title = "Server Rank", color=self.color)
+        embed = Embed(title = "Rank", color=self.color)
         embed.add_field(name="Best users", value = text)
         await ctx.send(embed = embed)
 
+    @commands.cooldown(1, 20, commands.BucketType.guild)
+    @commands.command(name="skip", help="Skip this pokémon. 20 seconds of cooldown")
+    async def skip(self, ctx):
+        file, embed = self.createQuestion(ctx.guild, skip=True)
+        if not file:
+            ## => GUILD NOT GUESSING
+            embed = self.embedText("Start playing with Wtp!start")
+            await ctx.send(embed=embed)
+            return
+        await ctx.send(file=file, embed=embed)
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        
-        if message.author == self.bot.user:
-            return
-
-        ## => FETCH GUILD DATA FROM DATABASE
-        with Session(self.db_engine) as session:
-            guildInfo = session.query(botGuilds).filter_by(guild_id=str(message.guild.id)).first()
-
-        ## => CHECK FOR THE CORRECT SOLUTION
-        raw_solution = guildInfo.current_pokemon
-        if not raw_solution or guildInfo.is_guessed or not guildInfo.activate:
-            return
-        if self.correctGuess(message.content, raw_solution):
-           
-            ## => DB OPERATIONS
-            with Session(self.db_engine, expire_on_commit=False) as session:
-                ## => UPDATE GUILD STATUS
-                guildInfo = session.query(botGuilds).filter_by(guild_id=str(message.guild.id)).first()
-                guildInfo.is_guessed = True
-                ## => FETCH USER
-                currentUser = session.query(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)).first()
-                if not currentUser:
-                    ## => USER NOT FOUNDED -> ADD IT TO DATABASE
-                    newUser = userPoints(user_id = str(message.author.id), guild_id=str(message.guild.id), points=0)
-                    session.add(newUser)
-                    currentUser = newUser
-                ## => INCREASE POINTS
-                currentUser.points = currentUser.points + 1
-                serverWins = currentUser.points
-                session.commit()
-
-            ## => SEND CORRECT-GUESS MESSAGE
-            embed = Embed(color=self.color)
-            embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
-            embed.description = f"Pikachu: {message.author.mention} you are correct! You have {serverWins} correct guesses in this server."
-            embed.set_footer(text="You can check your rank with the commands rank or rank global")
-            file = File("./pikachu.gif", "pikachu.gif")
-            embed.set_thumbnail(url="attachment://pikachu.gif")
-            await message.channel.send(file=file, embed=embed)
-
-            ## => SEND NEW QUESTION
-            if guildInfo.guessing:
-                file, embed = self.createQuestion(message.guild)
-                await message.channel.send(file=file, embed=embed)
-        
+    async def on_ready(self):
+        print("Bot connected")
+    
+# TODO: last update dagli utenti per poterli eliminare dal db
