@@ -249,5 +249,3 @@ class whosThatPokemon(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("Bot connected")
-    
-# TODO: last update dagli utenti per poterli eliminare dal db
