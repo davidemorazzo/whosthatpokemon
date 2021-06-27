@@ -31,6 +31,7 @@ class whosThatPokemon(commands.Cog):
         ## => DECIDE IF THE GUESS IS CORRECT
         guess = guess.lower().strip()
         wordSolution = solution.split('-')
+        guess = guess.replace('-o', ' o') # fix kommo-o ...
         wordGuess = guess.split(' ')
         
         ## => REPLACE IDENTIFIERS
@@ -117,7 +118,7 @@ class whosThatPokemon(commands.Cog):
                 currentUser.last_win_date = str(datetime.utcnow())
                 serverWins = currentUser.points
                 ## => FETCH USER GLOBALLY
-                userGlobally = session.query(userPoints).filter_by(guild_id=str(message.guild.id)).all()
+                userGlobally = session.query(userPoints).filter_by(user_id=str(message.author.id)).all()
                 userGlobalPoints = 0
                 for entry in userGlobally:
                     userGlobalPoints += entry.points
