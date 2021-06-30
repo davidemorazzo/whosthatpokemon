@@ -64,7 +64,7 @@ class whosThatPokemon(commands.Cog):
         embed.description = "Type the name of the pokémon to guess it"
         thumb = File(self.gif_dir+gif_name, filename="gif.gif")
         embed.set_thumbnail(url="attachment://gif.gif")
-        embed.set_footer(text="DEBUG ONLY: "+gif_name)
+        # TODO: embed.set_footer(text="DEBUG ONLY: "+gif_name)
         
         ## => MEMORIZE THE SOLUTION
         with Session(self.db_engine) as session:
