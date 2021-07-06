@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dateutil import parser
 from discord import Embed, Colour
 from patreonAPI import fetch_patreons
+
 import os
 
 class guildsAuthCog(commands.Cog):
@@ -16,39 +17,33 @@ class guildsAuthCog(commands.Cog):
         self.db_engine = engine
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
         self.color = Colour.orange()
-        # FIXME: self.verification.start()
-        self.patreon_link = "https://patreon.com"
+        self.verification.start()
+        self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord accout!"
-        self.guildWhiteList = [752464482424586290]
+        self.guildWhiteList = []
 
-    async def verifyPatreon(self, guildObj: botGuilds) -> str:
+    async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         ## => ASSIGN TO THE GUILD THE CORRECT PATREON
-        discordGuild = await self.bot.fetch_guild(guildObj.guild_id)
-        patreons = Session(self.db_engine).query(patreonUsers).all()
-        patreonIds = [p.discord_id for p in patreons]
+        discordGuild = self.bot.get_guild(int(guildObj.guild_id))
         
         if guildObj.patreon_discord_id in patreonIds:
             return guildObj.patreon_discord_id ## => KEEP THE CURRENT PATREON
         else:
-            for patreon in patreons:
+            for patreonId in patreonIds:
                 try:
-                    user = await discordGuild.fetch_member(int(patreon.discord_id))
+                    user = discordGuild.get_member(int(patreonId))
                 except : user = None
 
                 if user and user.guild_permissions.administrator:
-                    return patreon.discord_id
+                    return patreonId
             return None ## => NO PATREON FOUNDED
 
     def updatePatreons(self):
-        ## => UPDATE DATABASE FROM PATREON API
-        # FIXME: da controllare
         ## => FETCH PATREONS FROM API
         patreons_dict = fetch_patreons(os.getenv("PATREON_TOKEN"))
-        
         ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
         with Session(self.db_engine) as session:
             patreonsDb = session.query(patreonUsers).all()
-            
             ## => CHECK PATREONS IN THE DATABASE
             for patreon in patreonsDb:
                 if not patreon.discord_id in patreons_dict.keys():
@@ -105,15 +100,18 @@ class guildsAuthCog(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def verification(self):
-        print("Start verification")
-        ## => UPDATE PATREONS
-        self.updatePatreons()
         
+        print("Start verification")
+        ## => UPDATE PATREONS INTO THE DB
+        self.updatePatreons()
+        await self.bot.wait_until_ready()
         ## => VERIFY EVERY GUILD
         with Session(self.db_engine) as session:
+            patreons = session.query(patreonUsers).all()
+            patreonIds = [p.discord_id for p in patreons]
             guilds = session.query(botGuilds).filter_by(currently_joined=True).all()
             for guild in guilds:
-                patreonId = await self.verifyPatreon(guild)
+                patreonId = await self.verifyPatreon(guild, patreonIds)
 
                 if int(guild.guild_id) in self.guildWhiteList:
                     ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
