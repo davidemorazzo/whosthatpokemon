@@ -8,7 +8,8 @@ from database import init_database
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
 GIF_DIRECTORY = "./gifs/blacked/"
-LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/postgres'
+# LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/postgres'
+HEROKU_DB_STRING = "postgresql+psycopg2://cgfixadaruqszn:cf447a5485e66ebfdedfb2932cf97f5653eb924de1e0073ef2c0795ddcbd69a6@ec2-54-155-92-75.eu-west-1.compute.amazonaws.com:5432/d30tc5veho3edc"
 
 def noDirectMessage(ctx):
     if ctx.guild != None:
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     ## => TRY DATABASE CONNECTION
     try:
         ## => CONNECT TO LOCAL DB
-        engine = init_database(LOCAL_DB_STRING)
+        engine = init_database(HEROKU_DB_STRING)
     except:
         try:
             ## => CONNECT TO HEROKU POSTGRESQL
@@ -29,7 +30,7 @@ if __name__ == '__main__':
             print(HEROKU_DB_STRING)
             engine = init_database(HEROKU_DB_STRING)
         except Exception as e:
-            print(e)
+            print("Could not connect to the database: ", e)
             exit()
 
     cache = MemberCacheFlags().none()

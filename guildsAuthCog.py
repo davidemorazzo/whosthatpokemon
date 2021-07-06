@@ -18,6 +18,8 @@ class guildsAuthCog(commands.Cog):
         self.color = Colour.orange()
         # FIXME: self.verification.start()
         self.patreon_link = "https://patreon.com"
+        self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord accout!"
+        self.guildWhiteList = [752464482424586290]
 
     async def verifyPatreon(self, guildObj: botGuilds) -> str:
         ## => ASSIGN TO THE GUILD THE CORRECT PATREON
@@ -40,7 +42,10 @@ class guildsAuthCog(commands.Cog):
     def updatePatreons(self):
         ## => UPDATE DATABASE FROM PATREON API
         # FIXME: da controllare
+        ## => FETCH PATREONS FROM API
         patreons_dict = fetch_patreons(os.getenv("PATREON_TOKEN"))
+        
+        ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
         with Session(self.db_engine) as session:
             patreonsDb = session.query(patreonUsers).all()
             
@@ -61,6 +66,7 @@ class guildsAuthCog(commands.Cog):
                 session.add(patreonObj)
 
             session.commit()
+            print("Patreon db commit")
 
 
 
@@ -97,11 +103,11 @@ class guildsAuthCog(commands.Cog):
             
         print("BOT LEFT GUILD: ", guild.name)
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(minutes=10)
     async def verification(self):
         print("Start verification")
         ## => UPDATE PATREONS
-        # FIXME: self.updatePatreons()
+        self.updatePatreons()
         
         ## => VERIFY EVERY GUILD
         with Session(self.db_engine) as session:
@@ -109,21 +115,29 @@ class guildsAuthCog(commands.Cog):
             for guild in guilds:
                 patreonId = await self.verifyPatreon(guild)
 
-                if not patreonId:
+                if int(guild.guild_id) in self.guildWhiteList:
+                    ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
+                    guild.activate = True
+                    guild.patreon_discord_id = None
+
+                elif not patreonId:
                     ## => CHECK FOR TRIAL PERIOD
                     now = datetime.utcnow()
                     joined = parser.parse(guild.joined_utc)
                     guild.patreon_discord_id = None
                     if now-joined > timedelta(days=self.trial_days):
                         guild.activate = False
+                        guild.patreon_discord_id = None
                     else:
                         guild.activate = True
+                        guild.patreon_discord_id = None
                 else:
                     ## => ACTIVATE THE GUILD WITH PATREON
                     guild.activate = True
                     guild.patreon_discord_id = str(patreonId)
         
             session.commit()
+            print("Guilds verification db commit")
 
     @commands.command(name = "help", help="Show this message")
     async def help(self, ctx):
@@ -136,13 +150,7 @@ class guildsAuthCog(commands.Cog):
 
         embed = Embed(title="Commands help", colour=self.color)
         command_names_list = [(x.name, x.signature, x.help) for x in self.bot.commands]
-        if trial_flag:
-            embed.set_footer(text=f"ACTIVATION: {days_left} days left before trial period will end. To keep using the bot please subscribe to our patreon! {self.patreon_link}")
-        if guildInfo.activate == False:
-            embed.set_footer(text=f"ACTIVATION: the bot is not activated. To activate the bot please subscribe to our patreon! {self.patreon_link}")
-        if guildInfo.patreon_discord_id != None:
-            embed.set_footer(text="ACTIVATION: the bot is activated with patreon subscription")
-
+        
         # If there are no arguments, just list the commands:
         for i,x in enumerate(self.bot.commands):
             embed.add_field(
@@ -150,6 +158,16 @@ class guildsAuthCog(commands.Cog):
                 value=x.help,
                 inline=False
             )
+
+        if ctx.guild.id in self.guildWhiteList:
+            embed.set_footer(text="ACTIVATION:  This guild is whitelisted, so activation is not needed.")
+        elif trial_flag:
+            embed.description = f"**ACTIVATION:**  {days_left} days left before trial period will end. To keep using the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions+"\n"
+        elif guildInfo.activate == False:
+            embed.descriprion = f"**ACTIVATION:**  the bot is not activated. To activate the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions
+        elif guildInfo.patreon_discord_id != None:
+            embed.set_footer(text="ACTIVATION:  the bot is activated with patreon subscription")
+
         bot_msg = await ctx.send(embed=embed)
 
 

@@ -199,6 +199,9 @@ class whosThatPokemon(commands.Cog):
             global_flag = False
             number = 10
 
+        if number > 50:
+            return
+
         ## => GET DATA FROM DATABASE
         text = ''
         with Session(self.db_engine) as session:
