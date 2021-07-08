@@ -16,7 +16,7 @@ class guildsAuthCog(commands.Cog):
         self.bot = bot
         self.db_engine = engine
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
-        self.color = Colour.orange()
+        self.color = Colour.red()
         self.verification.start()
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord accout!"

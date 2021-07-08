@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from sqlalchemy import insert
+from sqlalchemy.sql.schema import UniqueConstraint
 
 Base = declarative_base()
 
@@ -22,6 +23,7 @@ class patreonUsers(Base):
 class botGuilds(Base):
     __tablename__ = "bot_guilds"
     guild_id = Column(String, primary_key=True, nullable=False)
+    channel_id = Column(String)
     activate = Column(Boolean, nullable=False)
     joined_utc = Column(String, nullable=False)
     currently_joined = Column(Boolean, nullable=False)
@@ -38,8 +40,20 @@ class userPoints(Base):
     __tablename__ = "user_points"
     user_id = Column(String, primary_key=True, nullable=False)
     guild_id = Column(String, primary_key=True, nullable=False)
-    points = Column(Integer, nullable=False)
+    points = Column(Integer, nullable=False) # global points
+    points_from_reset = Column(Integer, nullable=False)
     last_win_date = Column(String)
+
+class botChannelIstance(Base):
+    __tablename__ = "bot_channel_istance"
+    istance_id = Column(Integer, primary_key=True, nullable=True)
+    guild_id = Column(String, nullable=False)
+    channel_id = Column(String, nullable=False)
+    guessing  = Column(Boolean, nullable=False)
+    current_pokemon = Column(String)
+    is_guessed = Column(Boolean)
+    UniqueConstraint(guild_id, channel_id)
+
 
 
 def init_database(url:String):
