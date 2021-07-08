@@ -75,7 +75,7 @@ class whosThatPokemon(commands.Cog):
             if skip and thisGuild.guessing == False:
                 return None, None
             thisGuild.guessing = True
-            thisGuild.current_pokemon=gif_name.split('.')[0]
+            thisGuild.current_pokemon=gif_name.replace(".gif", "")
             thisGuild.is_guessed=False
             session.commit()
 
