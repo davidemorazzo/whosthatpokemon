@@ -120,7 +120,10 @@ class whosThatPokemon(commands.Cog):
                 currentUser = session.query(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)).first()
                 if not currentUser:
                     ## => USER NOT FOUNDED -> ADD IT TO DATABASE
-                    newUser = userPoints(user_id = str(message.author.id), guild_id=str(message.guild.id), points=0)
+                    newUser = userPoints(user_id = str(message.author.id), 
+                                        guild_id=str(message.guild.id),
+                                        points=0,
+                                        points_from_reset = 0)
                     session.add(newUser)
                     currentUser = newUser
                 ## => INCREASE POINTS
