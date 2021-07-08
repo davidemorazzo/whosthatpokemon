@@ -19,7 +19,7 @@ class guildsAuthCog(commands.Cog):
         self.color = Colour.red()
         self.verification.start()
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
-        self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord accout!"
+        self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = []
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:

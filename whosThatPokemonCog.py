@@ -1,6 +1,6 @@
 from discord.colour import Color
 from discord.ext import commands
-from discord import Embed, File, Colour, channel
+from discord import Embed, File, Colour
 from sqlalchemy.sql.expression import text
 from database import botGuilds, userPoints, botChannelIstance
 from sqlalchemy.orm import Session
@@ -264,7 +264,7 @@ class whosThatPokemon(commands.Cog):
             text = '.'       
         ## => SEND EMBED     
         embed = Embed(color=self.color)
-        embed.add_field(name="Best ranks", value = text)
+        embed.add_field(name=self.bot.user.name, value = text)
         thumbnail = File("./trophy.gif", "trophy.gif")
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.send(embed = embed, file = thumbnail)
