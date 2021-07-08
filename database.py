@@ -58,7 +58,7 @@ class botChannelIstance(Base):
 
 def init_database(url:String):
 
-    engine = create_engine(url, echo=True) #TODO: togliere echo
+    engine = create_engine(url, echo=False)
     Base.metadata.create_all(bind=engine)
     return engine
 
