@@ -61,7 +61,6 @@ class guildsAuthCog(commands.Cog):
                 session.add(patreonObj)
 
             session.commit()
-            print("Patreon db commit")
 
 
 
@@ -101,7 +100,7 @@ class guildsAuthCog(commands.Cog):
     @tasks.loop(minutes=10)
     async def verification(self):
         
-        print("Start verification")
+        tic = datetime.now()
         ## => UPDATE PATREONS INTO THE DB
         self.updatePatreons()
         await self.bot.wait_until_ready()
@@ -135,7 +134,9 @@ class guildsAuthCog(commands.Cog):
                     guild.patreon_discord_id = str(patreonId)
         
             session.commit()
-            print("Guilds verification db commit")
+        toc = datetime.now()
+        delta = toc-tic
+        print("Verification executed in: ", delta)
 
     @commands.command(name = "help", help="Show this message")
     async def help(self, ctx):
