@@ -272,7 +272,7 @@ class whosThatPokemon(commands.Cog):
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.send(embed = embed, file = thumbnail)
 
-    @commands.cooldown(1, 20, commands.BucketType.guild)
+    @commands.cooldown(1, 20, commands.BucketType.channel)
     @commands.command(name="skip", help="Skip this pokémon. 20 seconds of cooldown")
     async def skip(self, ctx):
         file, embed = self.createQuestion(ctx.guild, skip=True, channel=str(ctx.channel.id))
