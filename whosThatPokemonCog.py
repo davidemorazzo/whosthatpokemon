@@ -204,7 +204,7 @@ class whosThatPokemon(commands.Cog):
                 ## => SCRAMBLE THE SOLUTION
                 solution = list(thisGuild.current_pokemon)
                 shuffle(solution)
-                scrambled = ''.join(solution)
+                scrambled = ''.join(solution).replace("-", " ")
                 await ctx.send(embed = self.embedText(f"Here's a hint: {scrambled}"))
 
 
@@ -240,7 +240,7 @@ class whosThatPokemon(commands.Cog):
                 all_users = session.query(userPoints).all()
                 userDict = {}
                 for user in all_users:
-                    if user.user_id in userDict.keys():
+                    if user.user_id in userDict:
                        userDict[user.user_id] = userDict[user.user_id] + user.points
                     else:
                         userDict[user.user_id] = user.points 
