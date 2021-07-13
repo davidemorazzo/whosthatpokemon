@@ -19,7 +19,7 @@ def getServerPrefix(bot, message):
     if message.guild:
         ## => SERVER MESSAGE
         base = COMMAND_PREFIX
-        connection = psycopg2.connect("postgresql://postgres:root@localhost/postgres")
+        connection = psycopg2.connect(HEROKU_DB_STRING)
         cursor = connection.cursor()
         cursor.execute(f"select prefix from bot_guilds where guild_id = '{message.guild.id}'"
                         )
