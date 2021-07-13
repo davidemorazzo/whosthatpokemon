@@ -23,14 +23,11 @@ class patreonUsers(Base):
 class botGuilds(Base):
     __tablename__ = "bot_guilds"
     guild_id = Column(String, primary_key=True, nullable=False)
-    channel_id = Column(String)
     activate = Column(Boolean, nullable=False)
     joined_utc = Column(String, nullable=False)
     currently_joined = Column(Boolean, nullable=False)
     patreon_discord_id = Column(String, unique=True, nullable=True)
-    guessing  = Column(Boolean, nullable=False)
-    current_pokemon = Column(String)
-    is_guessed = Column(Boolean)
+    prefix = Column(String)
 
     def __repr__(self):
         return "<Guild(guild_id=%s, activated=%s, join=%s, patreon_user_id=%s)>" % (

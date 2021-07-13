@@ -2,6 +2,7 @@ from discord.colour import Color
 from discord.ext import commands
 from discord import Embed, File, Colour
 from sqlalchemy.sql.expression import text
+from sqlalchemy.sql import func
 from database import botGuilds, userPoints, botChannelIstance
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
@@ -236,33 +237,32 @@ class whosThatPokemon(commands.Cog):
         text = ''
         with Session(self.db_engine) as session:
             if global_flag:
-                ## => GLOBAL USERS
-                all_users = session.query(userPoints).all()
-                userDict = {}
-                for user in all_users:
-                    if user.user_id in userDict:
-                       userDict[user.user_id] = userDict[user.user_id] + user.points
-                    else:
-                        userDict[user.user_id] = user.points 
-                userList = [(key, userDict[key]) for key in userDict.keys()]
-                get_points = lambda u: u[1]
-                userList.sort(key=get_points, reverse=True) 
+                ## => GLOBAL RANKS FROM SQL
+                q = session.query(userPoints.user_id, func.sum(userPoints.points).label("global_points"))
+                q = q.group_by(userPoints.user_id
+                    ).order_by(desc("global_points")
+                    ).limit(number)
+                userList = q.all()
                 ## => FORMAT TEXT
                 for num, line in enumerate(userList):
-                    user_obj = await self.bot.fetch_user(line[0])
-                    text = text + f"#{num+1} {user_obj.name} | Win count: {line[1]}\n"
-                    if num+1 >= number:
-                        break
+                    user_obj = self.bot.get_user(int(line[0]))
+                    if not user_obj:
+                        try:
+                            user_obj = await self.bot.fetch_user(line[0])
+                        except :
+                            user_obj = None
+                    if user_obj:
+                        text = text + f"#{num+1} {user_obj.name} | Win count: {line[1]}\n"
             else:
                 ## => LOCAL USERS ORDERED BY SQL
-                users = session.query(userPoints).filter_by(guild_id=str(ctx.guild.id)).order_by(desc(userPoints.points_from_reset)).all()
+                users = session.query(userPoints).filter_by(guild_id=str(ctx.guild.id)).order_by(desc(userPoints.points_from_reset)
+                        ).limit(number).all()
                 ## => FORMAT TEXT
                 for num, user in enumerate(users):
                     user_obj = ctx.guild.get_member(int(user.user_id))
                     if user_obj:
                         text = text + f"#{num+1} {user_obj.name} | Win count: {user.points_from_reset}\n"
-                    if num > number:
-                        break
+
         if text == '':
             text = '.'       
         ## => SEND EMBED     
@@ -302,4 +302,25 @@ class whosThatPokemon(commands.Cog):
                 player.points_from_reset = 0
             session.commit()
         embed = self.embedText("Local ranks reset succesful!")
+        await ctx.send(embed=embed)
+
+    @commands.command(name="prefix", help="Change the prefix of the bot. Admin only. Example: wtp!prefix ? ")
+    async def changePrefix(self, ctx, prefix:str):
+        if not ctx.message.author.guild_permissions.administrator:
+            ## => NOT ADMINISTRATOR
+            embed = self.embedText("You need to be administrator to run this command")
+            await ctx.send(embed=embed)
+            return   
+        ## => CHECK PREFIX
+        if len(prefix.split(" ")) != 1:
+            embed = self.embedText(f"Prefix not valid, spaces are not allowed")
+            await ctx.send(embed=embed)
+            return
+        ## => CHANGE THE PREFIX IN THE DATABASE
+        with Session(self.db_engine) as session:
+            guildInfo = session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+            guildInfo.prefix = prefix
+            session.commit()
+        
+        embed = self.embedText(f"Prefix changed to {prefix}")
         await ctx.send(embed=embed)
