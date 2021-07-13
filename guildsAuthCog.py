@@ -18,6 +18,7 @@ class guildsAuthCog(commands.Cog):
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
         self.color = Colour.red()
         self.verification.start()
+        self.free_period = True
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
@@ -117,6 +118,10 @@ class guildsAuthCog(commands.Cog):
                     guild.activate = True
                     guild.patreon_discord_id = None
 
+                elif self.free_period:
+                    ## => DISABLE PATREON IN THE FREE PERIOD
+                    guild.activate=True
+
                 elif not patreonId:
                     ## => CHECK FOR TRIAL PERIOD
                     now = datetime.utcnow()
@@ -160,6 +165,8 @@ class guildsAuthCog(commands.Cog):
 
         if ctx.guild.id in self.guildWhiteList:
             embed.set_footer(text="ACTIVATION:  This guild is whitelisted, so activation is not needed.")
+        elif self.free_period:
+            embed.description = f"**ACTIVATION:**  The bot is free for now! Please support us on Patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions+"\n"
         elif trial_flag:
             embed.description = f"**ACTIVATION:**  {days_left} days left before trial period will end. To keep using the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions+"\n"
         elif guildInfo.activate == False:
