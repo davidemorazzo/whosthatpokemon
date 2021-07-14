@@ -94,6 +94,7 @@ class whosThatPokemon(commands.Cog):
                                     activate=True)
                     session.add(newGuild)
                     session.commit()
+                    guildInfo = newGuild
                 return guildInfo.activate
     
     @commands.Cog.listener()
