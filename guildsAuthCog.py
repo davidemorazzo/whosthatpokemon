@@ -77,9 +77,8 @@ class guildsAuthCog(commands.Cog):
             newGuild = session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
             if newGuild == None:
                 ## => GUILD NOT FOUNDED -> ADD TO THE DATABASE
-                newGuild = botGuilds(guild_id=(guild.id),
+                newGuild = botGuilds(guild_id=str(guild.id),
                                     joined_utc=str(datetime.utcnow()),
-                                    guessing=False,
                                     currently_joined = True,
                                     activate=True)
                 session.add(newGuild)
@@ -185,4 +184,18 @@ class guildsAuthCog(commands.Cog):
             print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
         else:
             print(error)
+            
+            ## => CHECK IF GUILD IS IN THE DB
+            with Session(self.db_engine) as session:
+                guildInfo = session.query(botGuilds).filter_by(guild_id = str(ctx.guild.id)).first()
+                if not guildInfo:
+                    newGuild = botGuilds(guild_id=str(ctx.guild.id),
+                                    joined_utc=str(datetime.utcnow()),
+                                    currently_joined = True,
+                                    activate=True)
+                    session.add(newGuild)
+                    session.commit()
+                    print("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
+            
+
 
