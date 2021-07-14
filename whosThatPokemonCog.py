@@ -87,6 +87,13 @@ class whosThatPokemon(commands.Cog):
         if ctx.guild:
             with Session(self.db_engine) as session:
                 guildInfo = session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+                if not guildInfo:
+                    newGuild = botGuilds(guild_id=str(ctx.guild.id),
+                                    joined_utc=str(datetime.utcnow()),
+                                    currently_joined = True,
+                                    activate=True)
+                    session.add(newGuild)
+                    session.commit()
                 return guildInfo.activate
     
     @commands.Cog.listener()
