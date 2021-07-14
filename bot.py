@@ -29,8 +29,9 @@ def getServerPrefix(bot, message):
         serverPrefix = cursor.fetchone()
         cursor.close()
         connection.close()
-        if serverPrefix[0]:
-            base.append(serverPrefix[0])
+        if serverPrefix:
+            if serverPrefix[0]:
+                base.append(serverPrefix[0])
         return base
         
     else:
