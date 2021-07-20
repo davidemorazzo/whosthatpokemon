@@ -187,7 +187,7 @@ class guildsAuthCog(commands.Cog):
             dbGuilds = session.query(botGuilds).all()
             
             for guildInfo in dbGuilds:
-                if str(guildInfo.guild_id) in botJoinedGuildsIds:
+                if int(guildInfo.guild_id) in botJoinedGuildsIds:
                     guildInfo.currently_joined = True
                     botJoinedGuildsIds.remove(int(guildInfo.guild_id))
                 else:
