@@ -195,7 +195,7 @@ class guildsAuthCog(commands.Cog):
             
             ## => ADD THE GUILD THAT JOINED BUT NOT IN THE DB
             for guildId in botJoinedGuildsIds:
-                newGuild = botGuilds(guild_id = guildId,
+                newGuild = botGuilds(guild_id = str(guildId),
                                         activate=True,
                                         currently_joined=True,
                                         joined_utc=str(datetime.utcnow()),
