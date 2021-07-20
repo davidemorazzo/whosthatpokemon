@@ -185,41 +185,24 @@ class guildsAuthCog(commands.Cog):
         dbGuilds = []
         with Session(self.db_engine) as session:
             dbGuilds = session.query(botGuilds).all()
-            dbGuildsIds = [int(g.guild_id) for g in dbGuilds]
-            dbCurrentlyJoined = session.query(botGuilds).filter_by(currently_joined=True)
-            dbCurrentlyJoinedIds = [int(g.guild_id) for g in dbCurrentlyJoined]
-            ## => CALCULATE DIFFERENCE
-            diff1 = list(set(botJoinedGuildsIds) - set(dbCurrentlyJoinedIds))
-            diff2 = list(set(dbCurrentlyJoinedIds) - set(botJoinedGuildsIds))
-            diff = diff1+diff2
             
-            for guildIdDifference in diff:
-                if guildIdDifference in botJoinedGuildsIds and not guildIdDifference in dbGuildsIds:
-                    ## => GUILD FIRST JOINED BUT NOT REGISTERED
-                    newGuild = botGuilds(guild_id = guildIdDifference,
+            for guildInfo in dbGuilds:
+                if str(guildInfo.guild_id) in botJoinedGuildsIds:
+                    guildInfo.currently_joined = True
+                    botJoinedGuildsIds.remove(int(guildInfo.guild_id))
+                else:
+                    guildInfo.currently_joined = False
+            
+            ## => ADD THE GUILD THAT JOINED BUT NOT IN THE DB
+            for guildId in botJoinedGuildsIds:
+                newGuild = botGuilds(guild_id = guildId,
                                         activate=True,
                                         currently_joined=True,
                                         joined_utc=str(datetime.utcnow()),
                                         patreon_discord_id = None,
                                         prefix = None)
-                    session.add(newGuild)
-                elif guildIdDifference in botJoinedGuildsIds and guildIdDifference in dbGuildsIds:
-                    ## => GUILD REJOIN NOT REGISTERED IN THE DB
-                    for g in dbGuilds:
-                        if g.guild_id == str(guildIdDifference):
-                            g.currently_joined = True
-                            break
-                elif guildIdDifference in dbCurrentlyJoinedIds:
-                    ## => GUILDS EXIT NOT REGISTERED IN THE DB
-                    for g in dbGuilds:
-                        if g.guild_id == str(guildIdDifference):
-                            g.currently_joined = False
-                            break
-
-        session.commit()
-        if len(diff) > 0:
-            print("Number of guilds modified in the DB: ", len(diff))
-
+                session.add(newGuild)
+            session.commit()
 
 
 
