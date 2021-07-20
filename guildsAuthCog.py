@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 from dateutil import parser
 from discord import Embed, Colour
 from patreonAPI import fetch_patreons
-
 import os
+from whosThatPokemonCog import guildNotActive
 
 class guildsAuthCog(commands.Cog):
     def __init__(self, bot, patreonKey, patreonCreatorId, engine):
@@ -178,11 +178,22 @@ class guildsAuthCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
+        ## => EXCEPTION HANDLERS
+        if isinstance(error, commands.errors.NotOwner):
+            embed = self.embedText(str(error))
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.errors.NoPrivateMessage):
+            return
+        elif isinstance(error, guildNotActive):
             embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
             await ctx.send(embed = embed)
             print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
-        else:
+        elif isinstance(error, commands.errors.CommandNotFound):
+            return
+        elif isinstance(error, commands.errors.UserInputError):
+            embed = self.embedText(str(error))
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.errors.CommandError):
             print(error)
             
             ## => CHECK IF GUILD IS IN THE DB
@@ -196,6 +207,7 @@ class guildsAuthCog(commands.Cog):
                     session.add(newGuild)
                     session.commit()
                     print("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
-            
+        else:
+            print(error)
 
 

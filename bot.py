@@ -13,7 +13,7 @@ GIF_DIRECTORY = "./gifs/blacked/"
 def noDirectMessage(ctx):
     if ctx.guild != None:
         return True
-    return False
+    raise commands.errors.NoPrivateMessage
 
 def getServerPrefix(bot, message):
     if message.guild:
@@ -72,5 +72,3 @@ if __name__ == '__main__':
     bot.add_check(noDirectMessage)
 
     bot.run(BOT_TOKEN)
-    # bot.run("ODU1MzkyOTMxMjAzMjUyMjM0.YMx0vw.GUK6TGjobT6Ez2KE4KrCi21RFdQ") ## => TOKEN DI DAVIDE
-

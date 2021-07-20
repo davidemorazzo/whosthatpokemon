@@ -12,6 +12,9 @@ from random import choice, shuffle
 from collections import Counter
 from datetime import datetime
 
+class guildNotActive(commands.errors.CheckFailure):
+    pass
+
 class whosThatPokemon(commands.Cog):
     def __init__(self, bot, gif_dir, engine):
         load_dotenv()
@@ -95,12 +98,20 @@ class whosThatPokemon(commands.Cog):
                     session.add(newGuild)
                     session.commit()
                     guildInfo = newGuild
-                return guildInfo.activate
+                if guildInfo.activate:
+                    return True
+                else:
+                    raise guildNotActive(guildInfo.guild_id)
+    
+    async def only_admin(ctx):
+        if ctx.message.author.guild_permissions.administrator:
+            return True
+        raise commands.errors.NotOwner("Only administrator can run this command")
     
     @commands.Cog.listener()
     async def on_message(self, message):
         
-        if message.author == self.bot.user:
+        if message.author == self.bot.user or message.guild == None:
             return
 
         ## => FETCH GUILD DATA FROM DATABASE
@@ -296,13 +307,8 @@ class whosThatPokemon(commands.Cog):
         print("Bot connected")
 
     @commands.command(name="resetrank", help="Reset to zero the wins of the players of this server. Global points will be preserved. Only administrator")
-    async def resetrank(self, ctx):
-        if not ctx.message.author.guild_permissions.administrator:
-            ## => NOT ADMINISTRATOR
-            embed = self.embedText("You need to be administrator to run this command")
-            await ctx.send(embed=embed)
-            return    
-        
+    @commands.check(only_admin)
+    async def resetrank(self, ctx):      
         ## => POINTS_FROM_RESET TO 0 IN THE DB
         with Session(self.db_engine) as session:
             guildPlayers = session.query(userPoints).filter_by(guild_id = str(ctx.guild.id)).all()
@@ -313,15 +319,11 @@ class whosThatPokemon(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="prefix", help="Change the prefix of the bot. Admin only. Example: wtp!prefix ? ")
-    async def changePrefix(self, ctx, prefix:str):
-        if not ctx.message.author.guild_permissions.administrator:
-            ## => NOT ADMINISTRATOR
-            embed = self.embedText("You need to be administrator to run this command")
-            await ctx.send(embed=embed)
-            return   
+    @commands.check(only_admin)
+    async def changePrefix(self, ctx, prefix:str): 
         ## => CHECK PREFIX
-        if len(prefix.split(" ")) != 1:
-            embed = self.embedText(f"Prefix not valid, spaces are not allowed")
+        if len(prefix.split(" ")) != 1 or '\"' in prefix or "\'" in prefix:
+            embed = self.embedText(f"Prefix not valid")
             await ctx.send(embed=embed)
             return
         ## => CHANGE THE PREFIX IN THE DATABASE
