@@ -302,10 +302,6 @@ class whosThatPokemon(commands.Cog):
             return
         await ctx.send(file=file, embed=embed)
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print("Bot connected")
-
     @commands.command(name="resetrank", help="Reset to zero the wins of the players of this server. Global points will be preserved. Only administrator")
     @commands.check(only_admin)
     async def resetrank(self, ctx):      
