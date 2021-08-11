@@ -8,7 +8,7 @@ from database import init_database
 import psycopg2
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
-GIF_DIRECTORY = "./gifs/blacked/"
+POKEMON_DATAFRAME = "pokemon_data.csv"
 
 def noDirectMessage(ctx):
     if ctx.guild != None:
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     bot = commands.Bot(command_prefix=getServerPrefix, member_cache_flags=cache, intents=intents)
     bot.remove_command("help")
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
-    bot.add_cog(whosThatPokemon(bot, GIF_DIRECTORY, engine))
+    bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME))
     bot.add_check(noDirectMessage)
 
     bot.run(BOT_TOKEN)

@@ -11,20 +11,18 @@ from dotenv import load_dotenv
 from random import choice, shuffle
 from collections import Counter
 from datetime import datetime
+import pandas as pd
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
 
 class whosThatPokemon(commands.Cog):
-    def __init__(self, bot, gif_dir, engine):
+    def __init__(self, bot, engine, data_path):
         load_dotenv()
         self.bot = bot
-        self.gif_dir = gif_dir
         self.db_engine = engine
         self.color = Colour.red()
-        self.gif_list = listdir(self.gif_dir)
-        self.active_guessing = {}
-        self.patreon_link = "https://patreon.com"
+        self.pokemonDataFrame = pd.read_csv(data_path, index_col='name')
     
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -61,12 +59,12 @@ class whosThatPokemon(commands.Cog):
         return compare(wordSolution, wordGuess)
             
     def createQuestion(self, guild, skip=False, channel=None):
-        gif_name = choice(self.gif_list)
+        gif_name = choice(self.pokemonDataFrame.index)
         ## => SEND EMBED
         embed = Embed(color=self.color)
         embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar_url)
         embed.description = "Type the name of the pokémon to guess it"
-        thumb = File(self.gif_dir+gif_name, filename="gif.gif")
+        thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
         embed.set_thumbnail(url="attachment://gif.gif")
         # embed.set_footer(text="DEBUG ONLY: "+gif_name)
         
@@ -79,7 +77,7 @@ class whosThatPokemon(commands.Cog):
             if skip and thisGuild.guessing == False:
                 return None, None
             thisGuild.guessing = True
-            thisGuild.current_pokemon=gif_name.replace(".gif", "")
+            thisGuild.current_pokemon=gif_name
             thisGuild.is_guessed=False
             session.commit()
 
@@ -157,15 +155,45 @@ class whosThatPokemon(commands.Cog):
                 for entry in userGlobally:
                     userGlobalPoints += entry.points
                 session.commit()
+            # 
+            # ## => CREATE DESCRIPTION AND CLEAR GIF EMBED
+            # clearEmbed = Embed(color=self.color)
+            # clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
+            # description = self.pokemonDataFrame.loc[raw_solution]['description']
+            # clearEmbed.description = description
+            # clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.png")
+            # clearEmbed.set_thumbnail(url="attachment://clear.png")
+            # await message.channel.send(file=clearThumb, embed=clearEmbed)
+            # 
+            # ## => SEND CORRECT-GUESS MESSAGE
+            # embed = Embed(color=self.color)
+            # embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
+            # embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
+            # embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
+            # pika = File("./pikachu.gif", "pikachu.gif")
+            # embed.set_thumbnail(url="attachment://pikachu.gif")
+            # await message.channel.send(file=pika, embed=embed)
 
-            ## => SEND CORRECT-GUESS MESSAGE
-            embed = Embed(color=self.color)
-            embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
-            embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
-            embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
-            file = File("./pikachu.gif", "pikachu.gif")
-            embed.set_thumbnail(url="attachment://pikachu.gif")
-            await message.channel.send(file=file, embed=embed)
+            description = self.pokemonDataFrame.loc[raw_solution]['description']
+            if description.strip() != "":
+                ## => SEND CORRECT-GUESS MESSAGE WITH DESCRIPTION
+                embed = Embed(color=self.color)
+                embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
+                embed.description = f"{message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
+                embed.description += "\n" + description
+                embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
+                clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+                embed.set_thumbnail(url="attachment://clear.gif")
+                await message.channel.send(file=clearThumb, embed=embed)
+            else:
+                ## => SEND CORRECT-GUESS MESSAGE STANDARD
+                embed = Embed(color=self.color)
+                embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
+                embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
+                embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
+                pika = File("./pikachu.gif", "pikachu.gif")
+                embed.set_thumbnail(url="attachment://pikachu.gif")
+                await message.channel.send(file=pika, embed=embed)
 
             ## => SEND NEW QUESTION
             if guildInfo.guessing:
@@ -294,6 +322,20 @@ class whosThatPokemon(commands.Cog):
     @commands.cooldown(1, 20, commands.BucketType.channel)
     @commands.command(name="skip", help="Skip this pokémon. 20 seconds of cooldown")
     async def skip(self, ctx):
+        ## => SEND PREVIOUS SOLUTION
+        with Session(self.db_engine) as session:
+            channelIstance = session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id), channel_id=str(ctx.channel.id)).first()
+            raw_solution = channelIstance.current_pokemon
+        description = self.pokemonDataFrame.loc[raw_solution]['description']
+        if description.strip() != "":
+            clearEmbed = Embed(color=self.color)
+            clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
+            clearEmbed.description = description
+            clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+            # clearThumb = File("D:\\Programmazione\\Fiverr\\andychand400 v2\\gif script\\ezgif.com-gif-maker.webp", filename="clear.webp")
+            clearEmbed.set_thumbnail(url="attachment://clear.gif")
+            await ctx.send(file=clearThumb, embed=clearEmbed)
+
         file, embed = self.createQuestion(ctx.guild, skip=True, channel=str(ctx.channel.id))
         if not file:
             ## => GUILD NOT GUESSING
@@ -330,3 +372,7 @@ class whosThatPokemon(commands.Cog):
         
         embed = self.embedText(f"Prefix changed to {prefix}")
         await ctx.send(embed=embed)
+
+
+
+    
