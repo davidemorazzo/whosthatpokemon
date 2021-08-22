@@ -180,7 +180,7 @@ class whosThatPokemon(commands.Cog):
                 embed = Embed(color=self.color)
                 embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
                 embed.description = f"{message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
-                embed.description += "\n" + description
+                embed.description += "\n" + description + "\n."
                 embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
                 clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
                 embed.set_thumbnail(url="attachment://clear.gif")
