@@ -51,7 +51,7 @@ if __name__ == '__main__':
     except:
         try:
             ## => INITIALIZE FOR HEROKU
-            HEROKU_DB_STRING = os.environ.get("DATABASE_URL").replace("postgres://", "postgresql+psycopg2://")
+            HEROKU_DB_STRING = os.environ.get("HEROKU_POSTGRESQL_CHARCOAL_URL").replace("postgres://", "postgresql+psycopg2://")
             print(HEROKU_DB_STRING)
             engine = init_database(HEROKU_DB_STRING)
             BOT_TOKEN = os.getenv("DISCORD_TOKEN")
