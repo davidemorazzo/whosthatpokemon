@@ -60,12 +60,12 @@ if __name__ == '__main__':
             print("Could not connect to the database: ", e)
             exit()
 
-    cache = MemberCacheFlags().none()
-    cache.joined = True
-    intents = Intents().default()
-    intents.members = True
+    # cache = MemberCacheFlags().none()
+    # cache.joined = True
+    # intents = Intents().default()
+    # intents.members = True
 
-    bot = commands.Bot(command_prefix=getServerPrefix, member_cache_flags=cache, intents=intents)
+    bot = commands.Bot(command_prefix=getServerPrefix)
     bot.remove_command("help")
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
     bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME))

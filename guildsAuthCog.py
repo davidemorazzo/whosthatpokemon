@@ -32,7 +32,7 @@ class guildsAuthCog(commands.Cog):
         else:
             for patreonId in patreonIds:
                 try:
-                    user = discordGuild.get_member(int(patreonId))
+                    user = await discordGuild.fetch_member(int(patreonId))
                 except : user = None
 
                 if user and user.guild_permissions.administrator:

@@ -277,7 +277,7 @@ class whosThatPokemon(commands.Cog):
             global_flag = False
             number = 10
 
-        if number > 50:
+        if number > 30:
             return
 
         ## => GET DATA FROM DATABASE
@@ -292,12 +292,10 @@ class whosThatPokemon(commands.Cog):
                 userList = q.all()
                 ## => FORMAT TEXT
                 for num, line in enumerate(userList):
-                    user_obj = self.bot.get_user(int(line[0]))
-                    if not user_obj:
-                        try:
-                            user_obj = await self.bot.fetch_user(line[0])
-                        except :
-                            user_obj = None
+                    try:
+                        user_obj = await self.bot.fetch_user(line[0])
+                    except :
+                        user_obj = None
                     if user_obj:
                         text = text + f"#{num+1} {user_obj.name} | Win count: {line[1]}\n"
             else:
@@ -306,7 +304,11 @@ class whosThatPokemon(commands.Cog):
                         ).limit(number).all()
                 ## => FORMAT TEXT
                 for num, user in enumerate(users):
-                    user_obj = ctx.guild.get_member(int(user.user_id))
+                    try:
+                        user_obj = await ctx.guild.fetch_member(int(user.user_id))
+                    except :
+                        user_obj = None
+
                     if user_obj:
                         text = text + f"#{num+1} {user_obj.name} | Win count: {user.points_from_reset}\n"
 
