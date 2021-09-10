@@ -1,5 +1,4 @@
 from discord.ext import commands
-from discord import MemberCacheFlags, Intents
 import os
 from dotenv import load_dotenv
 from whosThatPokemonCog import whosThatPokemon
@@ -19,6 +18,7 @@ def getServerPrefix(bot, message):
     if message.guild:
         ## => SERVER MESSAGE
         base = COMMAND_PREFIX
+        prefixes = base
         try:
             connection = psycopg2.connect(HEROKU_DB_STRING.replace("+psycopg2", ""), sslmode='require')
         except :
@@ -31,8 +31,9 @@ def getServerPrefix(bot, message):
         connection.close()
         if serverPrefix:
             if serverPrefix[0]:
-                base.append(serverPrefix[0])
-        return base
+                prefixes = base + [serverPrefix[0]]
+                
+        return prefixes
         
     else:
         ## => DIRECT MESSAGE

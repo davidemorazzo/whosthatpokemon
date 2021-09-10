@@ -149,6 +149,7 @@ class whosThatPokemon(commands.Cog):
                 currentUser.points_from_reset = currentUser.points_from_reset + 1
                 currentUser.last_win_date = str(datetime.utcnow())
                 serverWins = currentUser.points_from_reset
+                # TODO: aggiungere nel database memorizzazione dell'username
                 ## => FETCH USER GLOBALLY
                 userGlobally = session.query(userPoints).filter_by(user_id=str(message.author.id)).all()
                 userGlobalPoints = 0
