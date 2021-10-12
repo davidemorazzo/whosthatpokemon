@@ -7,6 +7,7 @@ from dateutil import parser
 from discord import Embed, Colour
 from patreonAPI import fetch_patreons
 import os
+
 from whosThatPokemonCog import guildNotActive
 
 class guildsAuthCog(commands.Cog):

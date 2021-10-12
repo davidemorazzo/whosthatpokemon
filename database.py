@@ -36,10 +36,12 @@ class botGuilds(Base):
 class userPoints(Base):
     __tablename__ = "user_points"
     user_id = Column(String, primary_key=True, nullable=False)
+    username = Column(String)
     guild_id = Column(String, primary_key=True, nullable=False)
     points = Column(Integer, nullable=False) # global points
     points_from_reset = Column(Integer, nullable=False)
     last_win_date = Column(String)
+    
 
 class botChannelIstance(Base):
     __tablename__ = "bot_channel_istance"

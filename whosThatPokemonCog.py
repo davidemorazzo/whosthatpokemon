@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord import Embed, File, Colour
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql import func
-from database import botGuilds, userPoints, botChannelIstance
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from os import listdir
@@ -12,6 +11,9 @@ from random import choice, shuffle
 from collections import Counter
 from datetime import datetime
 import pandas as pd
+
+from database import botGuilds, userPoints, botChannelIstance
+
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
@@ -106,6 +108,19 @@ class whosThatPokemon(commands.Cog):
             return True
         raise commands.errors.NotOwner("Only administrator can run this command")
     
+    def getServerPrefix(self, message):
+        if message.guild:
+            ## => SERVER MESSAGE
+            with Session(self.db_engine, expire_on_commit=False) as session:
+                guildInfo = session.query(botGuilds).filter_by(guild_id=str(message.guild.id)).first()
+                if guildInfo.prefix:
+                    return guildInfo.prefix
+                else:
+                    return "wtp!"
+        else:
+            ## => DIRECT MESSAGE
+            return "wtp!"
+    
     @commands.Cog.listener()
     async def on_message(self, message):
         
@@ -141,39 +156,25 @@ class whosThatPokemon(commands.Cog):
                     newUser = userPoints(user_id = str(message.author.id), 
                                         guild_id=str(message.guild.id),
                                         points=0,
-                                        points_from_reset = 0)
+                                        points_from_reset = 0,
+                                        username = message.author.name)
                     session.add(newUser)
                     currentUser = newUser
                 ## => INCREASE POINTS
                 currentUser.points = currentUser.points + 1 #global points
                 currentUser.points_from_reset = currentUser.points_from_reset + 1
                 currentUser.last_win_date = str(datetime.utcnow())
+                currentUser.username = message.author.name
                 serverWins = currentUser.points_from_reset
-                # TODO: aggiungere nel database memorizzazione dell'username
                 ## => FETCH USER GLOBALLY
                 userGlobally = session.query(userPoints).filter_by(user_id=str(message.author.id)).all()
                 userGlobalPoints = 0
                 for entry in userGlobally:
                     userGlobalPoints += entry.points
                 session.commit()
-            # 
-            # ## => CREATE DESCRIPTION AND CLEAR GIF EMBED
-            # clearEmbed = Embed(color=self.color)
-            # clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
-            # description = self.pokemonDataFrame.loc[raw_solution]['description']
-            # clearEmbed.description = description
-            # clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.png")
-            # clearEmbed.set_thumbnail(url="attachment://clear.png")
-            # await message.channel.send(file=clearThumb, embed=clearEmbed)
-            # 
-            # ## => SEND CORRECT-GUESS MESSAGE
-            # embed = Embed(color=self.color)
-            # embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
-            # embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
-            # embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
-            # pika = File("./pikachu.gif", "pikachu.gif")
-            # embed.set_thumbnail(url="attachment://pikachu.gif")
-            # await message.channel.send(file=pika, embed=embed)
+
+            ## => GET SERVER PREFIX
+            guildPrefix = self.getServerPrefix(message)# last element should be the custom prefix, if not present it is standard prefix
 
             description = self.pokemonDataFrame.loc[raw_solution]['description']
             if description.strip() != "":
@@ -182,7 +183,7 @@ class whosThatPokemon(commands.Cog):
                 embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
                 embed.description = f"{message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
                 embed.description += "\n" + description + "\n."
-                embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
+                embed.set_footer(text=f"You can check local and global ranks by typing:\n {guildPrefix}rank 1-30\n {guildPrefix}rank global 1-30")
                 clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
                 embed.set_thumbnail(url="attachment://clear.gif")
                 await message.channel.send(file=clearThumb, embed=embed)
@@ -191,8 +192,8 @@ class whosThatPokemon(commands.Cog):
                 embed = Embed(color=self.color)
                 embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar_url)
                 embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
-                embed.set_footer(text="You can check local and global ranks by typing:\n wtp!rank 1-50\n wtp!rank global 1-50")
-                pika = File("./pikachu.gif", "pikachu.gif")
+                embed.set_footer(text=f"You can check local and global ranks by typing:\n {guildPrefix}rank 1-30\n {guildPrefix}rank global 1-30")
+                pika = File("./gifs/pikachu.gif", "pikachu.gif")
                 embed.set_thumbnail(url="attachment://pikachu.gif")
                 await message.channel.send(file=pika, embed=embed)
 
@@ -257,7 +258,7 @@ class whosThatPokemon(commands.Cog):
                 await ctx.send(embed = self.embedText(f"Here's a hint: {scrambled}"))
 
 
-    @commands.command(name="rank", help="Get the list of the best users. Use rank global to see the rank across every server. Specify also a limit of shown users (1-50): rank global 10")
+    @commands.command(name="rank", help="Get the list of the best users. Use rank global to see the rank across every server. Specify also a limit of shown users (1-30): rank global 10")
     async def rank(self, ctx, *, args=None):
         await ctx.trigger_typing()
         ## => PARSE ARGUMENTS
@@ -273,52 +274,57 @@ class whosThatPokemon(commands.Cog):
                     ## => DEFAULT CASEs
                     number = 10
             except :
+                embed = self.embedText(f"Wrong command arguments. Check {ctx.prefix}help command")
+                await ctx.send(embed=embed)
                 return
         else:
             global_flag = False
             number = 10
 
         if number > 30:
+            embed = self.embedText(f"Wrong command arguments. Check {ctx.prefix}help command")
+            await ctx.send(embed=embed)
             return
-
-        ## => GET DATA FROM DATABASE
-        text = ''
+            
+        ## => SQL QUERY
         with Session(self.db_engine) as session:
             if global_flag:
-                ## => GLOBAL RANKS FROM SQL
-                q = session.query(userPoints.user_id, func.sum(userPoints.points).label("global_points"))
-                q = q.group_by(userPoints.user_id
+                q = session.query(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points"))
+                q = q.group_by(userPoints.user_id, userPoints.username
                     ).order_by(desc("global_points")
                     ).limit(number)
-                userList = q.all()
-                ## => FORMAT TEXT
-                for num, line in enumerate(userList):
-                    try:
-                        user_obj = await self.bot.fetch_user(line[0])
-                    except :
-                        user_obj = None
-                    if user_obj:
-                        text = text + f"#{num+1} {user_obj.name} | Win count: {line[1]}\n"
+                users = q.all()
             else:
-                ## => LOCAL USERS ORDERED BY SQL
                 users = session.query(userPoints).filter_by(guild_id=str(ctx.guild.id)).order_by(desc(userPoints.points_from_reset)
                         ).limit(number).all()
-                ## => FORMAT TEXT
-                for num, user in enumerate(users):
+            ## => FORMAT TEXT
+            num = 0 
+            text = ''
+            for user in users:
+                if user.username != None:
+                    username = user.username
+                else:
                     try:
                         user_obj = await ctx.guild.fetch_member(int(user.user_id))
+                        username = user_obj.name
                     except :
-                        user_obj = None
+                        username = None
 
-                    if user_obj:
-                        text = text + f"#{num+1} {user_obj.name} | Win count: {user.points_from_reset}\n"
+                if username:
+                    if global_flag:
+                        text = text + f"#{num+1} {username} | Win count: {user[2]}\n"
+                    else:
+                        text = text + f"#{num+1} {username} | Win count: {user.points_from_reset}\n"
+                    
+                    num = num + 1 
+        
 
         if text == '':
             text = '.'       
         ## => SEND EMBED     
         embed = Embed(color=self.color)
         embed.add_field(name=self.bot.user.name, value = text)
-        thumbnail = File("./trophy.gif", "trophy.gif")
+        thumbnail = File("./gifs/trophy.gif", "trophy.gif")
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.send(embed = embed, file = thumbnail)
 
