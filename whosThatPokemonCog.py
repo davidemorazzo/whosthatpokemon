@@ -289,34 +289,39 @@ class whosThatPokemon(commands.Cog):
         ## => SQL QUERY
         with Session(self.db_engine) as session:
             if global_flag:
-                q = session.query(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points"))
-                q = q.group_by(userPoints.user_id, userPoints.username
+                q = session.query(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points")
+                    ).group_by(userPoints.user_id, userPoints.username
                     ).order_by(desc("global_points")
-                    ).limit(number)
+                    ).limit(2*number) # fetch double of the needed users to compensate deleted accounts
                 users = q.all()
             else:
                 users = session.query(userPoints).filter_by(guild_id=str(ctx.guild.id)).order_by(desc(userPoints.points_from_reset)
-                        ).limit(number).all()
+                        ).limit(2*number).all()
             ## => FORMAT TEXT
             num = 0 
             text = ''
             for user in users:
+                ## => GET IF USERNAME IS IN DB, OTHERWISE FETCH FROM API
                 if user.username != None:
                     username = user.username
                 else:
                     try:
-                        user_obj = await ctx.guild.fetch_member(int(user.user_id))
+                        user_obj = await self.bot.fetch_user(int(user.user_id))
                         username = user_obj.name
                     except :
                         username = None
 
-                if username:
+                if username: # if username not founded => not added to the leaderboard
                     if global_flag:
                         text = text + f"#{num+1} {username} | Win count: {user[2]}\n"
                     else:
                         text = text + f"#{num+1} {username} | Win count: {user.points_from_reset}\n"
                     
-                    num = num + 1 
+                    num = num + 1
+                
+                ## => STOP AT REQUESTED ENTRIES REACHED
+                if num >= number:
+                    break
         
 
         if text == '':
