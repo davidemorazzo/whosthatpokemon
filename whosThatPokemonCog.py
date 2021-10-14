@@ -1,6 +1,7 @@
 from discord.colour import Color
 from discord.ext import commands
 from discord import Embed, File, Colour
+import sqlalchemy
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session
@@ -166,6 +167,10 @@ class whosThatPokemon(commands.Cog):
                 currentUser.last_win_date = str(datetime.utcnow())
                 currentUser.username = message.author.name
                 serverWins = currentUser.points_from_reset
+                ## => UPDATE USERNAME IN ALL THE USER ENTRIES
+                query = sqlalchemy.text(f"update user_points set username = '{message.author.name}' where user_id='{message.author.id}'")
+                connection = self.db_engine.connect()
+                res = connection.execute(query)
                 ## => FETCH USER GLOBALLY
                 userGlobally = session.query(userPoints).filter_by(user_id=str(message.author.id)).all()
                 userGlobalPoints = 0
