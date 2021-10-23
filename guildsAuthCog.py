@@ -7,7 +7,7 @@ from dateutil import parser
 from discord import Embed, Colour
 from patreonAPI import fetch_patreons
 import os
-
+from discord_components import DiscordComponents, Button, ButtonStyle
 from whosThatPokemonCog import guildNotActive
 
 class guildsAuthCog(commands.Cog):
@@ -179,6 +179,7 @@ class guildsAuthCog(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("Bot connected")
+        DiscordComponents(self.bot)
         
         ## => UPDATE THE JOINED GUILDS IN THE DATABASE
         botJoinedGuilds = self.bot.guilds
@@ -219,6 +220,8 @@ class guildsAuthCog(commands.Cog):
             embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
             await ctx.send(embed = embed)
             print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
+        elif isinstance(error, commands.errors.CommandOnCooldown):
+            return
         elif isinstance(error, commands.errors.CommandNotFound):
             return
         elif isinstance(error, commands.errors.UserInputError):

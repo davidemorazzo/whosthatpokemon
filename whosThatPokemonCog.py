@@ -1,20 +1,19 @@
-from discord.colour import Color
 from discord.ext import commands
 from discord import Embed, File, Colour
+from discord.ext.commands import Cooldown
+from discord.ext.commands.cooldowns import BucketType
 import sqlalchemy
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-from os import listdir
 from dotenv import load_dotenv
 from random import choice, shuffle
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
-
 from database import botGuilds, userPoints, botChannelIstance
-
+from discord_components import Button, ButtonStyle
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
@@ -26,7 +25,12 @@ class whosThatPokemon(commands.Cog):
         self.db_engine = engine
         self.color = Colour.red()
         self.pokemonDataFrame = pd.read_csv(data_path, index_col='name')
-    
+        self.skip_button = "⏭️"
+        self.rank_button = "👑"
+        self.hint_button = "❓"
+        self.global_rank_button = "🌍"
+        self.on_cooldown = {}
+
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
         return Embed(description=f"**{text}**", color=self.color)
@@ -60,6 +64,24 @@ class whosThatPokemon(commands.Cog):
 
         ## => FINAL COMPARISON
         return compare(wordSolution, wordGuess)
+    
+    def checkCooldownCache(self, token, cooldownSeconds):
+        """Check if command is on cooldown and delete old keys"""
+        
+        currentTime = datetime.utcnow()
+        if token in self.on_cooldown.keys():
+            if self.on_cooldown[token] + timedelta(seconds=cooldownSeconds) > currentTime:
+                # command still on cooldown
+                retry_after = (currentTime-self.on_cooldown[token]).seconds
+                cooldownObj = Cooldown(1, cooldownSeconds, BucketType.channel) 
+                raise commands.errors.CommandOnCooldown(cooldownObj, retry_after)
+
+        for key in list(self.on_cooldown.keys()):
+            if self.on_cooldown[key] + timedelta(seconds=cooldownSeconds) < currentTime:
+                # cooldown expired
+                del self.on_cooldown[key]
+
+        return True
             
     def createQuestion(self, guild, skip=False, channel=None):
         gif_name = choice(self.pokemonDataFrame.index)
@@ -85,6 +107,72 @@ class whosThatPokemon(commands.Cog):
             session.commit()
 
         return thumb, embed
+    
+    def getHint(self, ctx):
+        ## => CREATE HINT EMBED
+        with Session(self.db_engine) as session:
+            thisGuild = session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id),
+                                                                    channel_id=str(ctx.channel.id)).first()
+            if not thisGuild or not thisGuild.guessing:
+                embed=self.embedText("You are not currently guessing pokémons, use the start command to begin!")
+                return embed
+            else:
+                ## => SCRAMBLE THE SOLUTION
+                solution = list(thisGuild.current_pokemon)
+                shuffle(solution)
+                scrambled = ''.join(solution).replace("-", " ")
+                embed = self.embedText(f"Here's a hint: {scrambled}")
+                return embed
+    
+    async def getRank(self, global_flag, number, guild_id):
+        ## => SQL QUERY
+        with Session(self.db_engine) as session:
+            if global_flag:
+                q = session.query(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points")
+                    ).group_by(userPoints.user_id, userPoints.username
+                    ).order_by(desc("global_points")
+                    ).limit(2*number) # fetch double of the needed users to compensate deleted accounts
+                users = q.all()
+            else:
+                users = session.query(userPoints).filter_by(guild_id=str(guild_id)).order_by(desc(userPoints.points_from_reset)
+                        ).limit(2*number).all()
+            ## => FORMAT TEXT
+            num = 0 
+            text = ''
+            for user in users:
+                ## => GET IF USERNAME IS IN DB, OTHERWISE FETCH FROM API
+                if user.username != None:
+                    username = user.username
+                else:
+                    try:
+                        user_obj = await self.bot.fetch_user(int(user.user_id))
+                        username = user_obj.name
+                    except :
+                        username = None
+
+                if username: # if username not founded => not added to the leaderboard
+                    if global_flag:
+                        text = text + f"#{num+1} {username} | Win count: {user[2]}\n"
+                    else:
+                        text = text + f"#{num+1} {username} | Win count: {user.points_from_reset}\n"
+                    
+                    num = num + 1
+                
+                ## => STOP AT REQUESTED ENTRIES REACHED
+                if num >= number:
+                    break
+        
+        if text == '':
+            text = '.'
+        return text
+    
+    def addButtons(self):
+        components=[[Button(style=ButtonStyle.gray, custom_id="hint_btn", emoji=self.hint_button),
+                        Button(style=ButtonStyle.gray, custom_id="skip_btn", emoji=self.skip_button),
+                        Button(style=ButtonStyle.gray, custom_id="local_btn", emoji=self.rank_button),
+                        Button(style=ButtonStyle.gray, custom_id="global_btn", emoji=self.global_rank_button)]]
+
+        return components 
 
     async def cog_check(self, ctx):
         ## => CHECK ACTIVATION
@@ -205,7 +293,7 @@ class whosThatPokemon(commands.Cog):
             ## => SEND NEW QUESTION
             if guildInfo.guessing:
                 file, embed = self.createQuestion(message.guild, channel=guildInfo.channel_id)
-                await message.channel.send(file=file, embed=embed)
+                await message.channel.send(file=file, embed=embed, components=self.addButtons())
                 
         # await self.bot.process_commands(message)
     
@@ -214,7 +302,7 @@ class whosThatPokemon(commands.Cog):
         ## => CHECK IF ALREADY STARTED
         with Session(self.db_engine, expire_on_commit=False) as session:
             guildInfo = session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id),
-                                                                    channel_id = str(ctx.channel.id)).first()
+                                                                channel_id = str(ctx.channel.id)).first()
             if not guildInfo:
                 ## => ADD CHANNEL ISTANCE  
                 channelIstance = botChannelIstance(guild_id = str(ctx.guild.id),
@@ -230,7 +318,7 @@ class whosThatPokemon(commands.Cog):
         
         ## => GET NEW POKEMON
         file, embed = self.createQuestion(ctx.guild, channel=str(ctx.channel.id))
-        await ctx.send(file=file, embed=embed)
+        await ctx.send(file=file, embed=embed, components=self.addButtons())
             
 
     @commands.command(name="stop", help="Stop guessing a pokémon")
@@ -250,17 +338,8 @@ class whosThatPokemon(commands.Cog):
 
     @commands.command(name="hint", help="Hint for guessing the current pokémon")
     async def hint(self, ctx):
-        with Session(self.db_engine) as session:
-            thisGuild = session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id),
-                                                                    channel_id=str(ctx.channel.id)).first()
-            if not thisGuild:
-                await ctx.send(embed=self.embedText("You are not currently guessing pokémons, use the start command to begin!"))
-            elif thisGuild.guessing:
-                ## => SCRAMBLE THE SOLUTION
-                solution = list(thisGuild.current_pokemon)
-                shuffle(solution)
-                scrambled = ''.join(solution).replace("-", " ")
-                await ctx.send(embed = self.embedText(f"Here's a hint: {scrambled}"))
+        embed = self.getHint(ctx)
+        await ctx.send(embed=embed)
 
 
     @commands.command(name="rank", help="Get the list of the best users. Use rank global to see the rank across every server. Specify also a limit of shown users (1-30): rank global 10")
@@ -290,47 +369,10 @@ class whosThatPokemon(commands.Cog):
             embed = self.embedText(f"Wrong command arguments. Check {ctx.prefix}help command")
             await ctx.send(embed=embed)
             return
-            
-        ## => SQL QUERY
-        with Session(self.db_engine) as session:
-            if global_flag:
-                q = session.query(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points")
-                    ).group_by(userPoints.user_id, userPoints.username
-                    ).order_by(desc("global_points")
-                    ).limit(2*number) # fetch double of the needed users to compensate deleted accounts
-                users = q.all()
-            else:
-                users = session.query(userPoints).filter_by(guild_id=str(ctx.guild.id)).order_by(desc(userPoints.points_from_reset)
-                        ).limit(2*number).all()
-            ## => FORMAT TEXT
-            num = 0 
-            text = ''
-            for user in users:
-                ## => GET IF USERNAME IS IN DB, OTHERWISE FETCH FROM API
-                if user.username != None:
-                    username = user.username
-                else:
-                    try:
-                        user_obj = await self.bot.fetch_user(int(user.user_id))
-                        username = user_obj.name
-                    except :
-                        username = None
-
-                if username: # if username not founded => not added to the leaderboard
-                    if global_flag:
-                        text = text + f"#{num+1} {username} | Win count: {user[2]}\n"
-                    else:
-                        text = text + f"#{num+1} {username} | Win count: {user.points_from_reset}\n"
-                    
-                    num = num + 1
-                
-                ## => STOP AT REQUESTED ENTRIES REACHED
-                if num >= number:
-                    break
         
-
-        if text == '':
-            text = '.'       
+        ## => GET FORMATTED LEADERBOARD
+        text = await self.getRank(global_flag, number, ctx.guild.id)
+                   
         ## => SEND EMBED     
         embed = Embed(color=self.color)
         embed.add_field(name=self.bot.user.name, value = text)
@@ -338,9 +380,17 @@ class whosThatPokemon(commands.Cog):
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.send(embed = embed, file = thumbnail)
 
-    @commands.cooldown(1, 20, commands.BucketType.channel)
     @commands.command(name="skip", help="Skip this pokémon. 20 seconds of cooldown")
     async def skip(self, ctx):
+
+        ## => CUSTOM COOLDOWN
+        cooldownAmount = 20
+        token = ctx.message.channel.id
+        self.checkCooldownCache(token, cooldownAmount)
+        message = ctx.message
+        currentTime = datetime.utcnow()
+        self.on_cooldown[message.channel.id] = currentTime
+
         ## => SEND PREVIOUS SOLUTION
         with Session(self.db_engine) as session:
             channelIstance = session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id), channel_id=str(ctx.channel.id)).first()
@@ -361,8 +411,10 @@ class whosThatPokemon(commands.Cog):
             embed = self.embedText("Start playing with Wtp!start")
             await ctx.send(embed=embed)
             return
-        await ctx.send(file=file, embed=embed)
 
+        buttons = self.addButtons()
+        await ctx.send(file=file, embed=embed, components=buttons)
+        
     @commands.command(name="resetrank", help="Reset to zero the wins of the players of this server. Global points will be preserved. Only administrator")
     @commands.check(only_admin)
     async def resetrank(self, ctx):      
@@ -393,5 +445,46 @@ class whosThatPokemon(commands.Cog):
         await ctx.send(embed=embed)
 
 
+    @commands.Cog.listener()
+    async def on_button_click(self, interaction):
+        message = interaction.message
+        reactionCtx = await self.bot.get_context(message)
 
-    
+        if interaction.custom_id=="hint_btn":
+            await reactionCtx.trigger_typing()
+            hint_embed = self.getHint(reactionCtx)
+            await interaction.respond(embed=hint_embed, ephemeral=False)
+
+        elif interaction.custom_id=="skip_btn":
+            reactionCtx.command = self.skip
+            reactionCtx.invoked_with = 'skip'
+            try:
+                await self.skip.invoke(reactionCtx)
+                await interaction.respond(type=6)
+                skipDisabledButtons = self.addButtons()
+                skipDisabledButtons[0][1].set_disabled(True) # disable skip button
+                await message.edit(components=skipDisabledButtons)
+            except :
+                await interaction.respond(embed=self.embedText("Skip command on cooldown"))
+
+        elif interaction.custom_id=="local_btn":
+            await reactionCtx.trigger_typing()
+            ## => GET LOCAL LEADERBOARD
+            text = await self.getRank(False, 10, message.guild.id)
+            ## => SEND EMBED     
+            embed = Embed(color=self.color)
+            embed.add_field(name=f"Server Rank {self.rank_button} - "+self.bot.user.name, value = text)
+            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+            embed.set_thumbnail(url="attachment://trophy.gif")
+            await interaction.send(embed=embed, file=thumbnail)
+
+        elif interaction.custom_id=="global_btn":
+            await reactionCtx.trigger_typing()
+            ## => GET LOCAL LEADERBOARD
+            text = await self.getRank(True, 10, message.guild.id)
+            ## => SEND EMBED     
+            embed = Embed(color=self.color)
+            embed.add_field(name=f"Global Rank {self.global_rank_button} - "+self.bot.user.name, value = text)
+            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+            embed.set_thumbnail(url="attachment://trophy.gif")
+            await interaction.send(embed=embed, file=thumbnail)
