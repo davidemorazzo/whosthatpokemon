@@ -473,10 +473,11 @@ class whosThatPokemon(commands.Cog):
             text = await self.getRank(False, 10, message.guild.id)
             ## => SEND EMBED     
             embed = Embed(color=self.color)
-            embed.add_field(name=f"Server Rank {self.rank_button} - "+self.bot.user.name, value = text)
+            embed.set_author(name=self.bot.user.name)
+            embed.add_field(name=f"Server Rank {self.rank_button}", value = text)
             thumbnail = File("./gifs/trophy.gif", "trophy.gif")
             embed.set_thumbnail(url="attachment://trophy.gif")
-            await interaction.send(embed=embed, file=thumbnail)
+            await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
 
         elif interaction.custom_id=="global_btn":
             await reactionCtx.trigger_typing()
@@ -484,7 +485,8 @@ class whosThatPokemon(commands.Cog):
             text = await self.getRank(True, 10, message.guild.id)
             ## => SEND EMBED     
             embed = Embed(color=self.color)
-            embed.add_field(name=f"Global Rank {self.global_rank_button} - "+self.bot.user.name, value = text)
+            embed.set_author(name=self.bot.user.name)
+            embed.add_field(name=f"Global Rank {self.global_rank_button}", value = text)
             thumbnail = File("./gifs/trophy.gif", "trophy.gif")
             embed.set_thumbnail(url="attachment://trophy.gif")
-            await interaction.send(embed=embed, file=thumbnail)
+            await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
