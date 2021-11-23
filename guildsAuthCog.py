@@ -23,6 +23,7 @@ class guildsAuthCog(commands.Cog):
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
+        # test commmit master
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         """Return the discord id of the patreon if there is a match, None otherwise"""
