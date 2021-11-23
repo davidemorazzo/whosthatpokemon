@@ -7,7 +7,7 @@ from database import init_database
 import psycopg2
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
-POKEMON_DATAFRAME = "pokemon_data.csv"
+POKEMON_DATAFRAME = "pokemon_data5.csv"
 
 def noDirectMessage(ctx):
     if ctx.guild != None:
@@ -22,7 +22,7 @@ def getServerPrefix(bot, message):
         try:
             connection = psycopg2.connect(HEROKU_DB_STRING.replace("+psycopg2", ""), sslmode='require')
         except :
-            connection = psycopg2.connect("postgresql://postgres:root@localhost/postgres")
+            connection = psycopg2.connect("postgresql://postgres:root@localhost/whosthatpokemon")
         cursor = connection.cursor()
         cursor.execute(f"select prefix from bot_guilds where guild_id = '{message.guild.id}'"
                         )
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     ## => TRY DATABASE CONNECTION
     try:
         ## => INITIALIZE FOR LOCAL MACHINE
-        LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/postgres'
+        LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/whosthatpokemon'
         engine = init_database(LOCAL_DB_STRING)
         BOT_TOKEN = "ODU1MzkyOTMxMjAzMjUyMjM0.YMx0vw.GUK6TGjobT6Ez2KE4KrCi21RFdQ" ## => TOKEN DI DAVIDE
         print("Bot initialized for local machine")

@@ -1,9 +1,6 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
-from sqlalchemy import insert
 from sqlalchemy.sql.schema import UniqueConstraint
 
 Base = declarative_base()
@@ -28,6 +25,7 @@ class botGuilds(Base):
     currently_joined = Column(Boolean, nullable=False)
     patreon_discord_id = Column(String, unique=True, nullable=True)
     prefix = Column(String)
+    poke_generation = Column(String)
 
     def __repr__(self):
         return "<Guild(guild_id=%s, activated=%s, join=%s, patreon_user_id=%s)>" % (
@@ -54,18 +52,8 @@ class botChannelIstance(Base):
     UniqueConstraint(guild_id, channel_id)
 
 
-
 def init_database(url:String):
 
     engine = create_engine(url, echo=False)
     Base.metadata.create_all(bind=engine)
     return engine
-
-if __name__ == '__main__':
-    session = Session(create_engine('postgresql+psycopg2://postgres:root@localhost/postgres'))
-    q = insert(botGuilds).values(guild_id = "822033257142288414", activate=True, joined_utc = str(datetime.utcnow()),
-                                    patreon_discord_id = None,
-                                    guessing=False,
-                                    currently_joined = True)
-    session.execute(q)
-    session.commit()  
