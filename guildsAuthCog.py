@@ -7,7 +7,7 @@ from dateutil import parser
 from discord import Embed, Colour
 from patreonAPI import fetch_patreons
 import os
-from discord_components import DiscordComponents, Button, ButtonStyle
+from discord_components import DiscordComponents
 from whosThatPokemonCog import guildNotActive
 
 class guildsAuthCog(commands.Cog):
@@ -21,10 +21,12 @@ class guildsAuthCog(commands.Cog):
         # self.verification.start()
         self.free_period = True
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
-        self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by a server administrator, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
+        self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
+        """Return the discord id of the patreon if there is a match, None otherwise"""
+
         ## => ASSIGN TO THE GUILD THE CORRECT PATREON
         discordGuild = self.bot.get_guild(int(guildObj.guild_id))
         
@@ -32,11 +34,9 @@ class guildsAuthCog(commands.Cog):
             return guildObj.patreon_discord_id ## => KEEP THE CURRENT PATREON
         else:
             for patreonId in patreonIds:
-                try:
-                    user = await discordGuild.fetch_member(int(patreonId))
-                except : user = None
-
-                if user and user.guild_permissions.administrator:
+                # FIXME: controllare
+                user = discordGuild.owner
+                if user.guild_permissions.administrator:
                     return patreonId
             return None ## => NO PATREON FOUNDED
 
@@ -57,8 +57,8 @@ class guildsAuthCog(commands.Cog):
             ## => ADD NEW PATREONS
             for newPatreonId in patreons_dict.keys():
                 patreonObj = patreonUsers(discord_id = newPatreonId,
-                                            tier = patreons_dict[newPatreonId][1],
-                                            sub_status = patreons_dict[newPatreonId][0],
+                                            tier = patreons_dict[newPatreonId]['tier'],
+                                            sub_status = patreons_dict[newPatreonId]['declined_since'],
                                             guild_id = None)
                 session.add(patreonObj)
 
@@ -70,7 +70,7 @@ class guildsAuthCog(commands.Cog):
         text = text.replace('"', '\"').replace("'", "\'")
         return Embed(description=f"**{text}**", color=self.color)
 
-    @commands.Cog.listener() #TODO: provare se funziona quando bot è spento
+    @commands.Cog.listener()
     async def on_guild_join(self, guild):
         ## => ADD GUILD TO DB
         with Session(self.db_engine) as session:
@@ -93,10 +93,10 @@ class guildsAuthCog(commands.Cog):
         ## => UPDATE GUILD INFO TO NOT JOINED
         with Session(self.db_engine) as session:
             newGuild = session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
-            newGuild.currently_joined= False
-            session.commit()
-            
-        print("BOT LEFT GUILD: ", guild.name)
+            if newGuild:
+                newGuild.currently_joined= False
+                session.commit()
+                print("BOT LEFT GUILD: ", guild.name)
 
     @tasks.loop(minutes=10)
     async def verification(self):
@@ -108,10 +108,9 @@ class guildsAuthCog(commands.Cog):
         ## => VERIFY EVERY GUILD
         with Session(self.db_engine) as session:
             patreons = session.query(patreonUsers).all()
-            patreonIds = [p.discord_id for p in patreons]
+            patreonIds = [p.discord_id for p in patreons if not p.sub_status]
             guilds = session.query(botGuilds).filter_by(currently_joined=True).all()
             for guild in guilds:
-                patreonId = await self.verifyPatreon(guild, patreonIds)
 
                 if int(guild.guild_id) in self.guildWhiteList:
                     ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
@@ -122,23 +121,29 @@ class guildsAuthCog(commands.Cog):
                     ## => DISABLE PATREON IN THE FREE PERIOD
                     guild.activate=True
 
-                elif not patreonId:
-                    ## => CHECK FOR TRIAL PERIOD
-                    now = datetime.utcnow()
-                    joined = parser.parse(guild.joined_utc)
-                    guild.patreon_discord_id = None
-                    if now-joined > timedelta(days=self.trial_days):
-                        guild.activate = False
-                        guild.patreon_discord_id = None
-                    else:
-                        guild.activate = True
-                        guild.patreon_discord_id = None
                 else:
-                    ## => ACTIVATE THE GUILD WITH PATREON
-                    guild.activate = True
-                    guild.patreon_discord_id = str(patreonId)
+                    ## => CHECK FOR PATREON SUBSCRIPTION
+                    patreonId = await self.verifyPatreon(guild, patreonIds)
+                    
+                    if patreonId:
+                        ## => ACTIVATE THE GUILD WITH PATREON
+                        guild.activate = True
+                        guild.patreon_discord_id = str(patreonId)
+
+                    else:
+                        ## => CHECK FOR TRIAL PERIOD
+                        now = datetime.utcnow()
+                        joined = parser.parse(guild.joined_utc)
+                        guild.patreon_discord_id = None
+                        if now-joined > timedelta(days=self.trial_days):
+                            guild.activate = False
+                            guild.patreon_discord_id = None
+                        else:
+                            guild.activate = True
+                            guild.patreon_discord_id = None
         
             session.commit()
+
         toc = datetime.now()
         delta = toc-tic
         print("Verification executed in: ", delta)
