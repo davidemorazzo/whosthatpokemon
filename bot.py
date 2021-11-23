@@ -1,10 +1,11 @@
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from whosThatPokemonCog import whosThatPokemon
-from guildsAuthCog import guildsAuthCog
+from cog.whosThatPokemonCog import whosThatPokemon
+from cog.guildsAuthCog import guildsAuthCog
 from database import init_database
 import psycopg2
+from profiling.profiler import BaseProfiler
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
 POKEMON_DATAFRAME = "pokemon_data.csv"
@@ -15,6 +16,7 @@ def noDirectMessage(ctx):
     raise commands.errors.NoPrivateMessage
 
 def getServerPrefix(bot, message):
+    p = BaseProfiler("getServerPrefix")
     if message.guild:
         ## => SERVER MESSAGE
         base = COMMAND_PREFIX
@@ -46,13 +48,15 @@ if __name__ == '__main__':
     try:
         ## => INITIALIZE FOR LOCAL MACHINE
         LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/postgres'
+        raise Exception("...")
         engine = init_database(LOCAL_DB_STRING)
         BOT_TOKEN = "ODU1MzkyOTMxMjAzMjUyMjM0.YMx0vw.GUK6TGjobT6Ez2KE4KrCi21RFdQ" ## => TOKEN DI DAVIDE
         print("Bot initialized for local machine")
     except:
         try:
             ## => INITIALIZE FOR HEROKU
-            HEROKU_DB_STRING = os.environ.get("HEROKU_POSTGRESQL_CHARCOAL_URL").replace("postgres://", "postgresql+psycopg2://")
+            #HEROKU_DB_STRING = os.environ.get("HEROKU_POSTGRESQL_CHARCOAL_URL").replace("postgres://", "postgresql+psycopg2://")
+            HEROKU_DB_STRING = 'postgresql+psycopg2://wdomuberrwkvzh:f3b37ae66dd1397e652ccb0bd0851d6fd6b30c0db76bc2182183cafe7dd67232@ec2-52-209-171-51.eu-west-1.compute.amazonaws.com:5432/d2ioeuuac8amki'
             print(HEROKU_DB_STRING)
             engine = init_database(HEROKU_DB_STRING)
             BOT_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -72,4 +76,5 @@ if __name__ == '__main__':
     bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME))
     bot.add_check(noDirectMessage)
 
+    print("Bot spooling up...")
     bot.run(BOT_TOKEN)

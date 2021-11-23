@@ -1,14 +1,14 @@
 from discord.ext import commands, tasks
-from database import patreonUsers, botGuilds
 from sqlalchemy.orm import Session
 from sqlalchemy import insert, update
 from datetime import datetime, timedelta
 from dateutil import parser
 from discord import Embed, Colour
-from patreonAPI import fetch_patreons
 import os
 from discord_components import DiscordComponents
-from whosThatPokemonCog import guildNotActive
+from cog.whosThatPokemonCog import guildNotActive, BaseProfiler
+from cog.whosThatPokemonCog import botGuilds, patreonUsers
+from patreonAPI import fetch_patreons
 
 class guildsAuthCog(commands.Cog):
     def __init__(self, bot, patreonKey, patreonCreatorId, engine):
@@ -73,6 +73,7 @@ class guildsAuthCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        p = BaseProfiler("on_guild_join")
         ## => ADD GUILD TO DB
         with Session(self.db_engine) as session:
             ## => TRY TO FETCH THE GUILD FROM THE DB
@@ -91,6 +92,7 @@ class guildsAuthCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
+        p = BaseProfiler("on_guild_remove")
         ## => UPDATE GUILD INFO TO NOT JOINED
         with Session(self.db_engine) as session:
             newGuild = session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
@@ -184,6 +186,7 @@ class guildsAuthCog(commands.Cog):
     
     @commands.Cog.listener()
     async def on_ready(self):
+        p = BaseProfiler("on_ready")
         print("Bot connected")
         DiscordComponents(self.bot)
         
@@ -216,6 +219,7 @@ class guildsAuthCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        p = BaseProfiler("on_command_error")
         ## => EXCEPTION HANDLERS
         if isinstance(error, commands.errors.NotOwner):
             embed = self.embedText(str(error))

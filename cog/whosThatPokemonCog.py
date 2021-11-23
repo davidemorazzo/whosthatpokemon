@@ -12,8 +12,9 @@ from random import choice, shuffle
 from collections import Counter
 from datetime import datetime, timedelta
 import pandas as pd
-from database import botGuilds, userPoints, botChannelIstance
+from database import botGuilds, userPoints, botChannelIstance, patreonUsers
 from discord_components import Button, ButtonStyle
+from profiling.profiler import BaseProfiler
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
@@ -67,7 +68,7 @@ class whosThatPokemon(commands.Cog):
     
     def checkCooldownCache(self, token, cooldownSeconds):
         """Check if command is on cooldown and delete old keys"""
-        
+        p = BaseProfiler("checkCooldownCache")
         currentTime = datetime.utcnow()
         if token in self.on_cooldown.keys():
             if self.on_cooldown[token] + timedelta(seconds=cooldownSeconds) > currentTime:
@@ -84,6 +85,7 @@ class whosThatPokemon(commands.Cog):
         return True
             
     def createQuestion(self, guild, skip=False, channel=None):
+        p = BaseProfiler("createQuestion")
         gif_name = choice(self.pokemonDataFrame.index)
         ## => SEND EMBED
         embed = Embed(color=self.color)
@@ -125,6 +127,7 @@ class whosThatPokemon(commands.Cog):
                 return embed
     
     async def getRank(self, global_flag, number, guild_id):
+        p = BaseProfiler("getRank")
         ## => SQL QUERY
         with Session(self.db_engine) as session:
             if global_flag:
@@ -175,6 +178,7 @@ class whosThatPokemon(commands.Cog):
         return components 
 
     async def cog_check(self, ctx):
+        p = BaseProfiler("cog_check")
         ## => CHECK ACTIVATION
         if ctx.guild:
             with Session(self.db_engine) as session:
@@ -198,6 +202,7 @@ class whosThatPokemon(commands.Cog):
         raise commands.errors.NotOwner("Only administrator can run this command")
     
     def getServerPrefix(self, message):
+        p = BaseProfiler("getServerPrefix_cog")
         if message.guild:
             ## => SERVER MESSAGE
             with Session(self.db_engine, expire_on_commit=False) as session:
@@ -212,7 +217,7 @@ class whosThatPokemon(commands.Cog):
 	
     @commands.Cog.listener()
     async def on_message(self, message):
-        
+        p = BaseProfiler("on_message_global")
         if message.author == self.bot.user or message.guild == None:
             return
 
@@ -447,6 +452,8 @@ class whosThatPokemon(commands.Cog):
 
     @commands.Cog.listener()
     async def on_button_click(self, interaction):
+        p = BaseProfiler("on_button_click")
+        print(interaction.message.guild.name)
         message = interaction.message
         reactionCtx = await self.bot.get_context(message)
 
