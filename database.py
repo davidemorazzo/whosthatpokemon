@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.future import select
 from datetime import datetime
 from sqlalchemy import insert
 from sqlalchemy.sql.schema import UniqueConstraint
@@ -65,3 +66,16 @@ def init_database(url:String):
     async_engine = create_async_engine(url, echo=False)
     
     return async_engine
+
+
+async def GetChannelIstance(session, guild_id, ch_id):
+    result = await session.execute(select(botChannelIstance).filter_by(guild_id=str(guild_id),
+                                                                    channel_id=str(ch_id)))
+    thisGuild = result.scalars().first()  
+    return thisGuild   
+
+async def GetGuildInfo(session, guild_id):
+    guildInfo = await session.execute(select(botGuilds).filter_by(guild_id=str(guild_id)))
+    guildInfo = guildInfo.scalars().first()
+    return guildInfo
+

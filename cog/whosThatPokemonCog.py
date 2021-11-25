@@ -14,7 +14,13 @@ from random import choice, shuffle
 from collections import Counter
 from datetime import datetime, timedelta
 import pandas as pd
-from database import botGuilds, userPoints, botChannelIstance, patreonUsers
+from database import (
+    botGuilds, 
+    userPoints, 
+    botChannelIstance, 
+    patreonUsers,
+    GetChannelIstance,
+    GetGuildInfo)
 from discord_components import Button, ButtonStyle
 from profiling.profiler import BaseProfiler
 
@@ -100,8 +106,7 @@ class whosThatPokemon(commands.Cog):
         
         ## => MEMORIZE THE SOLUTION
         async with self.async_session() as session:
-            thisGuild = await session.query(botChannelIstance).filter_by(guild_id=str(guild.id), 
-                                                                    channel_id=str(channel)).first()
+            thisGuild = await GetChannelIstance(session, guild.id, channel)
             if not thisGuild:
                 return None, None
             if skip and thisGuild.guessing == False:
@@ -109,15 +114,15 @@ class whosThatPokemon(commands.Cog):
             thisGuild.guessing = True
             thisGuild.current_pokemon=gif_name
             thisGuild.is_guessed=False
-            session.commit()
+            await session.commit()
 
         return thumb, embed
     
     async def getHint(self, ctx):
         ## => CREATE HINT EMBED
         async with self.async_session() as session:
-            thisGuild = await session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id),
-                                                                    channel_id=str(ctx.channel.id)).first()
+            thisGuild = await GetChannelIstance(session, ctx.guild.id ,ctx.channel.id)
+
             if not thisGuild or not thisGuild.guessing:
                 embed=self.embedText("You are not currently guessing pokémons, use the start command to begin!")
                 return embed
@@ -134,14 +139,14 @@ class whosThatPokemon(commands.Cog):
         ## => SQL QUERY
         async with self.async_session() as session:
             if global_flag:
-                q = await session.query(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points")
+                q = await session.execute(select(userPoints.user_id, userPoints.username, func.sum(userPoints.points).label("global_points")
                     ).group_by(userPoints.user_id, userPoints.username
                     ).order_by(desc("global_points")
-                    ).limit(2*number) # fetch double of the needed users to compensate deleted accounts
+                    ).limit(2*number)) # fetch double of the needed users to compensate deleted accounts
                 users = q.all()
             else:
-                users = await session.query(userPoints).filter_by(guild_id=str(guild_id)).order_by(desc(userPoints.points_from_reset)
-                        ).limit(2*number).all()
+                res = await session.execute(select(userPoints).filter_by(guild_id=str(guild_id)).order_by(desc(userPoints.points_from_reset)).limit(2*number))
+                users = res.scalars().fetchall()
             ## => FORMAT TEXT
             num = 0 
             text = ''
@@ -185,8 +190,7 @@ class whosThatPokemon(commands.Cog):
         ## => CHECK ACTIVATION
         if ctx.guild:
             async with self.async_session() as session:
-                guildInfo = await session.execute(select(botGuilds).filter_by(guild_id=str(ctx.guild.id)))
-                guildInfo.scalars().first()
+                guildInfo = await GetGuildInfo(session, ctx.guild.id)
                 if not guildInfo:
                     newGuild = botGuilds(guild_id=str(ctx.guild.id),
                                     joined_utc=str(datetime.utcnow()),
@@ -205,12 +209,12 @@ class whosThatPokemon(commands.Cog):
             return True
         raise commands.errors.NotOwner("Only administrator can run this command")
     
-    def getServerPrefix(self, message):
+    async def getServerPrefix(self, message):
         p = BaseProfiler("getServerPrefix_cog")
         if message.guild:
             ## => SERVER MESSAGE
-            with Session(self.db_engine, expire_on_commit=False) as session:
-                guildInfo = session.query(botGuilds).filter_by(guild_id=str(message.guild.id)).first()
+            async with self.async_session() as session:
+                guildInfo = await GetGuildInfo(session, message.guild.id)
                 if guildInfo.prefix:
                     return guildInfo.prefix
                 else:
@@ -227,12 +231,10 @@ class whosThatPokemon(commands.Cog):
 
         ## => FETCH GUILD DATA FROM DATABASE
         async with self.async_session() as session:
-            guildInfo = await session.execute(select(botChannelIstance).filter_by(guild_id=str(message.guild.id), channel_id=str(message.channel.id)))
-            guildInfo = guildInfo.scalars().first()
+            guildInfo = await GetChannelIstance(session, message.guild.id, message.channel.id)
             if not guildInfo:
                 return
-            guildActivation = await session.execute(select(botGuilds).filter_by(guild_id=str(message.guild.id)))
-            guildActivation = guildActivation.scalars().first()
+            guildActivation = await GetGuildInfo(session, message.guild.id)
             if not guildActivation.activate:
                 return
 
@@ -243,14 +245,14 @@ class whosThatPokemon(commands.Cog):
         if self.correctGuess(message.content, raw_solution):
            
             ## => DB OPERATIONS
-            with Session(self.db_engine, expire_on_commit=False) as session:
+            async with self.async_session() as session:
                 ## => UPDATE GUILD STATUS
-                guildInfo = session.query(botChannelIstance).filter_by(guild_id=str(message.guild.id),
-                                                                        channel_id=str(message.channel.id)).first()
+                guildInfo = await GetChannelIstance(session, message.guild.id, message.channel.id)
                 guildInfo.is_guessed = True
-                session.commit()
+                await session.commit()
                 ## => FETCH USER
-                currentUser = session.query(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)).first()
+                currentUser = await session.execute(select(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)))
+                currentUser = currentUser.scalars().first()
                 if not currentUser:
                     ## => USER NOT FOUNDED -> ADD IT TO DATABASE
                     newUser = userPoints(user_id = str(message.author.id), 
@@ -269,16 +271,17 @@ class whosThatPokemon(commands.Cog):
                 ## => UPDATE USERNAME IN ALL THE USER ENTRIES
                 query = sqlalchemy.text(f"update user_points set username = '{message.author.name}' where user_id='{message.author.id}'")
                 connection = self.db_engine.connect()
-                res = connection.execute(query)
+                res = await connection.execute(query)
                 ## => FETCH USER GLOBALLY
-                userGlobally = session.query(userPoints).filter_by(user_id=str(message.author.id)).all()
+                userGlobally = await session.execute(select(userPoints).filter_by(user_id=str(message.author.id)))
+                userGlobally = userGlobally.scalars().all()
                 userGlobalPoints = 0
                 for entry in userGlobally:
                     userGlobalPoints += entry.points
-                session.commit()
+                await session.commit()
 
             ## => GET SERVER PREFIX
-            guildPrefix = self.getServerPrefix(message)# last element should be the custom prefix, if not present it is standard prefix
+            guildPrefix = await self.getServerPrefix(message)# last element should be the custom prefix, if not present it is standard prefix
 
             description = self.pokemonDataFrame.loc[raw_solution]['description']
             if description.strip() != "":
@@ -311,9 +314,8 @@ class whosThatPokemon(commands.Cog):
     @commands.command(name="start", help="Start guessing a pokémon")
     async def startGuess(self, ctx):
         ## => CHECK IF ALREADY STARTED
-        with Session(self.db_engine, expire_on_commit=False) as session:
-            guildInfo = session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id),
-                                                                channel_id = str(ctx.channel.id)).first()
+        async with self.async_session() as session:
+            guildInfo = await GetChannelIstance(session, ctx.guild.id, ctx.channel.id)
             if not guildInfo:
                 ## => ADD CHANNEL ISTANCE  
                 channelIstance = botChannelIstance(guild_id = str(ctx.guild.id),
@@ -336,8 +338,7 @@ class whosThatPokemon(commands.Cog):
     async def stopGuess(self, ctx):
         ## => UPDATE THE DB
         async with self.async_session() as session:
-            thisGuild = await session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id),
-                                                                    channel_id=str(ctx.channel.id)).first()
+            thisGuild = await GetChannelIstance(session, ctx.guild.id , ctx.channel.id)
             if not thisGuild:
                 embed = self.embedText("The game is not running on this channel, to start use wtp!start")
             else:
@@ -404,7 +405,7 @@ class whosThatPokemon(commands.Cog):
 
         ## => SEND PREVIOUS SOLUTION
         async with self.async_session() as session:
-            channelIstance = await session.query(botChannelIstance).filter_by(guild_id=str(ctx.guild.id), channel_id=str(ctx.channel.id)).first()
+            channelIstance = await GetChannelIstance(session, ctx.guild.id, ctx.channel.id)
             raw_solution = channelIstance.current_pokemon
         
         description = self.pokemonDataFrame.loc[raw_solution]['description']
@@ -432,7 +433,8 @@ class whosThatPokemon(commands.Cog):
     async def resetrank(self, ctx):      
         ## => POINTS_FROM_RESET TO 0 IN THE DB
         async with self.async_session() as session:
-            guildPlayers = await session.query(userPoints).filter_by(guild_id = str(ctx.guild.id)).all()
+            guildPlayers = await session.execute(select(userPoints).filter_by(guild_id = str(ctx.guild.id)))
+            guildPlayers = guildPlayers.scalars().all()
             for player in guildPlayers:
                 player.points_from_reset = 0
             await session.commit()
@@ -449,7 +451,7 @@ class whosThatPokemon(commands.Cog):
             return
         ## => CHANGE THE PREFIX IN THE DATABASE
         async with self.async_session() as session:
-            guildInfo = await session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+            guildInfo = await GetGuildInfo(session, ctx.guild.id)
             guildInfo.prefix = prefix
             await session.commit()
         

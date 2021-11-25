@@ -2,13 +2,18 @@ from discord.ext import commands, tasks
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from datetime import datetime, timedelta
 from dateutil import parser
 from discord import Embed, Colour
 import os
 from discord_components import DiscordComponents
-from cog.whosThatPokemonCog import guildNotActive, BaseProfiler
-from cog.whosThatPokemonCog import botGuilds, patreonUsers
+from cog.whosThatPokemonCog import(
+    guildNotActive, 
+    BaseProfiler,
+    botGuilds,
+    patreonUsers,
+    GetGuildInfo)
 from patreonAPI import fetch_patreons
 
 class guildsAuthCog(commands.Cog):
@@ -49,7 +54,8 @@ class guildsAuthCog(commands.Cog):
         patreons_dict = fetch_patreons(os.getenv("PATREON_TOKEN"))
         ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
         async with self.async_session() as session:
-            patreonsDb = await session.query(patreonUsers).all()
+            patreonsDb = await session.execute(select(patreonUsers))
+            patreonsDb = patreonsDb.scalars().all()
             ## => CHECK PATREONS IN THE DATABASE
             for patreon in patreonsDb:
                 if not patreon.discord_id in patreons_dict.keys():
@@ -80,7 +86,7 @@ class guildsAuthCog(commands.Cog):
         ## => ADD GUILD TO DB
         async with self.async_session() as session:
             ## => TRY TO FETCH THE GUILD FROM THE DB
-            newGuild = await session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+            newGuild = await GetGuildInfo(session, guild.id)
             if newGuild == None:
                 ## => GUILD NOT FOUNDED -> ADD TO THE DATABASE
                 newGuild = botGuilds(guild_id=str(guild.id),
@@ -98,7 +104,7 @@ class guildsAuthCog(commands.Cog):
         p = BaseProfiler("on_guild_remove")
         ## => UPDATE GUILD INFO TO NOT JOINED
         async with self.async_session() as session:
-            newGuild = await session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+            newGuild = await GetGuildInfo(session, guild.id)
             if newGuild:
                 newGuild.currently_joined= False
                 await session.commit()
@@ -113,9 +119,11 @@ class guildsAuthCog(commands.Cog):
         await self.bot.wait_until_ready()
         ## => VERIFY EVERY GUILD
         async with self.async_session() as session:
-            patreons = await session.query(patreonUsers).all()
+            patreons = await session.execute(select(patreonUsers))
+            patreons = patreons.scalars().all()
             patreonIds = [p.discord_id for p in patreons if not p.sub_status]
-            guilds = await session.query(botGuilds).filter_by(currently_joined=True).all()
+            guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
+            guilds = guilds.scalars().all()
             for guild in guilds:
 
                 if int(guild.guild_id) in self.guildWhiteList:
@@ -158,7 +166,7 @@ class guildsAuthCog(commands.Cog):
     async def help(self, ctx):
         ## => GUILD INFO FROM DB
         async with self.async_session() as session:
-            guildInfo = await session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+            guildInfo = await GetGuildInfo(session, ctx.guild.id)
         join_date = parser.parse(guildInfo.joined_utc)
         days_left = self.trial_days - (datetime.utcnow()-join_date).days
         trial_flag = days_left >= 0 and guildInfo.patreon_discord_id ==None
@@ -200,7 +208,8 @@ class guildsAuthCog(commands.Cog):
         botJoinedGuildsIds = [g.id for g in botJoinedGuilds]
         dbGuilds = []
         async with self.async_session() as session:
-            dbGuilds = await session.query(botGuilds).all()
+            dbGuilds = await session.execute(select(botGuilds))
+            dbGuilds = dbGuilds.scalars().all()
             
             for guildInfo in dbGuilds:
                 if int(guildInfo.guild_id) in botJoinedGuildsIds:
@@ -247,7 +256,7 @@ class guildsAuthCog(commands.Cog):
             
             ## => CHECK IF GUILD IS IN THE DB
             async with self.async_session() as session:
-                guildInfo = await session.query(botGuilds).filter_by(guild_id = str(ctx.guild.id)).first()
+                guildInfo = await GetGuildInfo(session, ctx.guild.id)
                 if not guildInfo:
                     newGuild = botGuilds(guild_id=str(ctx.guild.id),
                                     joined_utc=str(datetime.utcnow()),
