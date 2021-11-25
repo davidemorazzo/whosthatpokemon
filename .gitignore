@@ -1,10 +1,12 @@
+# folders
 gif script/
 base_gifs/
 .vscode/
 __pycache__/
 gifsDaRifare/
-copiaDatabaseHeorku.py
-descriptions.txt
 gifs/original/
+
+# files
+pokemon_data.csv
 copyHerokuDB.BAT
 profiling/logs.csv

@@ -35,11 +35,13 @@ class whosThatPokemon(commands.Cog):
         self.async_session = sqlalchemy.orm.sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.color = Colour.red()
         self.pokemonDataFrame = pd.read_csv(data_path, index_col='name')
+        self.pokemonDataFrame = self.pokemonDataFrame[self.pokemonDataFrame['clear_path'].notna()]
         self.skip_button = "⏭️"
         self.rank_button = "👑"
         self.hint_button = "❓"
         self.global_rank_button = "🌍"
         self.on_cooldown = {}
+        self.pokemonGenerations = {'kanto':'1', 'johto':'2', 'hoenn':'3', 'unova':'4', 'kalos':'5', 'alola':'6', 'mega':'m', 'gmax':'g', 'galar':'j'}
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -75,6 +77,26 @@ class whosThatPokemon(commands.Cog):
         ## => FINAL COMPARISON
         return compare(wordSolution, wordGuess)
     
+    def getGuildGifList(self, guildObj) -> list:
+        """Get list of available gifs for the specified guild. They are chosen by the selected
+            generations in the database TODO: da finire"""
+
+        with Session(self.db_engine) as session:
+            guildInfo = session.query(botGuilds).filter_by(guild_id=str(guildObj.id)).first()
+
+            # sections of the pokedex
+            poke_generation = guildInfo.poke_generation
+
+        # TODO: cosa fare per i pokemon senza generatione?
+        # gifList = list(self.pokemonDataFrame[self.pokemonDataFrame['generation'].isna()].index)
+        gifList = []
+        for generation in self.pokemonGenerations.keys():
+            if self.pokemonGenerations[generation] in poke_generation:
+                gifList += list(self.pokemonDataFrame[self.pokemonDataFrame['generation']==generation].index)
+            
+        return gifList
+
+
     def checkCooldownCache(self, token, cooldownSeconds):
         """Check if command is on cooldown and delete old keys"""
         p = BaseProfiler("checkCooldownCache")
@@ -94,15 +116,27 @@ class whosThatPokemon(commands.Cog):
         return True
             
     async def createQuestion(self, guild, skip=False, channel=None):
-        p = BaseProfiler("createQuestion")
-        gif_name = choice(self.pokemonDataFrame.index)
+        with Session(self.db_engine) as session:
+            p = BaseProfiler("createQuestion")
+            # get guild patreon tier
+            query = session.query(botGuilds.guild_id, patreonUsers.tier
+                        ).join(patreonUsers, patreonUsers.discord_id == botGuilds.patreon_discord_id
+                        ).filter(botGuilds.guild_id == str(guild.id))
+	        
+            r = query.first()
+            if r:
+                guildTier = r[1]
+            else:
+                guildTier = 0
+
+        availableGifs = self.getGuildGifList(guild)
+        gif_name = choice(availableGifs)
         ## => SEND EMBED
         embed = Embed(color=self.color)
         embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar_url)
         embed.description = "Type the name of the pokémon to guess it"
         thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
         embed.set_thumbnail(url="attachment://gif.gif")
-        # embed.set_footer(text="DEBUG ONLY: "+gif_name)
         
         ## => MEMORIZE THE SOLUTION
         async with self.async_session() as session:
@@ -269,9 +303,9 @@ class whosThatPokemon(commands.Cog):
                 currentUser.username = message.author.name
                 serverWins = currentUser.points_from_reset
                 ## => UPDATE USERNAME IN ALL THE USER ENTRIES
-                query = sqlalchemy.text(f"update user_points set username = '{message.author.name}' where user_id='{message.author.id}'")
+                username = message.author.name.replace("'", "\'")
+                query = sqlalchemy.text(f"update user_points set username = '{username}' where user_id='{message.author.id}'")
                 await session.execute(query)
-                # connection = self.db_engine.connect()
                 ## => FETCH USER GLOBALLY
                 userGlobally = await session.execute(select(userPoints).filter_by(user_id=str(message.author.id)))
                 userGlobally = userGlobally.scalars().all()
@@ -465,7 +499,7 @@ class whosThatPokemon(commands.Cog):
         p = BaseProfiler("on_button_click")
         message = interaction.message
         reactionCtx = await self.bot.get_context(message)
-
+        
         if interaction.custom_id=="hint_btn":
             await reactionCtx.trigger_typing()
             hint_embed = await self.getHint(reactionCtx)
@@ -506,3 +540,68 @@ class whosThatPokemon(commands.Cog):
             thumbnail = File("./gifs/trophy.gif", "trophy.gif")
             embed.set_thumbnail(url="attachment://trophy.gif")
             await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
+        
+        elif interaction.custom_id.startswith('gen_'):
+            ## => LISTEN FOR BUTTONS OF GENERATION SELECTION
+            newComponents = interaction.message.components
+            for row in newComponents:
+                for button in row:
+                    if interaction.component == button:
+                        newStyle = ButtonStyle.red if button.style == ButtonStyle.green else ButtonStyle.green
+                        button.set_style(newStyle)
+
+            await interaction.edit_origin(components = newComponents)
+
+
+    def generationButtons(self, guild):
+        """Generates the button layout for the specified guild. Buttons needed for 
+            generation selection."""
+
+        generations = list(self.pokemonGenerations.keys())
+        components =[[Button(label=(gen), style=ButtonStyle.red, custom_id=f'gen_{gen}') for gen in generations[i*5:i*5+4]] for i in range(len(generations)//4)]        
+        # add save button
+        components = components + [Button(label="Save", style=ButtonStyle.blue, custom_id='save_gen')]
+                    
+        with Session(self.db_engine) as s:
+            guildInfo = s.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+            poke_generation = guildInfo.poke_generation
+        
+        for row in components[:-1]:
+            for btn in row:
+                if self.pokemonGenerations[btn.id.replace('gen_', '')] in poke_generation:
+                    btn.set_style(ButtonStyle.green)
+
+        return components
+
+    @commands.command(name="selectgenerations", help="Select the pokemon generations that are used in the game. Admin only")
+    @commands.has_permissions(administrator=True)
+    async def selectGen(self, ctx):
+        embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
+        components = self.generationButtons(ctx.guild)
+        gen_msg = await ctx.send(embed=embed, components=components)
+
+        def savebutton(m):
+            return m.custom_id == 'save_gen'
+        try:
+            interaction = await self.bot.wait_for('button_click', check=savebutton, timeout=30)
+        except :
+            await gen_msg.delete()
+            embed = self.embedText("You didn't save in time.")
+            await ctx.send(embed=embed)
+            return
+        
+        ##=> GET SELECTION AND WRITE TO DB
+        selectionString = ''
+        buttons = interaction.message.components
+        for row in buttons[:-1]:
+            for btn in row:
+                if btn.style == ButtonStyle.green:
+                    selectionString += self.pokemonGenerations[btn.id.replace('gen_', '')]
+
+        with Session(self.db_engine) as session:
+            guildInfo = session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+            guildInfo.poke_generation = selectionString
+            session.commit()
+
+        await interaction.edit_origin(embed=self.embedText("Saved!"), components=[])
+        

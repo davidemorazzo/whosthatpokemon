@@ -30,9 +30,12 @@ def fetch_patreons(ACCESS_TOKEN) -> dict:
         member = pledge.relationship('patron')
         discord_id = member.attribute('social_connections')['discord']
         reward_tier = str(pledge.relationship('reward').attribute('amount_cents'))
+        patreon_id = pledge.relationship('patron').id()
 
         if discord_id != None:
-            active_user_dict[discord_id['user_id']] = [str(declined), reward_tier]
+            active_user_dict[discord_id['user_id']] = {'declined_since':str(declined),
+                                                        'tier': reward_tier,
+                                                        'patreon_id': patreon_id}
     
     return active_user_dict
 
