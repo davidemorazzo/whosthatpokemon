@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from cog.whosThatPokemonCog import whosThatPokemon, botGuilds
 from cog.guildsAuthCog import guildsAuthCog
 from database import init_database
-import psycopg2
 from profiling.profiler import BaseProfiler
 import logging
 
