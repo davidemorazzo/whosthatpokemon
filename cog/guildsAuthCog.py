@@ -203,6 +203,7 @@ class guildsAuthCog(commands.Cog):
             DiscordComponents(self.bot)
             self.DiscordComponentsInit = True
         
+        
         ## => UPDATE THE JOINED GUILDS IN THE DATABASE
         botJoinedGuilds = self.bot.guilds
         botJoinedGuildsIds = [g.id for g in botJoinedGuilds]
@@ -228,6 +229,14 @@ class guildsAuthCog(commands.Cog):
                                         prefix = None)
                 session.add(newGuild)
             await session.commit()
+
+            ## => LOAD PREFIXES IN THE DICTIONARY
+            res = await session.execute(select(botGuilds.guild_id, botGuilds.prefix))
+            serverPrefixes = res.all()
+            for prefix in serverPrefixes:
+                self.bot.customGuildPrefixes[int(prefix.guild_id)] = prefix.prefix
+            print('prefixes loaded')
+
 
 
 

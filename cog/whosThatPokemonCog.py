@@ -196,7 +196,7 @@ class whosThatPokemon(commands.Cog):
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
                                     activate=True)
-                    session.add(newGuild) #FIXME non so se funzionerà
+                    session.add(newGuild)
                     await session.commit()
                     guildInfo = newGuild
                 if guildInfo.activate:
@@ -270,8 +270,8 @@ class whosThatPokemon(commands.Cog):
                 serverWins = currentUser.points_from_reset
                 ## => UPDATE USERNAME IN ALL THE USER ENTRIES
                 query = sqlalchemy.text(f"update user_points set username = '{message.author.name}' where user_id='{message.author.id}'")
-                connection = self.db_engine.connect()
-                res = await connection.execute(query)
+                await session.execute(query)
+                # connection = self.db_engine.connect()
                 ## => FETCH USER GLOBALLY
                 userGlobally = await session.execute(select(userPoints).filter_by(user_id=str(message.author.id)))
                 userGlobally = userGlobally.scalars().all()
@@ -455,6 +455,7 @@ class whosThatPokemon(commands.Cog):
             guildInfo.prefix = prefix
             await session.commit()
         
+        self.bot.customGuildPrefixes[ctx.guild.id] = prefix # update prefix cache
         embed = self.embedText(f"Prefix changed to {prefix}")
         await ctx.send(embed=embed)
 
