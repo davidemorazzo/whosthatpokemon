@@ -6,6 +6,7 @@ from cog.guildsAuthCog import guildsAuthCog
 from database import init_database
 import psycopg2
 from profiling.profiler import BaseProfiler
+import logging
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
 POKEMON_DATAFRAME = "pokemon_data.csv"
@@ -17,6 +18,8 @@ def noDirectMessage(ctx):
 
 def getServerPrefix(bot, message):
     p = BaseProfiler("getServerPrefix")
+    return COMMAND_PREFIX #TODO mettere il database in un dizionario hash
+    
     if message.guild:
         ## => SERVER MESSAGE
         base = COMMAND_PREFIX
@@ -65,10 +68,12 @@ if __name__ == '__main__':
             print("Could not connect to the database: ", e)
             exit()
 
-    # cache = MemberCacheFlags().none()
-    # cache.joined = True
-    # intents = Intents().default()
-    # intents.members = True
+    ## => SETUP LOGGING
+    logger = logging.getLogger('discord')
+    logger.setLevel(logging.INFO)
+    handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    logger.addHandler(handler)  
 
     bot = commands.Bot(command_prefix=getServerPrefix)
     bot.remove_command("help")

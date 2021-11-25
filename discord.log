@@ -1,0 +1,245 @@
+2021-11-25 00:01:38,487:INFO:discord.client: logging in using static token
+2021-11-25 00:01:39,439:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2021-11-25 00:01:46,117:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-qlzq",{"micros":6422117,"calls":["discord-sessions-blue-prd-2-113",{"micros":6420443,"calls":["start_session",{"micros":75640,"calls":["api-prd-main-zgjx",{"micros":71349,"calls":["get_user",{"micros":2615},"add_authorized_ip",{"micros":1190},"get_guilds",{"micros":33448},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":447,"calls":[]},"presence_connect",{"micros":3,"calls":[]}]}]}] (Session ID: 5ee944f9b19edb7f1241e6c2c16e1be9).
+2021-11-25 00:02:30,741:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 10 seconds.
+Loop thread traceback (most recent call last):
+  File "d:\Programmazione\Fiverr\andychand400 v2\bot.py", line 85, in <module>
+    bot.run(BOT_TOKEN)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Program Files\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 343, in _run_event
+    await coro(*args, **kwargs)
+  File "d:\Programmazione\Fiverr\andychand400 v2\cog\whosThatPokemonCog.py", line 226, in on_message
+    guildInfo = session.query(botChannelIstance).filter_by(guild_id=str(message.guild.id), channel_id=str(message.channel.id)).first()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\query.py", line 2750, in first
+    return self.limit(1)._iter().first()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\query.py", line 2834, in _iter
+    result = self.session.execute(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1677, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1582, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\sql\elements.py", line 324, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1451, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1770, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\default.py", line 717, in do_execute
+    cursor.execute(statement, parameters)
+
+2021-11-25 00:03:24,739:INFO:discord.gateway: Websocket closed with 1000, cannot reconnect.
+2021-11-25 00:03:24,740:ERROR:discord.client: Attempting a reconnect in 1.26s
+Traceback (most recent call last):
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 566, in connect
+    await self.ws.poll_event()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\gateway.py", line 582, in poll_event
+    raise ConnectionClosed(self.socket, shard_id=self.shard_id, code=code) from None
+discord.errors.ConnectionClosed: Shard ID None WebSocket closed with 1000
+2021-11-25 00:03:26,507:INFO:discord.gateway: Shard ID None has sent the RESUME payload.
+2021-11-25 00:04:17,787:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 10 seconds.
+Loop thread traceback (most recent call last):
+  File "d:\Programmazione\Fiverr\andychand400 v2\bot.py", line 85, in <module>
+    bot.run(BOT_TOKEN)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Program Files\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 343, in _run_event
+    await coro(*args, **kwargs)
+  File "d:\Programmazione\Fiverr\andychand400 v2\cog\whosThatPokemonCog.py", line 228, in on_message
+    return
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1162, in __exit__
+    self.close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1745, in close
+    self._close_impl(invalidate=False)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1787, in _close_impl
+    transaction.close(invalidate)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 923, in close
+    transaction.close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2286, in close
+    self._do_close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2503, in _do_close
+    self._close_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2489, in _close_impl
+    self._connection_rollback_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2481, in _connection_rollback_impl
+    self.connection._rollback_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 958, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\default.py", line 667, in do_rollback
+    dbapi_connection.rollback()
+
+2021-11-25 00:04:27,796:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 20 seconds.
+Loop thread traceback (most recent call last):
+  File "d:\Programmazione\Fiverr\andychand400 v2\bot.py", line 85, in <module>
+    bot.run(BOT_TOKEN)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Program Files\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 343, in _run_event
+    await coro(*args, **kwargs)
+  File "d:\Programmazione\Fiverr\andychand400 v2\cog\whosThatPokemonCog.py", line 228, in on_message
+    return
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1162, in __exit__
+    self.close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1745, in close
+    self._close_impl(invalidate=False)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1787, in _close_impl
+    transaction.close(invalidate)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 923, in close
+    transaction.close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2286, in close
+    self._do_close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2503, in _do_close
+    self._close_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2489, in _close_impl
+    self._connection_rollback_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2481, in _connection_rollback_impl
+    self.connection._rollback_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 958, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\default.py", line 667, in do_rollback
+    dbapi_connection.rollback()
+
+2021-11-25 00:04:37,329:INFO:discord.gateway: Shard ID None has successfully RESUMED session 5ee944f9b19edb7f1241e6c2c16e1be9 under trace ["gateway-prd-main-n4mz",{"micros":81262,"calls":["discord-sessions-blue-prd-2-113",{"micros":4873}]}].
+2021-11-25 00:05:11,827:INFO:discord.gateway: Websocket closed with 1006, attempting a reconnect.
+2021-11-25 00:05:11,828:INFO:discord.client: Got a request to RESUME the websocket.
+2021-11-25 00:05:12,240:INFO:discord.gateway: Shard ID None has sent the RESUME payload.
+2021-11-25 00:06:03,524:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 10 seconds.
+Loop thread traceback (most recent call last):
+  File "d:\Programmazione\Fiverr\andychand400 v2\bot.py", line 85, in <module>
+    bot.run(BOT_TOKEN)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Program Files\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 343, in _run_event
+    await coro(*args, **kwargs)
+  File "d:\Programmazione\Fiverr\andychand400 v2\cog\whosThatPokemonCog.py", line 228, in on_message
+    return
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1162, in __exit__
+    self.close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1745, in close
+    self._close_impl(invalidate=False)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1787, in _close_impl
+    transaction.close(invalidate)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 923, in close
+    transaction.close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2286, in close
+    self._do_close()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2503, in _do_close
+    self._close_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2489, in _close_impl
+    self._connection_rollback_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 2481, in _connection_rollback_impl
+    self.connection._rollback_impl()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 958, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\default.py", line 667, in do_rollback
+    dbapi_connection.rollback()
+
+2021-11-25 00:06:13,531:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 20 seconds.
+Loop thread traceback (most recent call last):
+  File "d:\Programmazione\Fiverr\andychand400 v2\bot.py", line 85, in <module>
+    bot.run(BOT_TOKEN)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Program Files\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 343, in _run_event
+    await coro(*args, **kwargs)
+  File "d:\Programmazione\Fiverr\andychand400 v2\cog\whosThatPokemonCog.py", line 226, in on_message
+    guildInfo = session.query(botChannelIstance).filter_by(guild_id=str(message.guild.id), channel_id=str(message.channel.id)).first()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\query.py", line 2750, in first
+    return self.limit(1)._iter().first()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\query.py", line 2834, in _iter
+    result = self.session.execute(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1677, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1582, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\sql\elements.py", line 324, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1451, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1770, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\default.py", line 717, in do_execute
+    cursor.execute(statement, parameters)
+
+2021-11-25 00:06:23,539:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 30 seconds.
+Loop thread traceback (most recent call last):
+  File "d:\Programmazione\Fiverr\andychand400 v2\bot.py", line 85, in <module>
+    bot.run(BOT_TOKEN)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Program Files\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Program Files\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\discord\client.py", line 343, in _run_event
+    await coro(*args, **kwargs)
+  File "d:\Programmazione\Fiverr\andychand400 v2\cog\whosThatPokemonCog.py", line 226, in on_message
+    guildInfo = session.query(botChannelIstance).filter_by(guild_id=str(message.guild.id), channel_id=str(message.channel.id)).first()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\query.py", line 2750, in first
+    return self.limit(1)._iter().first()
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\query.py", line 2834, in _iter
+    result = self.session.execute(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\orm\session.py", line 1677, in execute
+    result = conn._execute_20(statement, params or {}, execution_options)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1582, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\sql\elements.py", line 324, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1451, in _execute_clauseelement
+    ret = self._execute_context(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\base.py", line 1770, in _execute_context
+    self.dialect.do_execute(
+  File "C:\Users\moraz\AppData\Roaming\Python\Python39\site-packages\sqlalchemy\engine\default.py", line 717, in do_execute
+    cursor.execute(statement, parameters)
+
+2021-11-25 00:07:07,209:INFO:discord.gateway: Websocket closed with 1006, attempting a reconnect.
+2021-11-25 00:07:07,210:INFO:discord.client: Got a request to RESUME the websocket.
+2021-11-25 00:07:07,546:INFO:discord.gateway: Shard ID None has sent the RESUME payload.
+2021-11-25 00:07:13,014:INFO:discord.gateway: Shard ID None session has been invalidated.
+2021-11-25 00:07:13,167:INFO:discord.client: Got a request to IDENTIFY the websocket.
+2021-11-25 00:07:18,539:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2021-11-25 00:07:26,539:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-8mlv",{"micros":7794793,"calls":["discord-sessions-blue-prd-2-27",{"micros":7793402,"calls":["start_session",{"micros":56298,"calls":["api-prd-main-cbsk",{"micros":53049,"calls":["get_user",{"micros":6510},"add_authorized_ip",{"micros":2367},"get_guilds",{"micros":27568},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":515,"calls":[]},"presence_connect",{"micros":4,"calls":[]}]}]}] (Session ID: ffac097fcc4bc2da7f93f73d9bf2a26e).

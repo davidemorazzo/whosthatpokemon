@@ -5,12 +5,12 @@ class BaseProfiler():
 		self.start = datetime.now()
 		self.stop = None
 		self.description=descr
-		self.outFile = "./logs.csv"
+		self.outFile = "./profiling/logs.csv"
 
 	def __del__(self):
 		self.stop = datetime.now()
-		delta = (self.stop - self.start).microseconds
+		# delta = (self.stop - self.start).microseconds
 		with open(self.outFile, 'a') as f:
-			f.write(f"{self.description};{delta}\n")
+			f.write(f"{self.description};{self.start};{self.stop}\n")
 
 	
