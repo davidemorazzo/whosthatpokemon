@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -57,15 +58,10 @@ class botChannelIstance(Base):
 
 def init_database(url:String):
 
-    engine = create_engine(url, echo=False)
+    engine = create_engine(url.replace("asyncpg", "psycopg2"), echo=False)
     Base.metadata.create_all(bind=engine)
-    return engine
+    engine.dispose()
 
-if __name__ == '__main__':
-    session = Session(create_engine('postgresql+psycopg2://postgres:root@localhost/postgres'))
-    q = insert(botGuilds).values(guild_id = "822033257142288414", activate=True, joined_utc = str(datetime.utcnow()),
-                                    patreon_discord_id = None,
-                                    guessing=False,
-                                    currently_joined = True)
-    session.execute(q)
-    session.commit()  
+    async_engine = create_async_engine(url, echo=False)
+    
+    return async_engine

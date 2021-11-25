@@ -4,6 +4,7 @@ import patreon
 # ACCESS_TOKEN = "pskTwhilaLvThYGConYs0go1J_s7BrcyCDqX3xdn9bw"
 AC_TOKEN = "AEvOwWqKgxLyQ4CR27erNQlCkaJcMZC8WKiE2IrJOBQ"
 
+#TODO make this async
 def fetch_patreons(ACCESS_TOKEN) -> dict:
     api_client = patreon.API(ACCESS_TOKEN)
 

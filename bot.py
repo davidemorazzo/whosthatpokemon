@@ -50,8 +50,8 @@ if __name__ == '__main__':
     ## => TRY DATABASE CONNECTION
     try:
         ## => INITIALIZE FOR LOCAL MACHINE
-        LOCAL_DB_STRING = 'postgresql+psycopg2://postgres:root@localhost/postgres'
-        raise Exception("...")
+        LOCAL_DB_STRING = 'postgresql+asyncpg://postgres:root@localhost/whosthatpokemon'
+        raise Exception("...") #TODO debug only
         engine = init_database(LOCAL_DB_STRING)
         BOT_TOKEN = "ODU1MzkyOTMxMjAzMjUyMjM0.YMx0vw.GUK6TGjobT6Ez2KE4KrCi21RFdQ" ## => TOKEN DI DAVIDE
         print("Bot initialized for local machine")
@@ -59,9 +59,8 @@ if __name__ == '__main__':
         try:
             ## => INITIALIZE FOR HEROKU
             #HEROKU_DB_STRING = os.environ.get("HEROKU_POSTGRESQL_CHARCOAL_URL").replace("postgres://", "postgresql+psycopg2://")
-            HEROKU_DB_STRING = 'postgresql+psycopg2://wdomuberrwkvzh:f3b37ae66dd1397e652ccb0bd0851d6fd6b30c0db76bc2182183cafe7dd67232@ec2-52-209-171-51.eu-west-1.compute.amazonaws.com:5432/d2ioeuuac8amki'
-            print(HEROKU_DB_STRING)
-            engine = init_database(HEROKU_DB_STRING)
+            HEROKU_DB_STRING = 'postgresql+asyncpg://wdomuberrwkvzh:f3b37ae66dd1397e652ccb0bd0851d6fd6b30c0db76bc2182183cafe7dd67232@ec2-52-209-171-51.eu-west-1.compute.amazonaws.com:5432/d2ioeuuac8amki'
+            engine = init_database(LOCAL_DB_STRING)
             BOT_TOKEN = os.getenv("DISCORD_TOKEN")
             print("Bot inizialied for Heroku server")
         except Exception as e:

@@ -1,6 +1,7 @@
 from discord.ext import commands, tasks
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import insert, update
+from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from dateutil import parser
 from discord import Embed, Colour
@@ -16,6 +17,7 @@ class guildsAuthCog(commands.Cog):
         self.patreonCreatorId = patreonCreatorId
         self.bot = bot
         self.db_engine = engine
+        self.async_session = sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
         self.color = Colour.red()
         # self.verification.start()
@@ -42,17 +44,17 @@ class guildsAuthCog(commands.Cog):
                     return patreonId
             return None ## => NO PATREON FOUNDED
 
-    def updatePatreons(self):
+    async def updatePatreons(self):
         ## => FETCH PATREONS FROM API
         patreons_dict = fetch_patreons(os.getenv("PATREON_TOKEN"))
         ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
-        with Session(self.db_engine) as session:
-            patreonsDb = session.query(patreonUsers).all()
+        async with self.async_session() as session:
+            patreonsDb = await session.query(patreonUsers).all()
             ## => CHECK PATREONS IN THE DATABASE
             for patreon in patreonsDb:
                 if not patreon.discord_id in patreons_dict.keys():
                     ## => USER IS NOT A PATREON ANYMORE
-                    session.delete(patreon)
+                    await session.delete(patreon)
                 else:
                     patreons_dict.pop(patreon.discord_id)
             
@@ -64,7 +66,7 @@ class guildsAuthCog(commands.Cog):
                                             guild_id = None)
                 session.add(patreonObj)
 
-            session.commit()
+            await session.commit()
 
 
 
@@ -76,9 +78,9 @@ class guildsAuthCog(commands.Cog):
     async def on_guild_join(self, guild):
         p = BaseProfiler("on_guild_join")
         ## => ADD GUILD TO DB
-        with Session(self.db_engine) as session:
+        async with self.async_session() as session:
             ## => TRY TO FETCH THE GUILD FROM THE DB
-            newGuild = session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+            newGuild = await session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
             if newGuild == None:
                 ## => GUILD NOT FOUNDED -> ADD TO THE DATABASE
                 newGuild = botGuilds(guild_id=str(guild.id),
@@ -88,18 +90,18 @@ class guildsAuthCog(commands.Cog):
                 session.add(newGuild)
 
             newGuild.currently_joined=True
-            session.commit()
+            await session.commit()
         print("GUILD ADDED TO THE DB: ", guild.name)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         p = BaseProfiler("on_guild_remove")
         ## => UPDATE GUILD INFO TO NOT JOINED
-        with Session(self.db_engine) as session:
-            newGuild = session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+        async with self.async_session() as session:
+            newGuild = await session.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
             if newGuild:
                 newGuild.currently_joined= False
-                session.commit()
+                await session.commit()
                 print("BOT LEFT GUILD: ", guild.name)
 
     @tasks.loop(minutes=10)
@@ -107,13 +109,13 @@ class guildsAuthCog(commands.Cog):
         
         tic = datetime.now()
         ## => UPDATE PATREONS INTO THE DB
-        self.updatePatreons()
+        await self.updatePatreons()
         await self.bot.wait_until_ready()
         ## => VERIFY EVERY GUILD
-        with Session(self.db_engine) as session:
-            patreons = session.query(patreonUsers).all()
+        async with self.async_session() as session:
+            patreons = await session.query(patreonUsers).all()
             patreonIds = [p.discord_id for p in patreons if not p.sub_status]
-            guilds = session.query(botGuilds).filter_by(currently_joined=True).all()
+            guilds = await session.query(botGuilds).filter_by(currently_joined=True).all()
             for guild in guilds:
 
                 if int(guild.guild_id) in self.guildWhiteList:
@@ -146,7 +148,7 @@ class guildsAuthCog(commands.Cog):
                             guild.activate = True
                             guild.patreon_discord_id = None
         
-            session.commit()
+            await session.commit()
 
         toc = datetime.now()
         delta = toc-tic
@@ -155,8 +157,8 @@ class guildsAuthCog(commands.Cog):
     @commands.command(name = "help", help="Show this message")
     async def help(self, ctx):
         ## => GUILD INFO FROM DB
-        with Session(self.db_engine, expire_on_commit=False) as session:
-            guildInfo = session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+        async with self.async_session() as session:
+            guildInfo = await session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
         join_date = parser.parse(guildInfo.joined_utc)
         days_left = self.trial_days - (datetime.utcnow()-join_date).days
         trial_flag = days_left >= 0 and guildInfo.patreon_discord_id ==None
@@ -197,8 +199,8 @@ class guildsAuthCog(commands.Cog):
         botJoinedGuilds = self.bot.guilds
         botJoinedGuildsIds = [g.id for g in botJoinedGuilds]
         dbGuilds = []
-        with Session(self.db_engine) as session:
-            dbGuilds = session.query(botGuilds).all()
+        async with self.async_session() as session:
+            dbGuilds = await session.query(botGuilds).all()
             
             for guildInfo in dbGuilds:
                 if int(guildInfo.guild_id) in botJoinedGuildsIds:
@@ -216,7 +218,7 @@ class guildsAuthCog(commands.Cog):
                                         patreon_discord_id = None,
                                         prefix = None)
                 session.add(newGuild)
-            session.commit()
+            await session.commit()
 
 
 
@@ -244,15 +246,15 @@ class guildsAuthCog(commands.Cog):
             print(error)
             
             ## => CHECK IF GUILD IS IN THE DB
-            with Session(self.db_engine) as session:
-                guildInfo = session.query(botGuilds).filter_by(guild_id = str(ctx.guild.id)).first()
+            async with self.async_session() as session:
+                guildInfo = await session.query(botGuilds).filter_by(guild_id = str(ctx.guild.id)).first()
                 if not guildInfo:
                     newGuild = botGuilds(guild_id=str(ctx.guild.id),
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
                                     activate=True)
                     session.add(newGuild)
-                    session.commit()
+                    await session.commit()
                     print("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
         else:
             print(error)
