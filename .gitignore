@@ -5,6 +5,7 @@ base_gifs/
 __pycache__/
 gifsDaRifare/
 gifs/original/
+gifWorkspace/
 
 # files
 pokemon_data.csv
