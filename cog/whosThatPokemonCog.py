@@ -35,6 +35,7 @@ class whosThatPokemon(commands.Cog):
         self.async_session = sqlalchemy.orm.sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.color = Colour.red()
         self.pokemonDataFrame = pd.read_csv(data_path, index_col='name')
+        self.pokemonDataFrame = self.pokemonDataFrame.loc[self.pokemonDataFrame['blacked_path'].notna()]
         self.skip_button = "⏭️"
         self.rank_button = "👑"
         self.hint_button = "❓"
@@ -269,9 +270,9 @@ class whosThatPokemon(commands.Cog):
                 currentUser.username = message.author.name
                 serverWins = currentUser.points_from_reset
                 ## => UPDATE USERNAME IN ALL THE USER ENTRIES
-                query = sqlalchemy.text(f"update user_points set username = '{message.author.name}' where user_id='{message.author.id}'")
-                await session.execute(query)
-                # connection = self.db_engine.connect()
+                await session.execute(sqlalchemy.update(userPoints).
+                                        where(userPoints.user_id==str(message.author.id)).
+                                        values(username=message.author.name))
                 ## => FETCH USER GLOBALLY
                 userGlobally = await session.execute(select(userPoints).filter_by(user_id=str(message.author.id)))
                 userGlobally = userGlobally.scalars().all()

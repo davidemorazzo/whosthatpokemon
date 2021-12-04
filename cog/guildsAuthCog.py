@@ -253,7 +253,7 @@ class guildsAuthCog(commands.Cog):
             embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
             await ctx.send(embed = embed)
             print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
-        elif isinstance(error, commands.errors.CommandOnCooldown):
+        elif isinstance(error, commands.errors.CommandOnCooldown) or isinstance(error, commands.errors.MissingPermissions):
             return
         elif isinstance(error, commands.errors.CommandNotFound):
             return
