@@ -41,7 +41,16 @@ class whosThatPokemon(commands.Cog):
         self.hint_button = "❓"
         self.global_rank_button = "🌍"
         self.on_cooldown = {}
-        self.pokemonGenerations = {'kanto':'1', 'johto':'2', 'hoenn':'3', 'unova':'4', 'kalos':'5', 'alola':'6', 'mega':'m', 'gmax':'g', 'galar':'j'}
+        self.pokemonGenerations = {
+            'kanto':'1', 
+            'johto':'2', 
+            'hoenn':'3', 
+            'unova':'4', 
+            'kalos':'5', 
+            'alola':'6',
+            'mega':'m', 
+            'gmax':'g', 
+            'galar':'j'}
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -77,13 +86,13 @@ class whosThatPokemon(commands.Cog):
         ## => FINAL COMPARISON
         return compare(wordSolution, wordGuess)
     
-    def getGuildGifList(self, guildObj) -> list:
+    async def getGuildGifList(self, guildObj) -> list:
         """Get list of available gifs for the specified guild. They are chosen by the selected
             generations in the database TODO: da finire"""
 
-        with Session(self.db_engine) as session:
-            guildInfo = session.query(botGuilds).filter_by(guild_id=str(guildObj.id)).first()
-
+        async with self.async_session() as session:
+            row = await session.execute(select(botGuilds).filter_by(guild_id=str(guildObj.id)))
+            guildInfo = row.scalars().first()
             # sections of the pokedex
             poke_generation = guildInfo.poke_generation
 
@@ -116,20 +125,21 @@ class whosThatPokemon(commands.Cog):
         return True
             
     async def createQuestion(self, guild, skip=False, channel=None):
-        with Session(self.db_engine) as session:
+        async with self.async_session() as session:
             p = BaseProfiler("createQuestion")
             # get guild patreon tier
-            query = session.query(botGuilds.guild_id, patreonUsers.tier
+            query = await session.execute(select(botGuilds.guild_id, patreonUsers.tier
                         ).join(patreonUsers, patreonUsers.discord_id == botGuilds.patreon_discord_id
-                        ).filter(botGuilds.guild_id == str(guild.id))
+                        ).filter(botGuilds.guild_id == str(guild.id)))
 	        
             r = query.first()
             if r:
                 guildTier = r[1]
             else:
                 guildTier = 0
+            await session.close()
 
-        availableGifs = self.getGuildGifList(guild)
+        availableGifs = await self.getGuildGifList(guild)
         gif_name = choice(availableGifs)
         ## => SEND EMBED
         embed = Embed(color=self.color)
@@ -163,7 +173,14 @@ class whosThatPokemon(commands.Cog):
             else:
                 ## => SCRAMBLE THE SOLUTION
                 solution = list(thisGuild.current_pokemon)
-                shuffle(solution)
+                if len(solution) <= 3:
+                    scrambled = "_ _ _"
+                else:
+                    for i in range(0,len(solution)):
+                        if i%2 == 1:
+                            solution[i] = '~'
+
+                # shuffle(solution)
                 scrambled = ''.join(solution).replace("-", " ")
                 embed = self.embedText(f"Here's a hint: {scrambled}")
                 return embed
@@ -233,10 +250,10 @@ class whosThatPokemon(commands.Cog):
                     session.add(newGuild)
                     await session.commit()
                     guildInfo = newGuild
-                if guildInfo.activate:
-                    return True
-                else:
-                    raise guildNotActive(guildInfo.guild_id)
+                # if guildInfo.patreon:
+                #     return True
+                # else:
+                #     raise guildNotActive(guildInfo.guild_id)
     
     async def only_admin(ctx):
         if ctx.message.author.guild_permissions.administrator:
@@ -265,24 +282,24 @@ class whosThatPokemon(commands.Cog):
 
         ## => FETCH GUILD DATA FROM DATABASE
         async with self.async_session() as session:
-            guildInfo = await GetChannelIstance(session, message.guild.id, message.channel.id)
-            if not guildInfo:
+            channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
+            if not channelIstance:
                 return
-            guildActivation = await GetGuildInfo(session, message.guild.id)
-            if not guildActivation.activate:
-                return
+            guildInfo = await GetGuildInfo(session, message.guild.id)
+            # if not guildActivation.patreon:
+            #     return
 
         ## => CHECK FOR THE CORRECT SOLUTION
-        raw_solution = guildInfo.current_pokemon
-        if not raw_solution or guildInfo.is_guessed:
+        raw_solution = channelIstance.current_pokemon
+        if not raw_solution or channelIstance.is_guessed:
             return
         if self.correctGuess(message.content, raw_solution):
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
                 ## => UPDATE GUILD STATUS
-                guildInfo = await GetChannelIstance(session, message.guild.id, message.channel.id)
-                guildInfo.is_guessed = True
+                channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
+                channelIstance.is_guessed = True
                 await session.commit()
                 ## => FETCH USER
                 currentUser = await session.execute(select(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)))
@@ -297,8 +314,11 @@ class whosThatPokemon(commands.Cog):
                     session.add(newUser)
                     currentUser = newUser
                 ## => INCREASE POINTS
-                currentUser.points = currentUser.points + 1 #global points
-                currentUser.points_from_reset = currentUser.points_from_reset + 1
+                pointsToAdd = 1
+                if guildInfo.patreon:
+                    pointsToAdd = 2
+                currentUser.points = currentUser.points + pointsToAdd #global points
+                currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
                 currentUser.username = message.author.name
                 serverWins = currentUser.points_from_reset
@@ -339,8 +359,8 @@ class whosThatPokemon(commands.Cog):
                 await message.channel.send(file=pika, embed=embed)
 
             ## => SEND NEW QUESTION
-            if guildInfo.guessing:
-                file, embed = await self.createQuestion(message.guild, channel=guildInfo.channel_id)
+            if channelIstance.guessing:
+                file, embed = await self.createQuestion(message.guild, channel=channelIstance.channel_id)
                 await message.channel.send(file=file, embed=embed, components=self.addButtons())
                 
         # await self.bot.process_commands(message)

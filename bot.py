@@ -76,3 +76,12 @@ if __name__ == '__main__':
 
     print("Bot spooling up...")
     bot.run(BOT_TOKEN)
+
+
+# TODO finire selezione generazioni
+# TODO aggiungere pokemon per patreon (da scaricare)
+# TODO mettere certi pokemon solo per server patreon
+
+# --- cambiamenti database ---
+# TODO aggiungere colonna poke_generation in database
+# TODO rinominare bot_guild.activate in bot_guilds.patreon 

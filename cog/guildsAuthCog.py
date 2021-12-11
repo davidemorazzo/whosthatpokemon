@@ -128,12 +128,12 @@ class guildsAuthCog(commands.Cog):
 
                 if int(guild.guild_id) in self.guildWhiteList:
                     ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
-                    guild.activate = True
+                    guild.patreon = True
                     guild.patreon_discord_id = None
 
                 elif self.free_period:
                     ## => DISABLE PATREON IN THE FREE PERIOD
-                    guild.activate=True
+                    guild.patreon=True
 
                 else:
                     ## => CHECK FOR PATREON SUBSCRIPTION
@@ -141,7 +141,7 @@ class guildsAuthCog(commands.Cog):
                     
                     if patreonId:
                         ## => ACTIVATE THE GUILD WITH PATREON
-                        guild.activate = True
+                        guild.patreon = True
                         guild.patreon_discord_id = str(patreonId)
 
                     else:
@@ -150,10 +150,10 @@ class guildsAuthCog(commands.Cog):
                         joined = parser.parse(guild.joined_utc)
                         guild.patreon_discord_id = None
                         if now-joined > timedelta(days=self.trial_days):
-                            guild.activate = False
+                            guild.patreon = False
                             guild.patreon_discord_id = None
                         else:
-                            guild.activate = True
+                            guild.patreon = True
                             guild.patreon_discord_id = None
         
             await session.commit()
@@ -188,7 +188,7 @@ class guildsAuthCog(commands.Cog):
             embed.description = f"**ACTIVATION:**  The bot is free for now! Please support us on Patreon! [Patreon link]({self.patreon_link})"
         elif trial_flag:
             embed.description = f"**ACTIVATION:**  {days_left} days left before trial period will end. To keep using the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions+"\n"
-        elif guildInfo.activate == False:
+        elif guildInfo.patreon == False:
             embed.descriprion = f"**ACTIVATION:**  the bot is not activated. To activate the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions
         elif guildInfo.patreon_discord_id != None:
             embed.set_footer(text="ACTIVATION:  the bot is activated with patreon subscription")
@@ -253,6 +253,8 @@ class guildsAuthCog(commands.Cog):
             embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
             await ctx.send(embed = embed)
             print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
+        elif isinstance(error, commands.errors.MissingPermissions):
+            return
         elif isinstance(error, commands.errors.CommandOnCooldown):
             return
         elif isinstance(error, commands.errors.CommandNotFound):

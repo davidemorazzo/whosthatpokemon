@@ -1,5 +1,5 @@
 # folders
-gif script/
+gif_script/
 base_gifs/
 .vscode/
 __pycache__/
@@ -11,3 +11,4 @@ gifWorkspace/
 pokemon_data.csv
 copyHerokuDB.BAT
 profiling/logs.csv
+discord.log
