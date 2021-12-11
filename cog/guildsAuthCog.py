@@ -25,13 +25,12 @@ class guildsAuthCog(commands.Cog):
         self.async_session = sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
         self.color = Colour.red()
-        #self.verification.start() #test branch generations
+        self.verification.start()
         self.free_period = True
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
         self.DiscordComponentsInit = False
-        # test commmit master
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         """Return the discord id of the patreon if there is a match, None otherwise"""
@@ -51,7 +50,7 @@ class guildsAuthCog(commands.Cog):
 
     async def updatePatreons(self):
         ## => FETCH PATREONS FROM API
-        patreons_dict = fetch_patreons(os.getenv("PATREON_TOKEN"))
+        patreons_dict = await fetch_patreons(os.getenv("PATREON_TOKEN"))
         ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
         async with self.async_session() as session:
             patreonsDb = await session.execute(select(patreonUsers))

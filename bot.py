@@ -78,7 +78,6 @@ if __name__ == '__main__':
     bot.run(BOT_TOKEN)
 
 
-# TODO finire selezione generazioni
 # TODO aggiungere pokemon per patreon (da scaricare)
 # TODO mettere certi pokemon solo per server patreon
 

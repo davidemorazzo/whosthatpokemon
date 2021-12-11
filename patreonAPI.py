@@ -5,7 +5,7 @@ import patreon
 AC_TOKEN = "AEvOwWqKgxLyQ4CR27erNQlCkaJcMZC8WKiE2IrJOBQ"
 
 #TODO make this async
-def fetch_patreons(ACCESS_TOKEN) -> dict:
+async def fetch_patreons(ACCESS_TOKEN) -> dict:
     api_client = patreon.API(ACCESS_TOKEN)
 
     # Get the campaign ID

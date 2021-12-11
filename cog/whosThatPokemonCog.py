@@ -88,7 +88,7 @@ class whosThatPokemon(commands.Cog):
     
     async def getGuildGifList(self, guildObj) -> list:
         """Get list of available gifs for the specified guild. They are chosen by the selected
-            generations in the database TODO: da finire"""
+            generations in the database"""
 
         async with self.async_session() as session:
             row = await session.execute(select(botGuilds).filter_by(guild_id=str(guildObj.id)))
@@ -96,9 +96,7 @@ class whosThatPokemon(commands.Cog):
             # sections of the pokedex
             poke_generation = guildInfo.poke_generation
 
-        # TODO: cosa fare per i pokemon senza generatione?
-        # gifList = list(self.pokemonDataFrame[self.pokemonDataFrame['generation'].isna()].index)
-        gifList = []
+        gifList = list(self.pokemonDataFrame[self.pokemonDataFrame['generation'].isna()].index)
         for generation in self.pokemonGenerations.keys():
             if self.pokemonGenerations[generation] in poke_generation:
                 gifList += list(self.pokemonDataFrame[self.pokemonDataFrame['generation']==generation].index)
@@ -140,27 +138,30 @@ class whosThatPokemon(commands.Cog):
             await session.close()
 
         availableGifs = await self.getGuildGifList(guild)
-        gif_name = choice(availableGifs)
-        ## => SEND EMBED
-        embed = Embed(color=self.color)
-        embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar_url)
-        embed.description = "Type the name of the pokémon to guess it"
-        thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
-        embed.set_thumbnail(url="attachment://gif.gif")
-        
-        ## => MEMORIZE THE SOLUTION
-        async with self.async_session() as session:
-            thisGuild = await GetChannelIstance(session, guild.id, channel)
-            if not thisGuild:
-                return None, None
-            if skip and thisGuild.guessing == False:
-                return None, None
-            thisGuild.guessing = True
-            thisGuild.current_pokemon=gif_name
-            thisGuild.is_guessed=False
-            await session.commit()
+        if availableGifs:
+            gif_name = choice(availableGifs)
+            ## => SEND EMBED
+            embed = Embed(color=self.color)
+            embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar_url)
+            embed.description = "Type the name of the pokémon to guess it"
+            thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
+            embed.set_thumbnail(url="attachment://gif.gif")
+            
+            ## => MEMORIZE THE SOLUTION
+            async with self.async_session() as session:
+                thisGuild = await GetChannelIstance(session, guild.id, channel)
+                if not thisGuild:
+                    return None, None
+                if skip and thisGuild.guessing == False:
+                    return None, None
+                thisGuild.guessing = True
+                thisGuild.current_pokemon=gif_name
+                thisGuild.is_guessed=False
+                await session.commit()
 
-        return thumb, embed
+            return thumb, embed
+        
+        return None, None
     
     async def getHint(self, ctx):
         ## => CREATE HINT EMBED
@@ -238,6 +239,7 @@ class whosThatPokemon(commands.Cog):
 
     async def cog_check(self, ctx):
         p = BaseProfiler("cog_check")
+        return True
         ## => CHECK ACTIVATION
         if ctx.guild:
             async with self.async_session() as session:
@@ -573,7 +575,7 @@ class whosThatPokemon(commands.Cog):
             await interaction.edit_origin(components = newComponents)
 
 
-    def generationButtons(self, guild):
+    async def generationButtons(self, guild):
         """Generates the button layout for the specified guild. Buttons needed for 
             generation selection."""
 
@@ -582,8 +584,9 @@ class whosThatPokemon(commands.Cog):
         # add save button
         components = components + [Button(label="Save", style=ButtonStyle.blue, custom_id='save_gen')]
                     
-        with Session(self.db_engine) as s:
-            guildInfo = s.query(botGuilds).filter_by(guild_id=str(guild.id)).first()
+        async with self.async_session() as s:
+            guildInfo = await s.execute(select(botGuilds).filter_by(guild_id=str(guild.id)))
+            guildInfo = guildInfo.scalars().first()
             poke_generation = guildInfo.poke_generation
         
         for row in components[:-1]:
@@ -597,7 +600,7 @@ class whosThatPokemon(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def selectGen(self, ctx):
         embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
-        components = self.generationButtons(ctx.guild)
+        components = await self.generationButtons(ctx.guild)
         gen_msg = await ctx.send(embed=embed, components=components)
 
         def savebutton(m):
@@ -607,7 +610,7 @@ class whosThatPokemon(commands.Cog):
         except :
             await gen_msg.delete()
             embed = self.embedText("You didn't save in time.")
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, delete_after=10)
             return
         
         ##=> GET SELECTION AND WRITE TO DB
@@ -618,10 +621,11 @@ class whosThatPokemon(commands.Cog):
                 if btn.style == ButtonStyle.green:
                     selectionString += self.pokemonGenerations[btn.id.replace('gen_', '')]
 
-        with Session(self.db_engine) as session:
-            guildInfo = session.query(botGuilds).filter_by(guild_id=str(ctx.guild.id)).first()
+        async with self.async_session() as session:
+            guildInfo = await session.execute(select(botGuilds).filter_by(guild_id=str(ctx.guild.id)))
+            guildInfo = guildInfo.scalars().first()
             guildInfo.poke_generation = selectionString
-            session.commit()
+            await session.commit()
 
-        await interaction.edit_origin(embed=self.embedText("Saved!"), components=[])
+        await interaction.edit_origin(embed=self.embedText("Saved!"), components=[], delete_after=10)
         
