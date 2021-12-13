@@ -15,6 +15,7 @@ from cog.whosThatPokemonCog import(
     patreonUsers,
     GetGuildInfo)
 from patreonAPI import fetch_patreons
+import asyncio
 
 class guildsAuthCog(commands.Cog):
     def __init__(self, bot, patreonKey, patreonCreatorId, engine):
@@ -123,8 +124,12 @@ class guildsAuthCog(commands.Cog):
             patreonIds = [p.discord_id for p in patreons if not p.sub_status]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
-            for guild in guilds:
-
+            
+            async def activate_guild(guild):
+                """
+                Coroutine to check if a patreon is the owner of this guild and 
+                update the database.bot_guilds and database.patreon_users
+                """
                 if int(guild.guild_id) in self.guildWhiteList:
                     ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
                     guild.patreon = True
@@ -154,7 +159,9 @@ class guildsAuthCog(commands.Cog):
                         else:
                             guild.patreon = True
                             guild.patreon_discord_id = None
-        
+            
+            # Check all the guilds in a async way
+            await asyncio.gather(*map(activate_guild, guilds))
             await session.commit()
 
         toc = datetime.now()

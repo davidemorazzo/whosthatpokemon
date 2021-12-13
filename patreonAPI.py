@@ -1,15 +1,16 @@
 import patreon
+import asyncio
 
 #Versione API:2
 # ACCESS_TOKEN = "pskTwhilaLvThYGConYs0go1J_s7BrcyCDqX3xdn9bw"
 AC_TOKEN = "AEvOwWqKgxLyQ4CR27erNQlCkaJcMZC8WKiE2IrJOBQ"
 
-#TODO make this async
 async def fetch_patreons(ACCESS_TOKEN) -> dict:
     api_client = patreon.API(ACCESS_TOKEN)
 
     # Get the campaign ID
-    campaign_response = api_client.fetch_campaign()
+    fetch_campaign = lambda: api_client.fetch_campaign()
+    campaign_response = await asyncio.to_thread(fetch_campaign)
     campaign_id = campaign_response.data()[0].id()
 
     # Fetch all pledges
