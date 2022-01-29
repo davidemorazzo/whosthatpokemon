@@ -23,6 +23,10 @@ from database import (
     GetGuildInfo)
 from discord_components import Button, ButtonStyle
 from profiling.profiler import BaseProfiler
+import logging
+from .utils import(
+    cooldown
+)
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
@@ -35,12 +39,23 @@ class whosThatPokemon(commands.Cog):
         self.async_session = sqlalchemy.orm.sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.color = Colour.red()
         self.pokemonDataFrame = pd.read_csv(data_path, index_col='name')
-        self.pokemonDataFrame = self.pokemonDataFrame.loc[self.pokemonDataFrame['blacked_path'].notna()]
+        self.pokemonDataFrame = self.pokemonDataFrame[self.pokemonDataFrame['clear_path'].notna()]
         self.skip_button = "⏭️"
         self.rank_button = "👑"
         self.hint_button = "❓"
         self.global_rank_button = "🌍"
-        self.on_cooldown = {}
+        self.cooldown = cooldown()
+        self.pokemonGenerations = {
+            'kanto':'1', 
+            'johto':'2', 
+            'hoenn':'3', 
+            'unova':'4', 
+            'kalos':'5', 
+            'alola':'6',
+            'mega':'m', 
+            'gmax':'g', 
+            'galar':'j'}
+        self.logger = logging.getLogger('discord')
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -76,48 +91,74 @@ class whosThatPokemon(commands.Cog):
         ## => FINAL COMPARISON
         return compare(wordSolution, wordGuess)
     
-    def checkCooldownCache(self, token, cooldownSeconds):
-        """Check if command is on cooldown and delete old keys"""
-        p = BaseProfiler("checkCooldownCache")
-        currentTime = datetime.utcnow()
-        if token in self.on_cooldown.keys():
-            if self.on_cooldown[token] + timedelta(seconds=cooldownSeconds) > currentTime:
-                # command still on cooldown
-                retry_after = (currentTime-self.on_cooldown[token]).seconds
-                cooldownObj = Cooldown(1, cooldownSeconds, BucketType.channel) 
-                raise commands.errors.CommandOnCooldown(cooldownObj, retry_after)
+    async def getGuildGifList(self, guildObj) -> list:
+        """Get list of available gifs for the specified guild. They are chosen by the selected
+            generations in the database"""
 
-        for key in list(self.on_cooldown.keys()):
-            if self.on_cooldown[key] + timedelta(seconds=cooldownSeconds) < currentTime:
-                # cooldown expired
-                del self.on_cooldown[key]
+        async with self.async_session() as session:
+            row = await session.execute(select(botGuilds).filter_by(guild_id=str(guildObj.id)))
+            guildInfo = row.scalars().first()
+            # sections of the pokedex
+            poke_generation = guildInfo.poke_generation
+            # Get guild tier
+            row = await session.execute(select(patreonUsers).filter_by(guild_id=str(guildObj.id)))
+            patreon_info = row.scalars().first()
+            if patreon_info:
+                guild_tier = patreon_info.tier
+            else:
+                guild_tier = 0
 
-        return True
+        ## => CREATE LIST
+        tier_filter = self.pokemonDataFrame['tier'].notna() >= guild_tier
+        no_gen_filter =  self.pokemonDataFrame['generation'].isna()
+
+        gifList = list(self.pokemonDataFrame[tier_filter & no_gen_filter].index)
+        for generation in self.pokemonGenerations.keys():
+            if self.pokemonGenerations[generation] in poke_generation:
+                gifList += list(self.pokemonDataFrame[self.pokemonDataFrame['generation']==generation].index)
+            
+        return gifList
             
     async def createQuestion(self, guild, skip=False, channel=None):
-        p = BaseProfiler("createQuestion")
-        gif_name = choice(self.pokemonDataFrame.index)
-        ## => SEND EMBED
-        embed = Embed(color=self.color)
-        embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar_url)
-        embed.description = "Type the name of the pokémon to guess it"
-        thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
-        embed.set_thumbnail(url="attachment://gif.gif")
-        # embed.set_footer(text="DEBUG ONLY: "+gif_name)
-        
-        ## => MEMORIZE THE SOLUTION
         async with self.async_session() as session:
-            thisGuild = await GetChannelIstance(session, guild.id, channel)
-            if not thisGuild:
-                return None, None
-            if skip and thisGuild.guessing == False:
-                return None, None
-            thisGuild.guessing = True
-            thisGuild.current_pokemon=gif_name
-            thisGuild.is_guessed=False
-            await session.commit()
+            p = BaseProfiler("createQuestion")
+            # get guild patreon tier
+            query = await session.execute(select(botGuilds.guild_id, patreonUsers.tier
+                        ).join(patreonUsers, patreonUsers.discord_id == botGuilds.patreon_discord_id
+                        ).filter(botGuilds.guild_id == str(guild.id)))
+	        
+            r = query.first()
+            if r:
+                guildTier = r[1]
+            else:
+                guildTier = 0
+            await session.close()
 
-        return thumb, embed
+        availableGifs = await self.getGuildGifList(guild)
+        if availableGifs:
+            gif_name = choice(availableGifs)
+            ## => SEND EMBED
+            embed = Embed(color=self.color)
+            embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar_url)
+            embed.description = "Type the name of the pokémon to guess it"
+            thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
+            embed.set_thumbnail(url="attachment://gif.gif")
+            
+            ## => MEMORIZE THE SOLUTION
+            async with self.async_session() as session:
+                thisGuild = await GetChannelIstance(session, guild.id, channel)
+                if not thisGuild:
+                    return None, None
+                if skip and thisGuild.guessing == False:
+                    return None, None
+                thisGuild.guessing = True
+                thisGuild.current_pokemon=gif_name
+                thisGuild.is_guessed=False
+                await session.commit()
+
+            return thumb, embed
+        
+        return None, None
     
     async def getHint(self, ctx):
         ## => CREATE HINT EMBED
@@ -130,7 +171,14 @@ class whosThatPokemon(commands.Cog):
             else:
                 ## => SCRAMBLE THE SOLUTION
                 solution = list(thisGuild.current_pokemon)
-                shuffle(solution)
+                if len(solution) <= 3:
+                    scrambled = "_ _ _"
+                else:
+                    for i in range(0,len(solution)):
+                        if i%2 == 1:
+                            solution[i] = '~'
+
+                # shuffle(solution)
                 scrambled = ''.join(solution).replace("-", " ")
                 embed = self.embedText(f"Here's a hint: {scrambled}")
                 return embed
@@ -188,6 +236,7 @@ class whosThatPokemon(commands.Cog):
 
     async def cog_check(self, ctx):
         p = BaseProfiler("cog_check")
+        return True
         ## => CHECK ACTIVATION
         if ctx.guild:
             async with self.async_session() as session:
@@ -200,10 +249,10 @@ class whosThatPokemon(commands.Cog):
                     session.add(newGuild)
                     await session.commit()
                     guildInfo = newGuild
-                if guildInfo.activate:
-                    return True
-                else:
-                    raise guildNotActive(guildInfo.guild_id)
+                # if guildInfo.patreon:
+                #     return True
+                # else:
+                #     raise guildNotActive(guildInfo.guild_id)
     
     async def only_admin(ctx):
         if ctx.message.author.guild_permissions.administrator:
@@ -232,24 +281,24 @@ class whosThatPokemon(commands.Cog):
 
         ## => FETCH GUILD DATA FROM DATABASE
         async with self.async_session() as session:
-            guildInfo = await GetChannelIstance(session, message.guild.id, message.channel.id)
-            if not guildInfo:
+            channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
+            if not channelIstance:
                 return
-            guildActivation = await GetGuildInfo(session, message.guild.id)
-            if not guildActivation.activate:
-                return
+            guildInfo = await GetGuildInfo(session, message.guild.id)
+            # if not guildActivation.patreon:
+            #     return
 
         ## => CHECK FOR THE CORRECT SOLUTION
-        raw_solution = guildInfo.current_pokemon
-        if not raw_solution or guildInfo.is_guessed:
+        raw_solution = channelIstance.current_pokemon
+        if not raw_solution or channelIstance.is_guessed:
             return
         if self.correctGuess(message.content, raw_solution):
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
                 ## => UPDATE GUILD STATUS
-                guildInfo = await GetChannelIstance(session, message.guild.id, message.channel.id)
-                guildInfo.is_guessed = True
+                channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
+                channelIstance.is_guessed = True
                 await session.commit()
                 ## => FETCH USER
                 currentUser = await session.execute(select(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)))
@@ -264,15 +313,19 @@ class whosThatPokemon(commands.Cog):
                     session.add(newUser)
                     currentUser = newUser
                 ## => INCREASE POINTS
-                currentUser.points = currentUser.points + 1 #global points
-                currentUser.points_from_reset = currentUser.points_from_reset + 1
+                pointsToAdd = 1
+                #if guildInfo.patreon:
+                #    pointsToAdd = 2
+                currentUser.points = currentUser.points + pointsToAdd #global points
+                currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
                 currentUser.username = message.author.name
                 serverWins = currentUser.points_from_reset
                 ## => UPDATE USERNAME IN ALL THE USER ENTRIES
+                username = message.author.name.replace("'", "\'")
                 await session.execute(sqlalchemy.update(userPoints).
                                         where(userPoints.user_id==str(message.author.id)).
-                                        values(username=message.author.name))
+                                        values(username=username))
                 ## => FETCH USER GLOBALLY
                 userGlobally = await session.execute(select(userPoints).filter_by(user_id=str(message.author.id)))
                 userGlobally = userGlobally.scalars().all()
@@ -306,8 +359,8 @@ class whosThatPokemon(commands.Cog):
                 await message.channel.send(file=pika, embed=embed)
 
             ## => SEND NEW QUESTION
-            if guildInfo.guessing:
-                file, embed = await self.createQuestion(message.guild, channel=guildInfo.channel_id)
+            if channelIstance.guessing:
+                file, embed = await self.createQuestion(message.guild, channel=channelIstance.channel_id)
                 await message.channel.send(file=file, embed=embed, components=self.addButtons())
                 
         # await self.bot.process_commands(message)
@@ -389,7 +442,11 @@ class whosThatPokemon(commands.Cog):
         ## => SEND EMBED     
         embed = Embed(color=self.color)
         embed.add_field(name=self.bot.user.name, value = text)
-        thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+        if global_flag:
+            thumbnail = File("./gifs/globe.gif", "trophy.gif")
+        else:
+            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.send(embed = embed, file = thumbnail)
 
@@ -398,11 +455,12 @@ class whosThatPokemon(commands.Cog):
 
         ## => CUSTOM COOLDOWN
         cooldownAmount = 20
-        token = ctx.message.channel.id
-        self.checkCooldownCache(token, cooldownAmount)
-        message = ctx.message
-        currentTime = datetime.utcnow()
-        self.on_cooldown[message.channel.id] = currentTime
+        id = ctx.message.channel.id
+        if self.cooldown.is_on_cooldown(id, 'skip', cooldownAmount):
+            self.logger.debug(f"{id}/skip on cooldown")
+            return
+
+        self.cooldown.add_cooldown(id, 'skip')
 
         ## => SEND PREVIOUS SOLUTION
         async with self.async_session() as session:
@@ -467,51 +525,120 @@ class whosThatPokemon(commands.Cog):
         message = interaction.message
         currentComponents = message.components
         reactionCtx = await self.bot.get_context(message)
+        
+        if interaction.custom_id.startswith('gen_'):
+            ## => LISTEN FOR BUTTONS OF GENERATION SELECTION
+            newComponents = interaction.message.components
+            for row in newComponents:
+                for button in row:
+                    if interaction.component == button:
+                        newStyle = ButtonStyle.red if button.style == ButtonStyle.green else ButtonStyle.green
+                        button.set_style(newStyle)
 
-        async def disableButton(btn_name):
-            for btn in currentComponents[0]:
-                if btn.custom_id == btn_name:
-                    btn.set_disabled(True)
-            await message.edit(components=currentComponents)
+            await interaction.edit_origin(components = newComponents)
+        
+        else:
+            ## => listen for buttons below the question embed
+            if self.cooldown.is_on_cooldown(message.id, interaction.custom_id, 60):
+                self.logger.debug(f"{message.id}/{interaction.custom_id} on cooldown")
+                await interaction.respond(embed=self.embedText("Button on cooldown"), ephemeral=True)
+            
+            elif interaction.custom_id=="hint_btn":
+                await reactionCtx.trigger_typing()
+                hint_embed = await self.getHint(reactionCtx)
+                await interaction.respond(embed=hint_embed, ephemeral=False)
 
-        if interaction.custom_id=="hint_btn":
-            await reactionCtx.trigger_typing()
-            await disableButton('hint_btn')
-            hint_embed = await self.getHint(reactionCtx)
-            await interaction.respond(embed=hint_embed, ephemeral=False)
+            elif interaction.custom_id=="skip_btn":
+                reactionCtx.command = self.skip
+                reactionCtx.invoked_with = 'skip'
+                try:
+                    await self.skip.invoke(reactionCtx)
+                    await interaction.respond(type=6)
+                    skipDisabledButtons = self.addButtons()
+                    for btn in skipDisabledButtons[0]:
+                        btn.set_disabled(True) # disable skip button
+                    await message.edit(components=skipDisabledButtons)
+                except :
+                    await interaction.respond(embed=self.embedText("Skip command on cooldown"))
 
-        elif interaction.custom_id=="skip_btn":
-            reactionCtx.command = self.skip
-            reactionCtx.invoked_with = 'skip'
-            try:
-                await self.skip.invoke(reactionCtx)
-                await interaction.respond(type=6)
-                await disableButton('skip_btn')
-            except :
-                await interaction.respond(embed=self.embedText("Skip command on cooldown"))
+            elif interaction.custom_id=="local_btn":
+                await reactionCtx.trigger_typing()
+                ## => GET LOCAL LEADERBOARD
+                text = await self.getRank(False, 20, message.guild.id)
+                ## => SEND EMBED     
+                embed = Embed(color=self.color)
+                embed.set_author(name=self.bot.user.name)
+                embed.add_field(name=f"Server Rank {self.rank_button}", value = text)
+                thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+                embed.set_thumbnail(url="attachment://trophy.gif")
+                await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
 
-        elif interaction.custom_id=="local_btn":
-            await reactionCtx.trigger_typing()
-            await disableButton('local_btn')
-            ## => GET LOCAL LEADERBOARD
-            text = await self.getRank(False, 10, message.guild.id)
-            ## => SEND EMBED     
-            embed = Embed(color=self.color)
-            embed.set_author(name=self.bot.user.name)
-            embed.add_field(name=f"Server Rank {self.rank_button}", value = text)
-            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
-            embed.set_thumbnail(url="attachment://trophy.gif")
-            await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
+            elif interaction.custom_id=="global_btn":
+                await reactionCtx.trigger_typing()
+                ## => GET LOCAL LEADERBOARD
+                text = await self.getRank(True, 20, message.guild.id)
+                ## => SEND EMBED     
+                embed = Embed(color=self.color)
+                embed.set_author(name=self.bot.user.name)
+                embed.add_field(name=f"Global Rank {self.global_rank_button}", value = text)
+                thumbnail = File("./gifs/globe.gif", "trophy.gif")
+                embed.set_thumbnail(url="attachment://trophy.gif")
+                await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
+            
+            self.cooldown.add_cooldown(interaction.message.id, interaction.custom_id)
 
-        elif interaction.custom_id=="global_btn":
-            await reactionCtx.trigger_typing()
-            await disableButton('global_btn')
-            ## => GET LOCAL LEADERBOARD
-            text = await self.getRank(True, 10, message.guild.id)
-            ## => SEND EMBED     
-            embed = Embed(color=self.color)
-            embed.set_author(name=self.bot.user.name)
-            embed.add_field(name=f"Global Rank {self.global_rank_button}", value = text)
-            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
-            embed.set_thumbnail(url="attachment://trophy.gif")
-            await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
+
+    async def generationButtons(self, guild):
+        """Generates the button layout for the specified guild. Buttons needed for 
+            generation selection."""
+
+        generations = list(self.pokemonGenerations.keys())
+        components =[[Button(label=(gen), style=ButtonStyle.red, custom_id=f'gen_{gen}') for gen in generations[i*5:i*5+4]] for i in range(len(generations)//4)]        
+        # add save button
+        components = components + [Button(label="Save", style=ButtonStyle.blue, custom_id='save_gen')]
+                    
+        async with self.async_session() as s:
+            guildInfo = await s.execute(select(botGuilds).filter_by(guild_id=str(guild.id)))
+            guildInfo = guildInfo.scalars().first()
+            poke_generation = guildInfo.poke_generation
+        
+        for row in components[:-1]:
+            for btn in row:
+                if self.pokemonGenerations[btn.id.replace('gen_', '')] in poke_generation:
+                    btn.set_style(ButtonStyle.green)
+
+        return components
+
+    # @commands.command(name="selectgenerations", help="Select the pokemon generations that are used in the game. Admin only")
+    @commands.has_permissions(administrator=True)
+    async def selectGen(self, ctx):
+        embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
+        components = await self.generationButtons(ctx.guild)
+        gen_msg = await ctx.send(embed=embed, components=components)
+
+        def savebutton(m):
+            return m.custom_id == 'save_gen'
+        try:
+            interaction = await self.bot.wait_for('button_click', check=savebutton, timeout=30)
+        except :
+            await gen_msg.delete()
+            embed = self.embedText("You didn't save in time.")
+            await ctx.send(embed=embed, delete_after=10)
+            return
+        
+        ##=> GET SELECTION AND WRITE TO DB
+        selectionString = ''
+        buttons = interaction.message.components
+        for row in buttons[:-1]:
+            for btn in row:
+                if btn.style == ButtonStyle.green:
+                    selectionString += self.pokemonGenerations[btn.id.replace('gen_', '')]
+
+        async with self.async_session() as session:
+            guildInfo = await session.execute(select(botGuilds).filter_by(guild_id=str(ctx.guild.id)))
+            guildInfo = guildInfo.scalars().first()
+            guildInfo.poke_generation = selectionString
+            await session.commit()
+
+        await interaction.edit_origin(embed=self.embedText("Saved!"), components=[], delete_after=10)
+        

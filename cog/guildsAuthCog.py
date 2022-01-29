@@ -1,3 +1,4 @@
+import logging
 from discord.ext import commands, tasks
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import insert, update
@@ -15,6 +16,7 @@ from cog.whosThatPokemonCog import(
     patreonUsers,
     GetGuildInfo)
 from patreonAPI import fetch_patreons
+import asyncio
 
 class guildsAuthCog(commands.Cog):
     def __init__(self, bot, patreonKey, patreonCreatorId, engine):
@@ -31,7 +33,7 @@ class guildsAuthCog(commands.Cog):
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
         self.DiscordComponentsInit = False
-        # test commmit master
+        self.logger = logging.getLogger('discord')
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         """Return the discord id of the patreon if there is a match, None otherwise"""
@@ -51,7 +53,7 @@ class guildsAuthCog(commands.Cog):
 
     async def updatePatreons(self):
         ## => FETCH PATREONS FROM API
-        patreons_dict = fetch_patreons(os.getenv("PATREON_TOKEN"))
+        patreons_dict = await fetch_patreons(os.getenv("PATREON_TOKEN"))
         ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
         async with self.async_session() as session:
             patreonsDb = await session.execute(select(patreonUsers))
@@ -97,7 +99,7 @@ class guildsAuthCog(commands.Cog):
 
             newGuild.currently_joined=True
             await session.commit()
-        print("GUILD ADDED TO THE DB: ", guild.name)
+        self.logger.debug("GUILD ADDED TO THE DB: ", guild.name)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
@@ -108,7 +110,7 @@ class guildsAuthCog(commands.Cog):
             if newGuild:
                 newGuild.currently_joined= False
                 await session.commit()
-                print("BOT LEFT GUILD: ", guild.name)
+                self.logger.debug("BOT LEFT GUILD: ", guild.name)
 
     @tasks.loop(minutes=10)
     async def verification(self):
@@ -124,16 +126,20 @@ class guildsAuthCog(commands.Cog):
             patreonIds = [p.discord_id for p in patreons if not p.sub_status]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
-            for guild in guilds:
-
+            
+            async def activate_guild(guild):
+                """
+                Coroutine to check if a patreon is the owner of this guild and 
+                update the database.bot_guilds and database.patreon_users
+                """
                 if int(guild.guild_id) in self.guildWhiteList:
                     ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
-                    guild.activate = True
+                    guild.patreon = True
                     guild.patreon_discord_id = None
 
                 elif self.free_period:
                     ## => DISABLE PATREON IN THE FREE PERIOD
-                    guild.activate=True
+                    guild.patreon=True
 
                 else:
                     ## => CHECK FOR PATREON SUBSCRIPTION
@@ -141,7 +147,7 @@ class guildsAuthCog(commands.Cog):
                     
                     if patreonId:
                         ## => ACTIVATE THE GUILD WITH PATREON
-                        guild.activate = True
+                        guild.patreon = True
                         guild.patreon_discord_id = str(patreonId)
 
                     else:
@@ -150,17 +156,19 @@ class guildsAuthCog(commands.Cog):
                         joined = parser.parse(guild.joined_utc)
                         guild.patreon_discord_id = None
                         if now-joined > timedelta(days=self.trial_days):
-                            guild.activate = False
+                            guild.patreon = False
                             guild.patreon_discord_id = None
                         else:
-                            guild.activate = True
+                            guild.patreon = True
                             guild.patreon_discord_id = None
-        
+            
+            # Check all the guilds in a async way
+            await asyncio.gather(*map(activate_guild, guilds))
             await session.commit()
 
         toc = datetime.now()
         delta = toc-tic
-        print("Verification executed in: ", delta)
+        self.logger.debug("Verification executed in: ", delta)
 
     @commands.command(name = "help", help="Show this message")
     async def help(self, ctx):
@@ -188,7 +196,7 @@ class guildsAuthCog(commands.Cog):
             embed.description = f"**ACTIVATION:**  The bot is free for now! Please support us on Patreon! [Patreon link]({self.patreon_link})"
         elif trial_flag:
             embed.description = f"**ACTIVATION:**  {days_left} days left before trial period will end. To keep using the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions+"\n"
-        elif guildInfo.activate == False:
+        elif guildInfo.patreon == False:
             embed.descriprion = f"**ACTIVATION:**  the bot is not activated. To activate the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions
         elif guildInfo.patreon_discord_id != None:
             embed.set_footer(text="ACTIVATION:  the bot is activated with patreon subscription")
@@ -198,7 +206,7 @@ class guildsAuthCog(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         p = BaseProfiler("on_ready")
-        print("Bot connected")
+        self.logger.info("Bot connected")
         if not self.DiscordComponentsInit:
             DiscordComponents(self.bot)
             self.DiscordComponentsInit = True
@@ -235,7 +243,7 @@ class guildsAuthCog(commands.Cog):
             serverPrefixes = res.all()
             for prefix in serverPrefixes:
                 self.bot.customGuildPrefixes[int(prefix.guild_id)] = prefix.prefix
-            print('prefixes loaded')
+            self.logger.info('prefixes loaded')
 
 
 
@@ -252,8 +260,10 @@ class guildsAuthCog(commands.Cog):
         elif isinstance(error, guildNotActive):
             embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
             await ctx.send(embed = embed)
-            print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
-        elif isinstance(error, commands.errors.CommandOnCooldown) or isinstance(error, commands.errors.MissingPermissions):
+            self.logger.debug("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
+        elif isinstance(error, commands.errors.MissingPermissions):
+            return
+        elif isinstance(error, commands.errors.CommandOnCooldown):
             return
         elif isinstance(error, commands.errors.CommandNotFound):
             return
@@ -261,7 +271,7 @@ class guildsAuthCog(commands.Cog):
             embed = self.embedText(str(error))
             await ctx.send(embed=embed)
         elif isinstance(error, commands.errors.CommandError):
-            print(error)
+            self.logger.warning(error)
             
             ## => CHECK IF GUILD IS IN THE DB
             async with self.async_session() as session:
@@ -273,8 +283,8 @@ class guildsAuthCog(commands.Cog):
                                     activate=True)
                     session.add(newGuild)
                     await session.commit()
-                    print("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
+                    self.logger.warning("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
         else:
-            print(error)
+            self.logger.warning(error)
 
 

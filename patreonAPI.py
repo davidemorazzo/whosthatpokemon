@@ -1,15 +1,16 @@
 import patreon
+import asyncio
 
 #Versione API:2
 # ACCESS_TOKEN = "pskTwhilaLvThYGConYs0go1J_s7BrcyCDqX3xdn9bw"
 AC_TOKEN = "AEvOwWqKgxLyQ4CR27erNQlCkaJcMZC8WKiE2IrJOBQ"
 
-#TODO make this async
-def fetch_patreons(ACCESS_TOKEN) -> dict:
+async def fetch_patreons(ACCESS_TOKEN) -> dict:
     api_client = patreon.API(ACCESS_TOKEN)
 
     # Get the campaign ID
-    campaign_response = api_client.fetch_campaign()
+    fetch_campaign = lambda: api_client.fetch_campaign()
+    campaign_response = await asyncio.to_thread(fetch_campaign)
     campaign_id = campaign_response.data()[0].id()
 
     # Fetch all pledges
@@ -30,9 +31,12 @@ def fetch_patreons(ACCESS_TOKEN) -> dict:
         member = pledge.relationship('patron')
         discord_id = member.attribute('social_connections')['discord']
         reward_tier = str(pledge.relationship('reward').attribute('amount_cents'))
+        patreon_id = pledge.relationship('patron').id()
 
         if discord_id != None:
-            active_user_dict[discord_id['user_id']] = [str(declined), reward_tier]
+            active_user_dict[discord_id['user_id']] = {'declined_since':str(declined),
+                                                        'tier': reward_tier,
+                                                        'patreon_id': patreon_id}
     
     return active_user_dict
 

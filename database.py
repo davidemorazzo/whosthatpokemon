@@ -25,15 +25,16 @@ class patreonUsers(Base):
 class botGuilds(Base):
     __tablename__ = "bot_guilds"
     guild_id = Column(String, primary_key=True, nullable=False)
-    activate = Column(Boolean, nullable=False)
+    patreon = Column(Boolean, nullable=False)
     joined_utc = Column(String, nullable=False)
     currently_joined = Column(Boolean, nullable=False)
     patreon_discord_id = Column(String, unique=True, nullable=True)
     prefix = Column(String)
+    poke_generation = Column(String)
 
     def __repr__(self):
         return "<Guild(guild_id=%s, activated=%s, join=%s, patreon_user_id=%s)>" % (
-            self.guild_id, self.activate, self.joined_utc, self.patreon_discord_id)
+            self.guild_id, self.patreon, self.joined_utc, self.patreon_discord_id)
 
 class userPoints(Base):
     __tablename__ = "user_points"
@@ -54,7 +55,6 @@ class botChannelIstance(Base):
     current_pokemon = Column(String)
     is_guessed = Column(Boolean)
     UniqueConstraint(guild_id, channel_id)
-
 
 
 def init_database(url:String):
