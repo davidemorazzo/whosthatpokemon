@@ -465,27 +465,34 @@ class whosThatPokemon(commands.Cog):
     async def on_button_click(self, interaction):
         p = BaseProfiler("on_button_click")
         message = interaction.message
+        currentComponents = message.components
         reactionCtx = await self.bot.get_context(message)
+
+        async def disableButton(btn_name):
+            for btn in currentComponents[0]:
+                if btn.custom_id == btn_name:
+                    btn.set_disabled(True)
+            await message.edit(components=currentComponents)
 
         if interaction.custom_id=="hint_btn":
             await reactionCtx.trigger_typing()
+            await disableButton('hint_btn')
             hint_embed = await self.getHint(reactionCtx)
             await interaction.respond(embed=hint_embed, ephemeral=False)
 
         elif interaction.custom_id=="skip_btn":
+            await disableButton('skip_btn')
             reactionCtx.command = self.skip
             reactionCtx.invoked_with = 'skip'
             try:
                 await self.skip.invoke(reactionCtx)
                 await interaction.respond(type=6)
-                skipDisabledButtons = self.addButtons()
-                skipDisabledButtons[0][1].set_disabled(True) # disable skip button
-                await message.edit(components=skipDisabledButtons)
             except :
                 await interaction.respond(embed=self.embedText("Skip command on cooldown"))
 
         elif interaction.custom_id=="local_btn":
             await reactionCtx.trigger_typing()
+            await disableButton('local_btn')
             ## => GET LOCAL LEADERBOARD
             text = await self.getRank(False, 10, message.guild.id)
             ## => SEND EMBED     
@@ -498,6 +505,7 @@ class whosThatPokemon(commands.Cog):
 
         elif interaction.custom_id=="global_btn":
             await reactionCtx.trigger_typing()
+            await disableButton('global_btn')
             ## => GET LOCAL LEADERBOARD
             text = await self.getRank(True, 10, message.guild.id)
             ## => SEND EMBED     
