@@ -481,12 +481,12 @@ class whosThatPokemon(commands.Cog):
             await interaction.respond(embed=hint_embed, ephemeral=False)
 
         elif interaction.custom_id=="skip_btn":
-            await disableButton('skip_btn')
             reactionCtx.command = self.skip
             reactionCtx.invoked_with = 'skip'
             try:
                 await self.skip.invoke(reactionCtx)
                 await interaction.respond(type=6)
+                await disableButton('skip_btn')
             except :
                 await interaction.respond(embed=self.embedText("Skip command on cooldown"))
 
