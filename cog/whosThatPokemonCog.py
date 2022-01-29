@@ -245,7 +245,7 @@ class whosThatPokemon(commands.Cog):
                     newGuild = botGuilds(guild_id=str(ctx.guild.id),
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
-                                    activate=True)
+                                    patreon=True)
                     session.add(newGuild)
                     await session.commit()
                     guildInfo = newGuild

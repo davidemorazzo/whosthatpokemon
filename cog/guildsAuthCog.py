@@ -94,7 +94,7 @@ class guildsAuthCog(commands.Cog):
                 newGuild = botGuilds(guild_id=str(guild.id),
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
-                                    activate=True)
+                                    patreon=True)
                 session.add(newGuild)
 
             newGuild.currently_joined=True
@@ -230,7 +230,7 @@ class guildsAuthCog(commands.Cog):
             ## => ADD THE GUILD THAT JOINED BUT NOT IN THE DB
             for guildId in botJoinedGuildsIds:
                 newGuild = botGuilds(guild_id = str(guildId),
-                                        activate=True,
+                                        patreon=True,
                                         currently_joined=True,
                                         joined_utc=str(datetime.utcnow()),
                                         patreon_discord_id = None,
@@ -280,7 +280,7 @@ class guildsAuthCog(commands.Cog):
                     newGuild = botGuilds(guild_id=str(ctx.guild.id),
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
-                                    activate=True)
+                                    patreon=True)
                     session.add(newGuild)
                     await session.commit()
                     self.logger.warning("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
