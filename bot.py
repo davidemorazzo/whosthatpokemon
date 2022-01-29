@@ -80,6 +80,8 @@ if __name__ == '__main__':
 
 # TODO aggiungere pokemon per patreon (da scaricare)
 # TODO mettere certi pokemon solo per server patreon
+# TODO cooldowns for all buttons: 1 minute
+# TODO fix farfetch'd answer
 
 # --- cambiamenti database ---
 # TODO aggiungere colonna poke_generation in database

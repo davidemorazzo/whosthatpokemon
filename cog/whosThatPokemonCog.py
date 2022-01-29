@@ -95,8 +95,19 @@ class whosThatPokemon(commands.Cog):
             guildInfo = row.scalars().first()
             # sections of the pokedex
             poke_generation = guildInfo.poke_generation
+            # Get guild tier
+            row = await session.execute(select(patreonUsers).filter_by(guild_id=str(guildObj.id)))
+            patreon_info = row.scalars().first()
+            if patreon_info:
+                guild_tier = patreon_info.tier
+            else:
+                guild_tier = 0
 
-        gifList = list(self.pokemonDataFrame[self.pokemonDataFrame['generation'].isna()].index)
+        ## => CREATE LIST
+        tier_filter = self.pokemonDataFrame['tier'].notna() >= guild_tier
+        no_gen_filter =  self.pokemonDataFrame['generation'].isna()
+
+        gifList = list(self.pokemonDataFrame[tier_filter & no_gen_filter].index)
         for generation in self.pokemonGenerations.keys():
             if self.pokemonGenerations[generation] in poke_generation:
                 gifList += list(self.pokemonDataFrame[self.pokemonDataFrame['generation']==generation].index)
@@ -542,7 +553,7 @@ class whosThatPokemon(commands.Cog):
         elif interaction.custom_id=="local_btn":
             await reactionCtx.trigger_typing()
             ## => GET LOCAL LEADERBOARD
-            text = await self.getRank(False, 10, message.guild.id)
+            text = await self.getRank(False, 20, message.guild.id)
             ## => SEND EMBED     
             embed = Embed(color=self.color)
             embed.set_author(name=self.bot.user.name)
@@ -554,7 +565,7 @@ class whosThatPokemon(commands.Cog):
         elif interaction.custom_id=="global_btn":
             await reactionCtx.trigger_typing()
             ## => GET LOCAL LEADERBOARD
-            text = await self.getRank(True, 10, message.guild.id)
+            text = await self.getRank(True, 20, message.guild.id)
             ## => SEND EMBED     
             embed = Embed(color=self.color)
             embed.set_author(name=self.bot.user.name)
