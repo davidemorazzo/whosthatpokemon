@@ -40,6 +40,7 @@ async def getServerPrefix(bot, message):
 
 if __name__ == '__main__':
     load_dotenv()
+    logger = logging.getLogger('discord')
 
     ## => TRY DATABASE CONNECTION
     try:
@@ -47,7 +48,11 @@ if __name__ == '__main__':
         LOCAL_DB_STRING = 'postgresql+asyncpg://postgres:root@localhost/whosthatpokemon'
         engine = init_database(LOCAL_DB_STRING)
         BOT_TOKEN = "ODU1MzkyOTMxMjAzMjUyMjM0.YMx0vw.GUK6TGjobT6Ez2KE4KrCi21RFdQ" ## => TOKEN DI DAVIDE
-        print("Bot initialized for local machine")
+        logger.setLevel(logging.DEBUG)
+        handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+        handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+        logger.addHandler(handler)  
+        logger.info("Bot initialized for local machine")
     except:
         try:
             ## => INITIALIZE FOR HEROKU
@@ -55,17 +60,15 @@ if __name__ == '__main__':
             #HEROKU_DB_STRING = 'postgresql+asyncpg://wdomuberrwkvzh:f3b37ae66dd1397e652ccb0bd0851d6fd6b30c0db76bc2182183cafe7dd67232@ec2-52-209-171-51.eu-west-1.compute.amazonaws.com:5432/d2ioeuuac8amki'
             engine = init_database(HEROKU_DB_STRING)
             BOT_TOKEN = os.getenv("DISCORD_TOKEN")
-            print("Bot inizialied for Heroku server")
+            logger.setLevel(logging.INFO)
+            consoleHandler = logging.StreamHandler()
+            consoleHandler.setFormatter(logging.Formatter('%(levelname)s:%(message)s'))
+            logger.addHandler(consoleHandler)
+            logger.info("Bot inizialied for Heroku server")
         except Exception as e:
-            print("Could not connect to the database: ", e)
+            print("Could not connect to the database")
             exit()
 
-    ## => SETUP LOGGING
-    logger = logging.getLogger('discord')
-    logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-    logger.addHandler(handler)  
 
     bot = commands.Bot(command_prefix=getServerPrefix)
     bot.remove_command("help")
@@ -74,13 +77,12 @@ if __name__ == '__main__':
     bot.add_check(noDirectMessage)
     bot.customGuildPrefixes = {}
 
-    print("Bot spooling up...")
+    logger.info("Bot spooling up...")
     bot.run(BOT_TOKEN)
 
 
 # TODO aggiungere pokemon per patreon (da scaricare)
 # TODO mettere certi pokemon solo per server patreon
-# TODO cooldowns for all buttons: 1 minute
 # TODO fix farfetch'd answer
 
 # --- cambiamenti database ---

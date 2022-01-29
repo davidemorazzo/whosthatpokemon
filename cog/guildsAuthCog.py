@@ -1,3 +1,4 @@
+import logging
 from discord.ext import commands, tasks
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import insert, update
@@ -32,6 +33,7 @@ class guildsAuthCog(commands.Cog):
         self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
         self.DiscordComponentsInit = False
+        self.logger = logging.getLogger('discord')
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         """Return the discord id of the patreon if there is a match, None otherwise"""
@@ -97,7 +99,7 @@ class guildsAuthCog(commands.Cog):
 
             newGuild.currently_joined=True
             await session.commit()
-        print("GUILD ADDED TO THE DB: ", guild.name)
+        self.logger.debug("GUILD ADDED TO THE DB: ", guild.name)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
@@ -108,7 +110,7 @@ class guildsAuthCog(commands.Cog):
             if newGuild:
                 newGuild.currently_joined= False
                 await session.commit()
-                print("BOT LEFT GUILD: ", guild.name)
+                self.logger.debug("BOT LEFT GUILD: ", guild.name)
 
     @tasks.loop(minutes=10)
     async def verification(self):
@@ -166,7 +168,7 @@ class guildsAuthCog(commands.Cog):
 
         toc = datetime.now()
         delta = toc-tic
-        print("Verification executed in: ", delta)
+        self.logger.debug("Verification executed in: ", delta)
 
     @commands.command(name = "help", help="Show this message")
     async def help(self, ctx):
@@ -204,7 +206,7 @@ class guildsAuthCog(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         p = BaseProfiler("on_ready")
-        print("Bot connected")
+        self.logger.info("Bot connected")
         if not self.DiscordComponentsInit:
             DiscordComponents(self.bot)
             self.DiscordComponentsInit = True
@@ -241,7 +243,7 @@ class guildsAuthCog(commands.Cog):
             serverPrefixes = res.all()
             for prefix in serverPrefixes:
                 self.bot.customGuildPrefixes[int(prefix.guild_id)] = prefix.prefix
-            print('prefixes loaded')
+            self.logger.info('prefixes loaded')
 
 
 
@@ -258,7 +260,7 @@ class guildsAuthCog(commands.Cog):
         elif isinstance(error, guildNotActive):
             embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
             await ctx.send(embed = embed)
-            print("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
+            self.logger.debug("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
         elif isinstance(error, commands.errors.MissingPermissions):
             return
         elif isinstance(error, commands.errors.CommandOnCooldown):
@@ -269,7 +271,7 @@ class guildsAuthCog(commands.Cog):
             embed = self.embedText(str(error))
             await ctx.send(embed=embed)
         elif isinstance(error, commands.errors.CommandError):
-            print(error)
+            self.logger.warning(error)
             
             ## => CHECK IF GUILD IS IN THE DB
             async with self.async_session() as session:
@@ -281,8 +283,8 @@ class guildsAuthCog(commands.Cog):
                                     activate=True)
                     session.add(newGuild)
                     await session.commit()
-                    print("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
+                    self.logger.warning("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
         else:
-            print(error)
+            self.logger.warning(error)
 
 

@@ -23,6 +23,10 @@ from database import (
     GetGuildInfo)
 from discord_components import Button, ButtonStyle
 from profiling.profiler import BaseProfiler
+import logging
+from .utils import(
+    cooldown
+)
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
@@ -40,7 +44,7 @@ class whosThatPokemon(commands.Cog):
         self.rank_button = "👑"
         self.hint_button = "❓"
         self.global_rank_button = "🌍"
-        self.on_cooldown = {}
+        self.cooldown = cooldown()
         self.pokemonGenerations = {
             'kanto':'1', 
             'johto':'2', 
@@ -51,6 +55,7 @@ class whosThatPokemon(commands.Cog):
             'mega':'m', 
             'gmax':'g', 
             'galar':'j'}
+        self.logger = logging.getLogger('discord')
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -455,7 +460,11 @@ class whosThatPokemon(commands.Cog):
         ## => SEND EMBED     
         embed = Embed(color=self.color)
         embed.add_field(name=self.bot.user.name, value = text)
-        thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+        if global_flag:
+            thumbnail = File("./gifs/globe.gif", "trophy.gif")
+        else:
+            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.send(embed = embed, file = thumbnail)
 
@@ -464,11 +473,12 @@ class whosThatPokemon(commands.Cog):
 
         ## => CUSTOM COOLDOWN
         cooldownAmount = 20
-        token = ctx.message.channel.id
-        self.checkCooldownCache(token, cooldownAmount)
-        message = ctx.message
-        currentTime = datetime.utcnow()
-        self.on_cooldown[message.channel.id] = currentTime
+        id = ctx.message.channel.id
+        if self.cooldown.is_on_cooldown(id, 'skip', cooldownAmount):
+            self.logger.debug(f"{id}/skip on cooldown")
+            return
+
+        self.cooldown.add_cooldown(id, 'skip')
 
         ## => SEND PREVIOUS SOLUTION
         async with self.async_session() as session:
@@ -533,48 +543,7 @@ class whosThatPokemon(commands.Cog):
         message = interaction.message
         reactionCtx = await self.bot.get_context(message)
         
-        if interaction.custom_id=="hint_btn":
-            await reactionCtx.trigger_typing()
-            hint_embed = await self.getHint(reactionCtx)
-            await interaction.respond(embed=hint_embed, ephemeral=False)
-
-        elif interaction.custom_id=="skip_btn":
-            reactionCtx.command = self.skip
-            reactionCtx.invoked_with = 'skip'
-            try:
-                await self.skip.invoke(reactionCtx)
-                await interaction.respond(type=6)
-                skipDisabledButtons = self.addButtons()
-                skipDisabledButtons[0][1].set_disabled(True) # disable skip button
-                await message.edit(components=skipDisabledButtons)
-            except :
-                await interaction.respond(embed=self.embedText("Skip command on cooldown"))
-
-        elif interaction.custom_id=="local_btn":
-            await reactionCtx.trigger_typing()
-            ## => GET LOCAL LEADERBOARD
-            text = await self.getRank(False, 20, message.guild.id)
-            ## => SEND EMBED     
-            embed = Embed(color=self.color)
-            embed.set_author(name=self.bot.user.name)
-            embed.add_field(name=f"Server Rank {self.rank_button}", value = text)
-            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
-            embed.set_thumbnail(url="attachment://trophy.gif")
-            await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
-
-        elif interaction.custom_id=="global_btn":
-            await reactionCtx.trigger_typing()
-            ## => GET LOCAL LEADERBOARD
-            text = await self.getRank(True, 20, message.guild.id)
-            ## => SEND EMBED     
-            embed = Embed(color=self.color)
-            embed.set_author(name=self.bot.user.name)
-            embed.add_field(name=f"Global Rank {self.global_rank_button}", value = text)
-            thumbnail = File("./gifs/trophy.gif", "trophy.gif")
-            embed.set_thumbnail(url="attachment://trophy.gif")
-            await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
-        
-        elif interaction.custom_id.startswith('gen_'):
+        if interaction.custom_id.startswith('gen_'):
             ## => LISTEN FOR BUTTONS OF GENERATION SELECTION
             newComponents = interaction.message.components
             for row in newComponents:
@@ -584,6 +553,56 @@ class whosThatPokemon(commands.Cog):
                         button.set_style(newStyle)
 
             await interaction.edit_origin(components = newComponents)
+        
+        else:
+            ## => listen for buttons below the question embed
+            if self.cooldown.is_on_cooldown(message.id, interaction.custom_id, 60):
+                self.logger.debug(f"{message.id}/{interaction.custom_id} on cooldown")
+                await interaction.respond(embed=self.embedText("Button on cooldown"), ephemeral=True)
+            
+            elif interaction.custom_id=="hint_btn":
+                await reactionCtx.trigger_typing()
+                hint_embed = await self.getHint(reactionCtx)
+                await interaction.respond(embed=hint_embed, ephemeral=False)
+
+            elif interaction.custom_id=="skip_btn":
+                reactionCtx.command = self.skip
+                reactionCtx.invoked_with = 'skip'
+                try:
+                    await self.skip.invoke(reactionCtx)
+                    await interaction.respond(type=6)
+                    skipDisabledButtons = self.addButtons()
+                    for btn in skipDisabledButtons[0]:
+                        btn.set_disabled(True) # disable skip button
+                    await message.edit(components=skipDisabledButtons)
+                except :
+                    await interaction.respond(embed=self.embedText("Skip command on cooldown"))
+
+            elif interaction.custom_id=="local_btn":
+                await reactionCtx.trigger_typing()
+                ## => GET LOCAL LEADERBOARD
+                text = await self.getRank(False, 20, message.guild.id)
+                ## => SEND EMBED     
+                embed = Embed(color=self.color)
+                embed.set_author(name=self.bot.user.name)
+                embed.add_field(name=f"Server Rank {self.rank_button}", value = text)
+                thumbnail = File("./gifs/trophy.gif", "trophy.gif")
+                embed.set_thumbnail(url="attachment://trophy.gif")
+                await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
+
+            elif interaction.custom_id=="global_btn":
+                await reactionCtx.trigger_typing()
+                ## => GET LOCAL LEADERBOARD
+                text = await self.getRank(True, 20, message.guild.id)
+                ## => SEND EMBED     
+                embed = Embed(color=self.color)
+                embed.set_author(name=self.bot.user.name)
+                embed.add_field(name=f"Global Rank {self.global_rank_button}", value = text)
+                thumbnail = File("./gifs/globe.gif", "trophy.gif")
+                embed.set_thumbnail(url="attachment://trophy.gif")
+                await interaction.send(embed=embed, file=thumbnail, ephemeral=False)
+            
+            self.cooldown.add_cooldown(interaction.message.id, interaction.custom_id)
 
 
     async def generationButtons(self, guild):
@@ -607,7 +626,7 @@ class whosThatPokemon(commands.Cog):
 
         return components
 
-    @commands.command(name="selectgenerations", help="Select the pokemon generations that are used in the game. Admin only")
+    # @commands.command(name="selectgenerations", help="Select the pokemon generations that are used in the game. Admin only")
     @commands.has_permissions(administrator=True)
     async def selectGen(self, ctx):
         embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
