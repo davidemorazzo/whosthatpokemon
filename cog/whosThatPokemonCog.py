@@ -118,25 +118,6 @@ class whosThatPokemon(commands.Cog):
                 gifList += list(self.pokemonDataFrame[self.pokemonDataFrame['generation']==generation].index)
             
         return gifList
-
-
-    def checkCooldownCache(self, token, cooldownSeconds):
-        """Check if command is on cooldown and delete old keys"""
-        p = BaseProfiler("checkCooldownCache")
-        currentTime = datetime.utcnow()
-        if token in self.on_cooldown.keys():
-            if self.on_cooldown[token] + timedelta(seconds=cooldownSeconds) > currentTime:
-                # command still on cooldown
-                retry_after = (currentTime-self.on_cooldown[token]).seconds
-                cooldownObj = Cooldown(1, cooldownSeconds, BucketType.channel) 
-                raise commands.errors.CommandOnCooldown(cooldownObj, retry_after)
-
-        for key in list(self.on_cooldown.keys()):
-            if self.on_cooldown[key] + timedelta(seconds=cooldownSeconds) < currentTime:
-                # cooldown expired
-                del self.on_cooldown[key]
-
-        return True
             
     async def createQuestion(self, guild, skip=False, channel=None):
         async with self.async_session() as session:
@@ -333,8 +314,8 @@ class whosThatPokemon(commands.Cog):
                     currentUser = newUser
                 ## => INCREASE POINTS
                 pointsToAdd = 1
-                if guildInfo.patreon:
-                    pointsToAdd = 2
+                #if guildInfo.patreon:
+                #    pointsToAdd = 2
                 currentUser.points = currentUser.points + pointsToAdd #global points
                 currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
