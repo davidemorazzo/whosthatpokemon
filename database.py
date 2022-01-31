@@ -30,7 +30,7 @@ class botGuilds(Base):
     currently_joined = Column(Boolean, nullable=False)
     patreon_discord_id = Column(String, unique=True, nullable=True)
     prefix = Column(String)
-    poke_generation = Column(String)
+    poke_generation = Column(String, default='123456mgj')
 
     def __repr__(self):
         return "<Guild(guild_id=%s, activated=%s, join=%s, patreon_user_id=%s)>" % (

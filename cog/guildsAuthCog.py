@@ -99,7 +99,6 @@ class guildsAuthCog(commands.Cog):
 
             newGuild.currently_joined=True
             await session.commit()
-        self.logger.debug("GUILD ADDED TO THE DB: ", guild.name)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
