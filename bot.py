@@ -70,7 +70,7 @@ if __name__ == '__main__':
             exit()
 
 
-    bot = commands.Bot(command_prefix=getServerPrefix)
+    bot = commands.AutoShardedBot(command_prefix=getServerPrefix)
     bot.remove_command("help")
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
     bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME))
