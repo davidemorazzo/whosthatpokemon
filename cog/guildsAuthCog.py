@@ -1,4 +1,5 @@
 import logging
+import discord
 from discord.ext import commands, tasks
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import insert, update
@@ -6,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from datetime import datetime, timedelta
 from dateutil import parser
-from discord import Embed, Colour
+from discord import Embed, Colour, slash_command
 import os
 from cog.whosThatPokemonCog import(
     guildNotActive, 
@@ -167,8 +168,8 @@ class guildsAuthCog(commands.Cog):
         delta = toc-tic
         self.logger.debug("Verification executed in: ", delta)
 
-    @commands.command(name = "help", help="Show this message")
-    async def help(self, ctx):
+    @slash_command(name = "help", description="Show this message")
+    async def help(self, ctx:discord.ApplicationContext):
         ## => GUILD INFO FROM DB
         # TODO cambiare in slash command
         async with self.async_session() as session:
@@ -177,14 +178,13 @@ class guildsAuthCog(commands.Cog):
         days_left = self.trial_days - (datetime.utcnow()-join_date).days
         trial_flag = days_left >= 0 and guildInfo.patreon_discord_id ==None
 
-        embed = Embed(title="Commands help", colour=self.color)
-        command_names_list = [(x.name, x.signature, x.help) for x in self.bot.commands]
-        
+        embed = Embed(title="Commands help", colour=self.color)        
         # If there are no arguments, just list the commands:
-        for i,x in enumerate(self.bot.commands):
+        for i,x in enumerate(self.bot.all_commands):
+            cmd = self.bot.all_commands[x]
             embed.add_field(
-                name=x.name+' '+x.signature ,
-                value=x.help,
+                name=cmd.name+' ',
+                value=cmd.description,
                 inline=False
             )
 
@@ -199,7 +199,7 @@ class guildsAuthCog(commands.Cog):
         elif guildInfo.patreon_discord_id != None:
             embed.set_footer(text="ACTIVATION:  the bot is activated with patreon subscription")
 
-        bot_msg = await ctx.send(embed=embed)
+        bot_msg = await ctx.send_response(embed=embed)
     
     @commands.Cog.listener()
     async def on_ready(self):

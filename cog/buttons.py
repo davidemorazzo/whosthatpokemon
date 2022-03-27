@@ -44,16 +44,22 @@ class FourButtons(discord.ui.View):
         if cldwn:
             return
         
-        msg = interaction.message
-        ctx = await self.poke_cog.bot.get_context(msg)
-        ctx.command = self.poke_cog.skip
-        ctx.invoked_with = 'skip'
-        try:
-            await self.poke_cog.skip.invoke(ctx)
-            btn.disabled = True
-            await interaction.response.edit_message(view=self)
-        except :
-            await interaction.response.send_message(embed=self.embedText("Skip command on cooldown"))
+        # Send prev. solution
+        solution_embed, clear_thumb = await self.poke_cog.solution_embed(interaction.guild_id, interaction.channel_id)
+        if solution_embed:
+            await interaction.response.send_message(file=clear_thumb, embed=solution_embed)
+        file, embed = await self.poke_cog.createQuestion(interaction.guild,
+                            skip=True,
+                            channel=str(interaction.channel_id))
+        if not file:
+            ## => GUILD NOT GUESSING
+            embed = self.embedText("Start playing with Wtp!start")
+            await interaction.follow(embed=embed)
+            return
+        await interaction.followup.send(file=file, embed=embed, view=FourButtons(self))
+        # btn.disabled = True
+        # await interaction.followup.edit_message(view=self)
+        # Start cooldown
         self.poke_cog.cooldown.add_cooldown(interaction.message.id, id)
 
     @discord.ui.button(label="Local Rank", 

@@ -1,21 +1,19 @@
+import discord
 from discord.ext import commands
 from discord import Embed, File, Colour
 from discord.commands import slash_command, Option, permissions
-from discord.ext.commands import Cooldown
-from discord.ext.commands.cooldowns import BucketType
 
 import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
-from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from dotenv import load_dotenv
-from random import choice, shuffle
+from random import choice
 from collections import Counter
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
 
 from database import (
@@ -232,10 +230,12 @@ class whosThatPokemon(commands.Cog):
     async def cog_check(self, ctx):
         return True
     
-    async def only_admin(ctx):
+    async def only_admin(self, ctx:discord.ApplicationContext):
         if ctx.message.author.guild_permissions.administrator:
             return True
-        raise commands.errors.NotOwner("Only administrator can run this command")
+        else:
+            await ctx.delete()
+            raise commands.errors.NotOwner("Only administrator can run this command")
     
     async def getServerPrefix(self, message):
         p = BaseProfiler("getServerPrefix_cog")
@@ -392,7 +392,6 @@ class whosThatPokemon(commands.Cog):
                     ranking : Option(str, choices=["local", "global"], default="local"),
                     length : Option(int, min_value=1, max_value=20, default=10)
                 ):
-        # TODO rivedere argomenti
         
         ## => GET FORMATTED LEADERBOARD
         if ranking == "global":
@@ -414,8 +413,27 @@ class whosThatPokemon(commands.Cog):
         embed.set_thumbnail(url="attachment://trophy.gif") 
         await ctx.respond(embed = embed, file = thumbnail)
 
+    async def solution_embed(self, guild_id, channel_id) -> tuple:
+        """
+        return the correct solution embed
+        """
+        async with self.async_session() as session:
+            channelIstance = await GetChannelIstance(session, guild_id, channel_id)
+            raw_solution = channelIstance.current_pokemon
+        
+        description = self.pokemonDataFrame.loc[raw_solution]['description']
+        if description.strip() != "":
+            clearEmbed = Embed(color=self.color)
+            clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
+            clearEmbed.description = description
+            clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+            clearEmbed.set_thumbnail(url="attachment://clear.gif")
+            return clearEmbed, clearThumb
+        else:
+            return None, None
+
     @slash_command(name="skip", description="Skip this pokémon. 20 seconds of cooldown")
-    async def skip(self, ctx):
+    async def skip(self, ctx:discord.ApplicationContext):
         await ctx.defer()
         ## => CUSTOM COOLDOWN
         cooldownAmount = 20
@@ -427,19 +445,8 @@ class whosThatPokemon(commands.Cog):
         self.cooldown.add_cooldown(id, 'skip')
 
         ## => SEND PREVIOUS SOLUTION
-        async with self.async_session() as session:
-            channelIstance = await GetChannelIstance(session, ctx.guild.id, ctx.channel.id)
-            raw_solution = channelIstance.current_pokemon
-        
-        description = self.pokemonDataFrame.loc[raw_solution]['description']
-        if description.strip() != "":
-            clearEmbed = Embed(color=self.color)
-            clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-            clearEmbed.description = description
-            clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
-            # clearThumb = File("D:\\Programmazione\\Fiverr\\andychand400 v2\\gif script\\ezgif.com-gif-maker.webp", filename="clear.webp")
-            clearEmbed.set_thumbnail(url="attachment://clear.gif")
-            await ctx.respond(file=clearThumb, embed=clearEmbed)
+        solution_embed, clear_thumb = await self.solution_embed(ctx.guild_id, ctx.channel_id)
+        await ctx.respond(file=clear_thumb, embed=solution_embed)
 
         file, embed = await self.createQuestion(ctx.guild, skip=True, channel=str(ctx.channel.id))
         if not file:
@@ -453,8 +460,9 @@ class whosThatPokemon(commands.Cog):
     @slash_command(name="resetrank", 
                     description="Reset to zero the points of this server players. Global points will be kept. Only administrator",
                     default_permission = False)
-    @permissions.is_owner()
-    async def resetrank(self, ctx):      
+    async def resetrank(self, ctx):   
+
+        await self.only_admin(ctx)
         ## => POINTS_FROM_RESET TO 0 IN THE DB
         async with self.async_session() as session:
             guildPlayers = await session.execute(select(userPoints).filter_by(guild_id = str(ctx.guild.id)))
@@ -468,8 +476,9 @@ class whosThatPokemon(commands.Cog):
     @slash_command(name="prefix", 
                     description="Change the prefix of the bot. Admin only. Example: wtp!prefix ? ",
                     default_permission = False)
-    @permissions.is_owner()
-    async def changePrefix(self, ctx, prefix:str): 
+    async def changePrefix(self, ctx, prefix:str):
+
+        await self.only_admin(ctx) 
         ## => CHECK PREFIX
         if len(prefix.split(" ")) != 1 or '\"' in prefix or "\'" in prefix:
             embed = self.embedText(f"Prefix not valid")
@@ -500,8 +509,9 @@ class whosThatPokemon(commands.Cog):
     @slash_command(name="selectgenerations",
                  description="Select the pokemon generations that are used in the game. Admin only",
                  default_permission=False)
-    @permissions.is_owner()
     async def selectGen(self, ctx):
+
+        await self.only_admin(ctx)
         embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
         view = await self.generationButtons(ctx.guild)
         await ctx.send_response(embed=embed, view=view)
