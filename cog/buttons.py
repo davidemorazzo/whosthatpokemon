@@ -2,7 +2,7 @@ import discord
 
 class FourButtons(discord.ui.View):
     def __init__(self, poke_cog):
-        super().__init__()
+        super().__init__(timeout=None)
         self.poke_cog = poke_cog
         self.skip_button = "⏭️"
         self.rank_button = "👑"
@@ -12,8 +12,10 @@ class FourButtons(discord.ui.View):
         # TODO: da finire
 
     async def on_cooldown(self, btn_name:str, interaction:discord.Interaction)->bool:
-        if self.poke_cog.cooldown.is_on_cooldown(interaction.message.id, 
-                                                btn_name, 60):
+        # Check cooldown for spicific messages or for the channel
+        if self.poke_cog.cooldown.is_on_cooldown(interaction.channel_id,
+                                                btn_name,
+                                                60):
             self.logger.debug(f"{interaction.message.id}/{interaction.custom_id} on cooldown")
             await interaction.response.send_message(embed=self.poke_cog.embedText("Button on cooldown"), ephemeral=True)
             return True
@@ -33,7 +35,7 @@ class FourButtons(discord.ui.View):
         hint_embed = await self.poke_cog.getHint(interaction.guild_id, 
                                                 interaction.channel_id)
         await interaction.response.send_message(embed=hint_embed, ephemeral=False)
-        self.poke_cog.cooldown.add_cooldown(interaction.message.id, id)
+        self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
 
     @discord.ui.button(label="skip", 
                 style=discord.ButtonStyle.grey,
@@ -56,11 +58,9 @@ class FourButtons(discord.ui.View):
             embed = self.embedText("Start playing with Wtp!start")
             await interaction.follow(embed=embed)
             return
-        await interaction.followup.send(file=file, embed=embed, view=FourButtons(self))
-        # btn.disabled = True
-        # await interaction.followup.edit_message(view=self)
+        await interaction.followup.send(file=file, embed=embed, view=FourButtons(self.poke_cog))
         # Start cooldown
-        self.poke_cog.cooldown.add_cooldown(interaction.message.id, id)
+        self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
 
     @discord.ui.button(label="Local Rank", 
                 style=discord.ButtonStyle.grey,
@@ -80,7 +80,7 @@ class FourButtons(discord.ui.View):
         thumbnail = discord.File("./gifs/trophy.gif", "trophy.gif")
         embed.set_thumbnail(url="attachment://trophy.gif")
         await interaction.response.send_message(embed=embed, file=thumbnail, ephemeral=False)
-        self.poke_cog.cooldown.add_cooldown(interaction.message.id, id)
+        self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
 
 
     @discord.ui.button(label="Global Rank", 
@@ -102,4 +102,5 @@ class FourButtons(discord.ui.View):
         thumbnail = discord.File("./gifs/globe.gif", "trophy.gif")
         embed.set_thumbnail(url="attachment://trophy.gif")
         await interaction.followup.send(embed=embed, file=thumbnail, ephemeral=False)
-        self.poke_cog.cooldown.add_cooldown(interaction.message.id, id)
+        self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
+

@@ -231,7 +231,7 @@ class whosThatPokemon(commands.Cog):
         return True
     
     async def only_admin(self, ctx:discord.ApplicationContext):
-        if ctx.message.author.guild_permissions.administrator:
+        if ctx.author.guild_permissions.administrator:
             return True
         else:
             await ctx.delete()
@@ -434,17 +434,18 @@ class whosThatPokemon(commands.Cog):
 
     @slash_command(name="skip", description="Skip this pokémon. 20 seconds of cooldown")
     async def skip(self, ctx:discord.ApplicationContext):
-        await ctx.defer()
         ## => CUSTOM COOLDOWN
         cooldownAmount = 20
         id = ctx.channel_id
-        if self.cooldown.is_on_cooldown(id, 'skip', cooldownAmount):
-            self.logger.debug(f"{id}/skip on cooldown")
+        if self.cooldown.is_on_cooldown(id, 'skip_btn', cooldownAmount):
+            await ctx.response.send_message(embed=self.embedText("Command on cooldown"), ephemeral=True)
+            self.logger.debug(f"{id}/skip_btn  ->  on cooldown")
             return
 
-        self.cooldown.add_cooldown(id, 'skip')
+        self.cooldown.add_cooldown(id, 'skip_btn')
 
         ## => SEND PREVIOUS SOLUTION
+        await ctx.defer()
         solution_embed, clear_thumb = await self.solution_embed(ctx.guild_id, ctx.channel_id)
         await ctx.respond(file=clear_thumb, embed=solution_embed)
 
@@ -458,8 +459,7 @@ class whosThatPokemon(commands.Cog):
         await ctx.respond(file=file, embed=embed, view=FourButtons(self))
         
     @slash_command(name="resetrank", 
-                    description="Reset to zero the points of this server players. Global points will be kept. Only administrator",
-                    default_permission = False)
+                    description="Reset to zero the points of this server players. Global points will be kept. Only administrator")
     async def resetrank(self, ctx):   
 
         await self.only_admin(ctx)
@@ -471,27 +471,6 @@ class whosThatPokemon(commands.Cog):
                 player.points_from_reset = 0
             await session.commit()
         embed = self.embedText("Local ranks reset succesful!")
-        await ctx.send_response(embed=embed)
-
-    @slash_command(name="prefix", 
-                    description="Change the prefix of the bot. Admin only. Example: wtp!prefix ? ",
-                    default_permission = False)
-    async def changePrefix(self, ctx, prefix:str):
-
-        await self.only_admin(ctx) 
-        ## => CHECK PREFIX
-        if len(prefix.split(" ")) != 1 or '\"' in prefix or "\'" in prefix:
-            embed = self.embedText(f"Prefix not valid")
-            await ctx.send_response(embed=embed)
-            return
-        ## => CHANGE THE PREFIX IN THE DATABASE
-        async with self.async_session() as session:
-            guildInfo = await GetGuildInfo(session, ctx.guild.id)
-            guildInfo.prefix = prefix
-            await session.commit()
-        
-        self.bot.customGuildPrefixes[ctx.guild.id] = prefix # update prefix cache
-        embed = self.embedText(f"Prefix changed to {prefix}")
         await ctx.send_response(embed=embed)
 
     async def generationButtons(self, guild):
@@ -507,8 +486,7 @@ class whosThatPokemon(commands.Cog):
         return view
 
     @slash_command(name="selectgenerations",
-                 description="Select the pokemon generations that are used in the game. Admin only",
-                 default_permission=False)
+                 description="Select the pokemon generations that are used in the game. Admin only")
     async def selectGen(self, ctx):
 
         await self.only_admin(ctx)
