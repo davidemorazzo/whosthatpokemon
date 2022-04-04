@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
@@ -68,9 +69,11 @@ if __name__ == '__main__':
         except Exception as e:
             print("Could not connect to the database")
             exit()
+    # Discord intents
+    intents = discord.Intents.default()
+    intents.message_content = True
 
-
-    bot = commands.AutoShardedBot(command_prefix=getServerPrefix)
+    bot = commands.AutoShardedBot(command_prefix=getServerPrefix, intents=intents)
     bot.remove_command("help")
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
     bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME))

@@ -6,6 +6,7 @@ __pycache__/
 gifsDaRifare/
 gifs/original/
 gifWorkspace/
+pycord-env/
 
 # files
 pokemon_data.csv
@@ -13,3 +14,4 @@ copyHerokuDB.BAT
 profiling/logs.csv
 gifWorkspace/
 discord.log
+upgradePycord.BAT
