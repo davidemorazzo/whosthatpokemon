@@ -1,0 +1,905 @@
+001,Bulbasaur,Bulbasaur,妙蛙種子,妙蛙种子,Miàowāzhǒngzǐ,Miuhwājúngjí,奇異種子 Kèihyihjúngjí (HK)
+002,Ivysaur,Ivysaur,妙蛙草,妙蛙草,Miàowācǎo,Miuhwāchóu,奇異草 Kèihyihchóu (HK)
+003,Venusaur,Venusaur,妙蛙花,妙蛙花,Miàowāhuā,Miuhwāfā,奇異花 Kèihyihfā (HK)
+004,Charmander,Charmander,小火龍,小火龙,Xiǎohuǒlóng,Síufólùhng,-
+005,Charmeleon,Charmeleon,火恐龍,火恐龙,Huǒkǒnglóng,Fóhúnglùhng,-
+006,Charizard,Charizard,噴火龍,喷火龙,Pēnhuǒlóng,Panfólùhng,-
+007,Squirtle,Squirtle,傑尼龜,杰尼龟,Jiéníguī,Gihtnèihgwāi,車厘龜 Chēléigwāi (HK)
+008,Wartortle,Wartortle,卡咪龜,卡咪龟,Kǎmīguī,Kāmāigwāi,卡美龜 Kāméihgwāi (HK)
+009,Blastoise,Blastoise,水箭龜,水箭龟,Shuǐjiànguī,Séuijingwāi,-
+010,Caterpie,Caterpie,綠毛蟲,绿毛虫,Lǜmáochóng,Luhkmòuhchùhng,-
+011,Metapod,Metapod,鐵甲蛹,铁甲蛹,Tiějiáyǒng,Titgaapyúng,鐵甲蟲 Titgaapchùhng (HK)
+012,Butterfree,Butterfree,巴大蝶,巴大蝶,Bādàdié,Bādaaidihp,巴大蝴 Bādàhú (TW/CN)
+013,Weedle,Weedle,獨角蟲,独角虫,Dújiǎochóng,Duhkgokchùhng,-
+014,Kakuna,Kakuna,鐵殼蛹,铁壳蛹,Tiěkéyǒng,Tithokyúng,鐵殼昆 / 铁壳昆 Tiěkékūn (TW/CN)
+015,Beedrill,Beedrill,大針蜂,大针蜂,Dàzhēnfēng,Daaihjāmfūng,-
+016,Pidgey,Pidgey,波波,波波,Bōbō,Bōbō,-
+017,Pidgeotto,Pidgeotto,比比鳥,比比鸟,Bǐbǐniǎo,Béibéiníuh,-
+018,Pidgeot,Pidgeot,大比鳥,大比鸟,Dàbǐniǎo,Daaihbéiníuh,比鵰 / 比雕 Bǐdiāo (TW/CN)
+019,Rattata,Rattata,小拉達,小拉达,Xiǎolādá,Síulāaidaaht,小哥達 Síugōdaaht (HK)
+020,Raticate,Raticate,拉達,拉达,Lādá,Lāaidaaht,哥達 Gōdaaht (HK)
+021,Spearow,Spearow,烈雀,烈雀,Lièquè,Lihtjéuk,鬼雀 Gwáijéuk (HK)
+022,Fearow,Fearow,大嘴雀,大嘴雀,Dàzuǐquè,Daaihjéuijéuk,魔雀 Mōjéuk (HK)
+023,Ekans,Ekans,阿柏蛇,阿柏蛇,Ābóshé,Apaaksèh,-
+024,Arbok,Arbok,阿柏怪,阿柏怪,Ābóguài,Apaakgwai,-
+025,Pikachu,Pikachu,皮卡丘,皮卡丘,Píkǎqiū,Pèihkāyāu,比卡超 Béikāchīu (HK)
+026,Raichu,Raichu,雷丘,雷丘,Léiqiū,Lèuihyāu,雷超 Lèuihchīu (HK)
+027,Sandshrew,Sandshrew,穿山鼠,穿山鼠,Chuānshānshǔ,Chyūnsāansyú,-
+028,Sandslash,Sandslash,穿山王,穿山王,Chuānshānwáng,Chyūnsāanwòhng,-
+029,Nidoran♀,Nidoran♀,尼多蘭,尼多兰,Níduōlán,Nèihdōlàahn,尼美蘭 Nèihméihlàahn (HK)
+030,Nidorina,Nidorina,尼多娜,尼多娜,Níduōnà,Nèihdōnàh,尼美蘿 Nèihméihlòh (HK)
+031,Nidoqueen,Nidoqueen,尼多后,尼多后,Níduōhòu,Nèihdōhauh,尼美后 Nèihméihhauh (HK)
+032,Nidoran♂,Nidoran♂,尼多朗,尼多朗,Níduōláng,Nèihdōlóhng,尼多郎 Nèihdōlòhng (HK)
+033,Nidorino,Nidorino,尼多力諾,尼多力诺,Níduōlìnuò,Nèihdōlihknohk,尼多利 Nèihdōleih (HK)
+034,Nidoking,Nidoking,尼多王,尼多王,Níduōwáng,Nèihdōwòhng,-
+035,Clefairy,Clefairy,皮皮,皮皮,Pípí,Pèihpèih,-
+036,Clefable,Clefable,皮可西,皮可西,Píkěxī,Pèihhósāi,皮可斯 Pèihhósī (HK)
+037,Vulpix,Vulpix,六尾,六尾,Liùwěi,Luhkméih,-
+038,Ninetales,Ninetales,九尾,九尾,Jiǔwěi,Gáuméih,-
+039,Jigglypuff,Jigglypuff,胖丁,胖丁,Pàngdīng,Buhndīng,波波球 Bōbōkàuh (HK)
+040,Wigglytuff,Wigglytuff,胖可丁,胖可丁,Pàngkědīng,Buhnhódīng,肥波球 Fèihbōkàuh (HK)
+041,Zubat,Zubat,超音蝠,超音蝠,Chāoyīnfú,Chīuyāmfūk,波音蝠 Bōyāmfūk (HK)
+042,Golbat,Golbat,大嘴蝠,大嘴蝠,Dàzuǐfú,Daaihjéuifūk,大口蝠 Daaihháufūk (HK)
+043,Oddish,Oddish,走路草,走路草,Zǒulùcǎo,Jáulouhchóu,行路草 Hàahnglouhchóu (HK)
+044,Gloom,Gloom,臭臭花,臭臭花,Chòuchòuhuā,Chauchaufā,怪味花 Gwaaimeihfā (HK)
+045,Vileplume,Vileplume,霸王花,霸王花,Bàwánghuā,Bawòhngfā,-
+046,Paras,Paras,派拉斯,派拉斯,Pàilāsī,Pāailāaisī,蘑菇蟲 Mòhgūchùhng (HK)
+047,Parasect,Parasect,派拉斯特,派拉斯特,Pàilāsītè,Pāailāaisīdahk,巨菇蟲 Mòuhmòuhchùhng (HK)
+048,Venonat,Venonat,毛球,毛球,Máoqiú,Mòuhkàuh,毛毛蟲 Mòuhmòuhchùhng (HK)
+049,Venomoth,Venomoth,摩魯蛾,摩鲁蛾,Mólǔ'é,Mōlóuh'ngòh,末入蛾 Mòrù'é (TW/CN)
+050,Diglett,Diglett,地鼠,地鼠,Dìshǔ,Deihsyú,-
+051,Dugtrio,Dugtrio,三地鼠,三地鼠,Sāndìshǔ,Sāamdeihsyú,三頭地鼠 Sāamtàuhdeihsyú (HK)
+052,Meowth,Meowth,喵喵,喵喵,Miāomiāo,Mēumēu,喵喵怪 Mēumēugwaai (HK)
+053,Persian,Persian,貓老大,猫老大,Māolǎodà,Māaulóuhdaaih,高竇貓 Gōudauhmāau (HK)
+054,Psyduck,Psyduck,可達鴨,可达鸭,Kědáyā,Hódaaht'aap,傻鴨 Sòh'aap (HK)
+055,Golduck,Golduck,哥達鴨,哥达鸭,Gēdáyā,Gōdaaht'aap,高超鴨 Gōuchīu'aap (HK)
+056,Mankey,Mankey,猴怪,猴怪,Hóuguài,Hàuhgwaai,-
+057,Primeape,Primeape,火爆猴,火暴猴,Huǒbàohóu,Fóbaauhàuh,-
+058,Growlithe,Growlithe,卡蒂狗,卡蒂狗,Kǎdìgǒu,Kādaigáu,護主犬 Wuhjyúhyún (HK)
+059,Arcanine,Arcanine,風速狗,风速狗,Fēngsùgǒu,Fūngchūkgáu,奉神犬 Fuhngsàhnhyún (HK)
+060,Poliwag,Poliwag,蚊香蝌蚪,蚊香蝌蚪,Wénxiāngkēdǒu,Mānhēungfōdáu,-
+061,Poliwhirl,Poliwhirl,蚊香君,蚊香君,Wénxiāngjūn,Mānhēunggwān,蚊香蛙 Wénxiāngwā (TW/CN)
+062,Poliwrath,Poliwrath,蚊香泳士,蚊香泳士,Wénxiāngyǒngshì,Mānhēungwihngsih,快泳蛙 Kuàiyǒngwā (TW/CN)
+063,Abra,Abra,凱西,凯西,Kǎixī,Hóisāi,卡斯 Kāsī (HK)
+064,Kadabra,Kadabra,勇基拉,勇基拉,Yǒngjīlā,Yúhnggēilāai,勇吉拉 Yǒngjílā (TW/CN)
+065,Alakazam,Alakazam,胡地,胡地,Húdì,Wùhdeih,富迪 Fudihk (HK)
+066,Machop,Machop,腕力,腕力,Wànlì,Wúnlihk,鐵腕 Titwún (HK)
+067,Machoke,Machoke,豪力,豪力,Háolì,Hòuhlihk,大力 Daaihlihk (HK)
+068,Machamp,Machamp,怪力,怪力,Guàilì,Gwaailihk,-
+069,Bellsprout,Bellsprout,喇叭芽,喇叭芽,Lǎbāyá,Lābā'ngàh,-
+070,Weepinbell,Weepinbell,口呆花,口呆花,Kǒudāihuā,Háungòihfā,-
+071,Victreebel,Victreebel,大食花,大食花,Dàshíhuā,Daaihsihkfā,-
+072,Tentacool,Tentacool,瑪瑙水母,玛瑙水母,Mǎnǎoshuǐmǔ,Máhnóuhséuimóuh,大眼水母 Daaihngáahnséuimóuh (HK)
+073,Tentacruel,Tentacruel,毒刺水母,毒刺水母,Dúcìshuǐmǔ,Duhkchiséuimóuh,多腳水母 Dōgeukséuimóuh (HK)
+074,Geodude,Geodude,小拳石,小拳石,Xiǎoquánshí,Síukyùhnsehk,-
+075,Graveler,Graveler,隆隆石,隆隆石,Lónglóngshí,Lùhnglùhngsehk,滾動石 Gwánduhngsehk (HK)
+076,Golem,Golem,隆隆岩,隆隆岩,Lónglóngyán,Lùhnglùhngngàahm,滾動岩 Gwánduhngngàahm (HK)
+077,Ponyta,Ponyta,小火馬,小火马,Xiǎohuǒmǎ,Síufómáh,-
+078, ,Rapidash,烈焰馬,烈焰马,Lièyànmǎ,Lihtyihmmáh,-
+079, ,Slowpoke,呆呆獸,呆呆兽,Dāidāishòu,Ngòingòihsau,小呆獸 Síungòihsau (HK)
+080, ,Slowbro,呆殼獸,呆壳兽,Dāikéshòu,Ngòihhoksau,呆河馬 / 呆河马 Dāihémǎ (TW/CN)
+081,Magnemite,Magnemite,小磁怪,小磁怪,Xiǎocíguài,Síuchìhgwaai,-
+082,Magneton,Magneton,三合一磁怪,三合一磁怪,Sānhéyīcíguài,Sāamhahpyātchìhgwaai,-
+083,Farfetch'd,Farfetch'd,大蔥鴨,大葱鸭,Dàcōngyā,Daaihchūng'aap,火蔥鴨 Fóchūng'aap (HK)
+084,Doduo,Doduo,嘟嘟,嘟嘟,Dūdū,Dōudōu,多多 Dōdō (HK)
+085,Dodrio,Dodrio,嘟嘟利,嘟嘟利,Dūdūlì,Dōudōuleih,多多利 Dōdōleih (HK)
+086,Seel,Seel,小海獅,小海狮,Xiǎohǎishī,Síuhóisī,-
+087,Dewgong,Dewgong,白海獅,白海狮,Báihǎishī,Baahkhóisī,-
+088,Grimer,Grimer,臭泥,臭泥,Chòuní,Chaunàih,爛泥怪 Laahnnàihgwaai (HK)
+089,Muk,Muk,臭臭泥,臭臭泥,Chòuchòuní,Chauchaunàih,爛泥獸 Laahnnàihsau (HK)
+090,Shellder,Shellder,大舌貝,大舌贝,Dàshébèi,Daaihsitbui,貝殼怪 Buihokgwaai (HK)
+091,Cloyster,Cloyster,刺甲貝,刺甲贝,Cìjiǎbèi,Chigaapbui,鐵甲貝 / 铁甲贝 Tiějiǎbèi (TW/CN)
+092,Gastly,Gastly,鬼斯,鬼斯,Guǐsī,Gwáisī,-
+093,Haunter,Haunter,鬼斯通,鬼斯通,Guǐsītōng,Gwáisītūng,-
+094,Gengar,Gengar,耿鬼,耿鬼,Gěngguǐ,Gánggwái,-
+095,Onix,Onix,大岩蛇,大岩蛇,Dàyánshé,Daaihngàahmsèh,-
+096,Drowzee,Drowzee,催眠貘,催眠貘,Cuīmiánmò,Chēuimìhnmohk,素利普 Sùlìpǔ (TW/CN)
+097,Hypno,Hypno,引夢貘人,引梦貘人,Yǐnmèngmòrén,Yáhnmuhngmohkyàhn,素利拍 Sùlìpāi (TW/CN)
+098,Krabby,Krabby,大鉗蟹,大钳蟹,Dàqiánxiè,Daaihkìhmháaih,-
+099,Kingler,Kingler,巨鉗蟹,巨钳蟹,Jùqiánxiè,Geuihkìhmháaih,-
+100, ,Voltorb,霹靂電球,霹雳电球,Pīlìdiànqiú,Pīklīkdihnkàuh,雷電球 / 雷电球 Léidiànqiú (TW/CN)
+101, ,Electrode,頑皮雷彈,顽皮雷弹,Wánpíléidàn,Wàahnpèihlèuidáan,頑皮彈 / 顽皮弹 Wánpídàn (TW/CN)
+102, ,Exeggcute,蛋蛋,蛋蛋,Dàndàn,Dàahndáan,-
+103, ,Exeggutor,椰蛋樹,椰蛋树,Yédànshù
+104, ,Cubone,卡拉卡拉,卡拉卡拉,Kǎlākǎlā,Kālāaikālāai,可拉可拉 Kělākělā (TW/CN)
+105, ,Marowak,嘎啦嘎啦,嘎啦嘎啦,Gālagāla,Gālāaigālāai,嘎拉嘎拉 Gālāgālā (TW/CN)
+106, ,Hitmonlee,飛腿郎,飞腿郎,Fēituǐláng,Fēitéuilòhng,沙瓦郎 Shāwǎláng (TW/CN)
+107, ,Hitmonchan,快拳郎,快拳郎,Kuàiquánláng,Faaikyùhnlòhng,艾比郎 Àibǐláng (TW/CN)
+108, ,Lickitung,大舌頭,大舌头,Dàshétóu,Daaihsittàuh,-
+109, ,Koffing,瓦斯彈,瓦斯弹,Wǎsīdàn,Ngáhsīdáan,毒氣丸 Duhkheiyún (HK)
+110, ,Weezing,雙彈瓦斯,双弹瓦斯,Shuāngdànwǎsī,Sēungdáanngáhsī,毒氣雙子 Duhkheisēungjí (HK)
+111, ,Rhyhorn,獨角犀牛,独角犀牛,Dújiǎoxīniú,Duhkgoksāingàuh,鐵甲犀牛 / 铁甲犀牛 Tiějiǎxīniú (TW/CN)
+112, ,Rhydon,鑽角犀獸,钻角犀兽,Zuānjiǎoxīshòu,Jyungoksāisau,鐵甲暴龍 / 铁甲暴龙 Tiějiǎbàolóng (TW/CN)
+113, ,Chansey,吉利蛋,吉利蛋,Jílìdàn,Gātleihdáan,-
+114, ,Tangela,蔓藤怪,蔓藤怪,Mànténgguài,Maahntàhnggwaai,長籐怪 Chèuhngtàhnggwaai (HK)
+115, ,Kangaskhan,袋獸,袋兽,Dàishòu,Doihsau,袋龍 / 袋龙 Dàilóng (TW/CN)
+116, ,Horsea,墨海馬,墨海马,Mòhǎimǎ,Mahkhóimáh,噴墨海馬 Panmahkhóimáh (HK)
+117, ,Seadra,海刺龍,海刺龙,Hǎicìlóng,Hóichilùhng,飛刺海馬 Fēichihóimáh (HK)
+118, ,Goldeen,角金魚,角金鱼,Jiǎojīnyú,Gokgāmyú,獨角金魚 Duhkgokgāmyùh (HK)
+119, ,Seaking,金魚王,金鱼王,Jīnyúwáng,Gāmyùhwòhng,-
+120, ,Staryu,海星星,海星星,Hǎixīngxīng,Hóisīngsīng,-
+121, ,Starmie,寶石海星,宝石海星,Bǎoshíhǎixīng,Bóusehkhóisīng,-
+122, ,Mr. Mime,魔牆人偶,魔墙人偶,Móqiángrénǒu,Mōchèuhngyàhnngáuh,吸盤魔偶 / 吸盘魔偶 Xīpánmó'ǒu (TW/CN)
+123, ,Scyther,飛天螳螂,飞天螳螂,Fēitiāntángláng,Fēitīntòhnglòhng,-
+124, ,Jynx,迷唇姐,迷唇姐,Míchúnjiě,Màihsèuhnjé,紅唇娃 Hùhngsèuhnwā (HK)
+125, ,Electabuzz,電擊獸,电击兽,Diànjíshòu
+126, ,Magmar,鴨嘴火獸,鸭嘴火兽,Yāzuǐhuǒshòu,Aapjéuifósau,鴨嘴火龍 / 鸭嘴火龙 Yāzuǐhuǒlóng (TW/CN)
+127, ,Pinsir,凱羅斯,凯罗斯,Kǎiluósī,Hóilòhsī,大甲 Dàjiǎ (TW/CN)
+128, ,Tauros,肯泰羅,肯泰罗,Kěntàiluó,Hángtaailòh,大隻牛 Daaihjekngàuh (HK)
+129, ,Magikarp,鯉魚王,鲤鱼王,Lǐyúwáng,Léihyùhwòhng,-
+130, ,Gyarados,暴鯉龍,暴鲤龙,Bàolǐlóng,Bouhléihlùhng,鯉魚龍 Léihyùhlùhng (HK)
+131, ,Lapras,拉普拉斯,拉普拉斯,Lāpǔlāsī,Lāaipóulāaisī,乘龍 / 乘龙 Chénglóng (TW/CN)
+132,Ditto,Ditto,百變怪,百变怪,Bǎibiànguài,Baakbingwaai,-
+133,Eevee,Eevee,伊布,伊布,Yībù,Yībou,伊貝 Yībui (HK)
+134,Vaporeon,Vaporeon,水伊布,水伊布,Shuǐyībù,Séuiyībou,水精靈 / 水精灵 Shuǐjīnglíng (TW/CN)
+135,Jolteon,Jolteon,雷伊布,雷伊布,Léiyībù,Lèuihyībou,雷精靈 / 雷精灵 Léijīnglíng (TW/CN)
+136,Flareon,Flareon,火伊布,火伊布,Huǒyībù,Fóyībou,火精靈 / 火精灵 Huǒjīnglíng (TW/CN)
+137,Porygon,Porygon,多邊獸,多边兽,Duōbiānshòu,Dōbīnsau,3D龍 / 3D龙 3D-Lóng (TW/CN)
+138,Omanyte,Omanyte,菊石獸,菊石兽,Júshíshòu,Gūksehksau,-
+139,Omastar,Omastar,多刺菊石獸,多刺菊石兽,Duōcìjúshíshòu,Dōchigūksehksau,-
+140,Kabuto,Kabuto,化石盔,化石盔,Huàshíkuī,Fasehkkwāi,萬年蟲 Maahnnìhnchùhng (HK)
+141,Kabutops,Kabutops,鐮刀盔,镰刀盔,Liándāokuī,Lìhmdōukwāi,鐮刀蟲 Lìhmdōuchùhng (HK)
+142,Aerodactyl,Aerodactyl,化石翼龍,化石翼龙,Huàshíyìlóng,Fasehkyihklùhng,化石飛龍 Fasehkfēilùhng (HK)
+143,Snorlax,Snorlax,卡比獸,卡比兽,Kǎbǐshòu,Kābéisau,-
+144,Articuno,Articuno,急凍鳥,急冻鸟,Jídòngniǎo,Gāpdungníuh,-
+145,Zapdos,Zapdos,閃電鳥,闪电鸟,Shǎndiànniǎo,Símdihnníuh,雷鳥 Lèuihníuh (HK)
+146,Moltres,Moltres,火焰鳥,火焰鸟,Huǒyànniǎo,Fóyihmníuh,火鳥 Fóníuh (HK)
+147,Dratini,Dratini,迷你龍,迷你龙,Mínǐlóng,Màihnéihlùhng,-
+148,Dragonair,Dragonair,哈克龍,哈克龙,Hākèlóng,Hāhāklùhng,哈古龍 Hāgúlùhng (HK)
+149, ,Dragonite,快龍,快龙,Kuàilóng,Faailùhng,啟暴龍 Káibouhlùhng (HK)
+150, ,Mewtwo,超夢,超梦,Chāomèng,Chīumuhng,超夢夢 Chīumuhngmuhng (HK)
+151, ,Mew,夢幻,梦幻,Mènghuàn,Muhngwaahn,夢夢 Muhngmuhng (HK)
+152, ,Chikorita,菊草葉,菊草叶,Júcǎoyè,Gūkchóuyihp,-
+153, ,Bayleef,月桂葉,月桂叶,Yuèguìyè,Yuhtgwaiyihp,-
+154, ,Meganium,大竺葵,大竺葵,Dàzhúkuí,Daaihjūkkwàih,大菊花 Dàjúhuā (TW/CN)
+155, ,Cyndaquil,火球鼠,火球鼠,Huǒqiúshǔ,Fókàuhsyú,-
+156,Quilava,Quilava,火岩鼠,火岩鼠,Huǒyánshǔ,Fóngàahmsyú,-
+157,Typhlosion,Typhlosion,火爆獸,火暴兽,Huǒbàoshòu,Fóbaausau,火暴獸 Huǒbàoshòu (TW)
+158,Totodile,Totodile,小鋸鱷,小锯鳄,Xiǎojù'è,Síugeungohk,-
+159,Croconaw,Croconaw,藍鱷,蓝鳄,Lán'è,Làahmngohk,-
+160,Feraligatr,Feraligatr,大力鱷,大力鳄,Dàlì'è,Daaihlihkngohk,-
+161,Sentret,Sentret,尾立,尾立,Wěilì,Méihlaahp,-
+162,Furret,Furret,大尾立,大尾立,Dàwěilì,Daaihméihlaahp,-
+163,Hoothoot,Hoothoot,咕咕,咕咕,Gūgū,Gūgū,-
+164,Noctowl,Noctowl,貓頭夜鷹,猫头夜鹰,Māotóuyèyīng,Māautàuhyehyīng,-
+165,Ledyba,Ledyba,芭瓢蟲,芭瓢虫,Bāpiáochóng,Bāpìuhchùhng,-
+166,Ledian,Ledian,安瓢蟲,安瓢虫,Ānpiáochóng,Ōnpìuhchùhng,-
+167,Spinarak,Spinarak,圓絲蛛,圆丝蛛,Yuánsīzhū,Yùhnsījyū,線球 / 线球 Xiànqiú (TW/CN)
+168,Ariados,Ariados,阿利多斯,阿利多斯,Ālìduōsī,Aleihdōsī,-
+169,Crobat,Crobat,叉字蝠,叉字蝠,Chāzìfú,Chājihfūk,-
+170,Chinchou,Chinchou,燈籠魚,灯笼鱼,Dēnglóngyú,Dānglùhngyùh,-
+171,Lanturn,Lanturn,電燈怪,电灯怪,Diàndēngguài,Dihndānggwaai,-
+172,Pichu,Pichu,皮丘,皮丘,Píqiū,Pèihyāu,比超 Béichīu (HK)
+173,Cleffa,Cleffa,皮寶寶,皮宝宝,Píbǎobao,Pèihbóubóu,-
+174,Igglybuff,Igglybuff,寶寶丁,宝宝丁,Bǎobaodīng,Bóubóudīng,小波球 Síubōkàuh (HK)
+175,Togepi,Togepi,波克比,波克比,Bōkèbǐ,Bōhākbéi,小刺蛋 Síuchidáan (HK)
+176,Togetic,Togetic,波克基古,波克基古,Bōkèjīgǔ,Bōhākgēigú,波剋基古 Bōkèjīgǔ (TW)
+177, ,Natu,天然雀,天然雀,Tiānránquè,Tīnyìhnjéuk,-
+178, ,Xatu,天然鳥,天然鸟,Tiānránniǎo,Tīnyìhnníuh,-
+179, ,Mareep,咩利羊,咩利羊,Miēlìyáng,Mēleihyèuhng,-
+180, ,Flaaffy,茸茸羊,茸茸羊,Róngróngyáng,Yùhngyùhngyèuhng,綿綿 / 绵绵 Miánmián (TW/CN)
+181, ,Ampharos,電龍,电龙,Diànlóng,Dihnlùhng,-
+182, ,Bellossom,美麗花,美丽花,Měilìhuā,Méihlaihfā,-
+183, ,Marill,瑪力露,玛力露,Mǎlìlù,Máhlihklouh,馬利露 Máhleihlouh (HK)
+184, ,Azumarill,瑪力露麗,玛力露丽,Mǎlìlùlì,Máhlihklouhlaih,馬利露麗 Máhleihlouhlaih (HK)
+185, ,Sudowoodo,樹才怪,树才怪‎,Shùcáiguài,Syuhchòihgwaai,胡說樹 / 胡说树 Húshuōshù (TW/CN)
+186, ,Politoed,蚊香蛙皇,蚊香蛙皇,Wénxiāngwāhuáng,Mānhēungwāwòhng,牛蛙君 Niúwājūn (TW/CN)
+187, ,Hoppip,毽子草,毽子草,Jiànzǐcǎo,Yínjíchóu,-
+188, ,Skiploom,毽子花,毽子花,Jiànzǐhuā,Yínjífā,-
+189, ,Jumpluff,毽子棉,毽子棉,Jiànzǐmián,Yínjímìhn,毽子綿 / 毽子绵 Jiànzǐmián (TW/CN)
+190, ,Aipom,長尾怪手,长尾怪手,Chángwěiguàishǒu,Chèuhngméihgwaaisáu,-
+191, ,Sunkern,向日種子,向日种子,Xiàngrìzhǒngzǐ,Heungyahtjúngjí,-
+192, ,Sunflora,向日花怪,向日花怪,Xiàngrìhuāguài,Heungyahtfāgwaai,-
+193, ,Yanma,蜻蜻蜓,蜻蜻蜓,Qīngqīngtíng,Chīngchīngtìhng,陽陽瑪 / 阳阳玛 Yángyángmǎ (TW/CN)
+194, ,Wooper,烏波,乌波,Wūbō,Wūbō,-
+195, ,Quagsire,沼王,沼王,Zhǎowáng,Jíuwòhng,-
+196, ,Espeon,太陽伊布,太阳伊布,Tàiyángyībù,Taaiyèuhngyībou,太陽精靈 / 太阳精灵 Tàiyángjīnglíng (TW/CN)
+197, ,Umbreon,月亮伊布,月亮伊布,Yuèliàngyībù,Yuhtleuhngyībou,月精靈 / 月精灵 Yuèjīnglíng (TW/CN)
+198, ,Murkrow,黑暗鴉,黑暗鸦,Hēi'ànyā,Hāk'am'ā,-
+199, ,Slowking,呆呆王,呆呆王,Dāidāiwáng,Ngòingòihwòhng,河馬王 / 河马王 Hémǎwáng (TW/CN)
+200, ,Misdreavus,夢妖,梦妖,Mèngyāo,Muhngyíu,-
+201, ,Unown,未知圖騰,未知图腾,Wèizhītúténg,Meihjītòuhtàhng,-
+202, ,Wobbuffet,果然翁,果然翁,Guǒránwēng,Gwóyìhnyūng,-
+203, ,Girafarig,麒麟奇,麒麟奇,Qílínqí,Kèihlèuhnkèih,-
+204, ,Pineco,榛果球,榛果球,Zhēnguǒqiú,Jēungwókàuh,-
+205, ,Forretress,佛烈托斯,佛烈托斯,Fúliètuōsī,Fahtlihttoksī,佛烈託斯 Fúliètuōsī (TW)
+206, ,Dunsparce,土龍弟弟,土龙弟弟,Tǔlóngdìdì,Tóulùhngdàihdái,-
+207, ,Gligar,天蠍,天蝎,Tiānxiē,Tīnkit,-
+208, ,Steelix,大鋼蛇,大钢蛇,Dàgāngshé,Daaihgongsèh,-
+209, ,Snubbull,布魯,布鲁,Bùlú,Boulóuh,布盧 / 布廬 / 布卢 / 布庐 Bùlú (TW/CN)
+210, ,Granbull,布魯皇,布鲁皇,Bùlǔhuáng,Boulóuhwòhng,布盧皇 / 布廬皇 / 布卢皇 Bùlúhuáng (TW/CN)
+211, ,Qwilfish,千針魚,千针鱼,Qiānzhēnyú,Chīnjāmyùh,-
+212, ,Scizor,巨鉗螳螂,巨钳螳螂,Jùqiántángláng,Geuihkìhmtòhnglòhng,-
+213, ,Shuckle,壺壺,壶壶,Húhú,Wùhwùh,-
+214, ,Heracross,赫拉克羅斯,赫拉克罗斯,Hèlākèluósī,Hāklāaihāklòhsī,赫拉剋羅斯 Hèlākèluósī (TW)
+215, ,Sneasel,狃拉,狃拉,Niǔlā,Náulāai,-
+216, ,Teddiursa,熊寶寶,熊宝宝,Xióngbǎobao,Hùhngbóubóu,-
+217, ,Ursaring,圈圈熊,圈圈熊,Quānquānxióng,Hyūnhyūnhùhng,-
+218, ,Slugma,熔岩蟲,熔岩虫,Róngyánchóng,Yùhngngàahmchùhng,-
+219, ,Magcargo,熔岩蝸牛,熔岩蜗牛,Róngyánguāniú
+220, ,Swinub,小山豬,小山猪,Xiǎoshānzhū,Síusāanjyū,-
+221, ,Piloswine,長毛豬,长毛猪,Chángmáozhū,Chèuhngmòuhjyū,-
+222, ,Corsola,太陽珊瑚,太阳珊瑚,Tàiyángshānhú,Taaiyèuhngsāanwùh,-
+223, ,Remoraid,鐵炮魚,铁炮鱼,Tiěpàoyú,Titpaauyùh,-
+224, ,Octillery,章魚桶,章鱼桶,Zhāngyútǒng,Jēungyùhtúng,-
+225, ,Delibird,信使鳥,信使鸟,Xìnshǐniǎo,Seunsíníuh,-
+226, ,Mantine,巨翅飛魚,巨翅飞鱼,Jùchìfēiyú,Geuihchifēiyùh,-
+227, ,Skarmory,盔甲鳥,盔甲鸟,Kuījiǎniǎo,Kwāigaapníuh,-
+228, ,Houndour,戴魯比,戴鲁比,Dàilǔbǐ,Daailóuhbéi,-
+229, ,Houndoom,黑魯加,黑鲁加,Hēilǔjiā,Hāklóuhgā,-
+230, ,Kingdra,刺龍王,刺龙王,Cìlóngwáng,Chilùhngwòhng,-
+231, ,Phanpy,小小象,小小象,Xiǎoxiǎoxiàng,Síusíujeuhng,-
+232, ,Donphan,頓甲,顿甲,Dùnjiǎ,Deuhngaap,冬凡 Dūngfàahn (HK)
+233, ,Porygon2,多邊獸Ⅱ,多边兽２型,Duōbiānshòu-II
+234, ,Stantler,驚角鹿,惊角鹿,Jīngjiǎolù,Gīnggokluhk,-
+235, ,Smeargle,圖圖犬,图图犬,Tútúquǎn,Tòuhtòuhhyún,圖畫犬 Tòuhwáhyún (HK)
+236, ,Tyrogue,無畏小子,无畏小子,Wúwèixiǎozi,Mòuhwaisíují,巴爾郎 / 巴尔郎 Bā'ěrláng (TW/CN)
+237, ,Hitmontop,戰舞郎,战舞郎,Zhànwǔláng,Jinmóuhlòhng,柯波朗 Kēbōlǎng (TW/CN)
+238, ,Smoochum,迷唇娃,迷唇娃,Míchúnwá,Màihsèuhnwā,-
+239, ,Elekid,電擊怪,电击怪,Diànjíguài
+240, ,Magby,鴨嘴寶寶,鸭嘴宝宝,Yāzuǐbǎobao,Aapjéuibóubóu,小鴨嘴龍 / 小鸭嘴龙 Xiǎoyāzuǐlóng (TW/CN)
+241, ,Miltank,大奶罐,大奶罐,Dànǎiguàn,Daaihnáaihgun,-
+242, ,Blissey,幸福蛋,幸福蛋,Xìngfúdàn,Hahngfūkdáan,-
+243, ,Raikou,雷公,雷公,Léigōng,Lèuihgūng,-
+244, ,Entei,炎帝,炎帝,Yándì,Yìhmdai,-
+245, ,Suicune,水君,水君,Shuǐjūn,Séuigwān,-
+246, ,Larvitar,幼基拉斯,幼基拉斯,Yòujīlāsī,Yaugēilāaisī,由基拉 Yóujīlā (TW/CN)
+247, ,Pupitar,沙基拉斯,沙基拉斯,Shājīlāsī,Sāgēilāaisī,沙基拉 Shājīlā (TW/CN)
+248, ,Tyranitar,班基拉斯,班基拉斯,Bānjīlāsī,Bāangēilāaisī,班吉拉 Bānjīlā (TW/CN)
+249, ,Lugia,洛奇亞,洛奇亚,Luòqíyǎ
+250, ,Ho-Oh,鳳王,凤王,Fèngwáng,Fuhngwòhng,鳳凰 Fuhngwòhng (HK)
+251, ,Celebi,時拉比,时拉比,Shílābǐ,Sìhlāaibéi,雪拉比 Xuělābǐ (TW/CN)
+252, ,Treecko,木守宮,木守宫,Mùshǒugōng,Muhksáugūng,-
+253, ,Grovyle,森林蜥蜴,森林蜥蜴,Sēnlínxīyì,Sāmlàhmsīkyihk,-
+254, ,Sceptile,蜥蜴王,蜥蜴王,Xīyìwáng,Sīkyihkwòhng,-
+255, ,Torchic,火稚雞,火稚鸡,Huǒzhìjī,Fójigāi,-
+256, ,Combusken,力壯雞,力壮鸡,Lìzhuàngjī,Lihkjohnggāi,-
+257, ,Blaziken,火焰雞,火焰鸡,Huǒyànjī,Fóyihmgāi,-
+258, ,Mudkip,水躍魚,水跃鱼,Shuǐyuèyú,Séuiyeuhkyùh,-
+259, ,Marshtomp,沼躍魚,沼跃鱼,Zhǎoyuèyú,Jíuyeuhkyùh,-
+260, ,Swampert,巨沼怪,巨沼怪,Jùzhǎoguài,Geuihjíugwaai,-
+261, ,Poochyena,土狼犬,土狼犬,Tǔlángquǎn,Tóulòhnghyún,-
+262, ,Mightyena,大狼犬,大狼犬,Dàlángquǎn,Daaihlòhnghyún,-
+263, ,Zigzagoon,蛇紋熊,蛇纹熊,Shéwénxióng,Sèhmàhnhùhng,-
+264, ,Linoone,直衝熊,直冲熊,Zhíchōngxióng,Jihkchūnghùhng,-
+265, ,Wurmple,刺尾蟲,刺尾虫,Cìwěichóng,Chiméihchùhng,-
+266, ,Silcoon,甲殼繭,甲壳茧,Jiǎkéjiǎn
+267, ,Beautifly,狩獵鳳蝶,狩猎凤蝶,Shòulièfèngdié,Saulihpfuhngdihp,-
+268, ,Cascoon,盾甲繭,盾甲茧,Dùnjiǎjiǎn,Téuhngaapgáan,-
+269, ,Dustox,毒粉蛾,毒粉蛾,Dúfěn'é,Duhkfanngòh,毒粉蝶 Dúfěndié (TW/CN)
+270, ,Lotad,蓮葉童子,莲叶童子,Liányètóngzǐ,Lìhnyihptùhngjí,-
+271, ,Lombre,蓮帽小童,莲帽小童,Liánmàoxiǎotóng,Lìhnmóusíutùhng,-
+272, ,Ludicolo,樂天河童,乐天河童,Lètiānhétóng,Lohktīnhòhtùhng,-
+273, ,Seedot,橡實果,橡实果,Xiàngshíguǒ,Jeuhngsahtgwó,-
+274, ,Nuzleaf,長鼻葉,长鼻叶,Chángbíyè,Chèuhngbeihyihp,-
+275, ,Shiftry,狡猾天狗,狡猾天狗,Jiǎohuátiāngǒu,Gáauwaahttīngáu,-
+276, ,Taillow,傲骨燕,傲骨燕,Àogǔyàn,Ngouhgwātyin,-
+277, ,Swellow,大王燕,大王燕,Dàwángyàn,Daaihwòhngyin,-
+278, ,Wingull,長翅鷗,长翅鸥,Chángchì'ōu,Chèuhngchi'āu,-
+279, ,Pelipper,大嘴鷗,大嘴鸥,Dàzuǐ'ōu,Daaihjéui'āu,-
+280, ,Ralts,拉魯拉絲,拉鲁拉丝,Lālǔlāsī,Lāailóuhlāaisī,-
+281, ,Kirlia,奇魯莉安,奇鲁莉安,Qílǔlì'ān,Kèihlouhleih'ōn,-
+282, ,Gardevoir,沙奈朵,沙奈朵,Shānàiduǒ,Sānoihdó,-
+283, ,Surskit,溜溜糖球,溜溜糖球,Liūliūtángqiú,Līulīutóngkàuh,-
+284, ,Masquerain,雨翅蛾,雨翅蛾,Yǔchì'é,Yúhchi'ngòh,-
+285, ,Shroomish,蘑蘑菇,蘑蘑菇,Mómógū,Mòhmòhgū,-
+286, ,Breloom,斗笠菇,斗笠菇,Dǒulìgū,Dáulāpgū,-
+287, ,Slakoth,懶人獺,懒人獭,Lǎnréntà
+288, ,Vigoroth,過動猿,过动猿,Guòdòngyuán,Gwoduhngyùhn,-
+289, ,Slaking,請假王,请假王,Qǐngjiàwáng,Chénggawòhng,-
+290, ,Nincada,土居忍士,土居忍士,Tǔjūrěnshì,Tóugēuiyáhnsih,-
+291, ,Ninjask,鐵面忍者,铁面忍者,Tiěmiànrěnzhě,Titmihnyánjé,-
+292, ,Shedinja,脫殼忍者,脱壳忍者,Tuōkérěnzhě,Tyuthokyánjé,-
+293, ,Whismur,咕妞妞,咕妞妞,Gūniūniū,Gūnáunáu,-
+294, ,Loudred,吼爆彈,吼爆弹,Hǒubàodàn,Hāubaaudáan,-
+295, ,Exploud,爆音怪,爆音怪,Bàoyīnguài,Baauyāmgwaai,-
+296, ,Makuhita,幕下力士,幕下力士,Mùxiàlìshì,Mohkhahlihksih,-
+297, ,Hariyama,鐵掌力士,铁掌力士,Tiězhǎnglìshì,Titjéunglihksih,超力王 Chāolìwáng (TW/CN)
+298, ,Azurill,露力麗,露力丽,Lùlìlì,Louhlihklaih,-
+299, ,Nosepass,朝北鼻,朝北鼻,Cháoběibí,Chìuhbākbeih,-
+300, ,Skitty,向尾喵,向尾喵,Xiàngwěimiāo,Héungméihmēu,-
+301, ,Delcatty,優雅貓,优雅猫,Yōuyǎmāo,Yāungáhmāau,-
+302,Sableye,Sableye,勾魂眼,勾魂眼,Gōuhúnyǎn,Ngāuwàhnngáahn,-
+303,Mawile,Mawile,大嘴娃,大嘴娃,Dàzuǐwá,Daaihjéuiwā,-
+304,Aron,Aron,可可多拉,可可多拉,Kěkěduōlā,Hóhódōlāai,-
+305,Lairon,Lairon,可多拉,可多拉,Kěduōlā,Hódōlāai,-
+306,Aggron,Aggron,波士可多拉,波士可多拉,Bōshìkěduōlā,Bōsihhódōlāai,-
+307,Meditite,Meditite,瑪沙那,玛沙那,Mǎshānà,Máhsānáh,-
+308,Medicham,Medicham,恰雷姆,恰雷姆,Qiàléimǔ,Hāplèuihmóuh,-
+309,Electrike,Electrike,落雷獸,落雷兽,Luòléishòu,Lohklèuihsau,-
+310,Manectric,Manectric,雷電獸,雷电兽,Léidiànshòu,Lèuihdihnsau,-
+311,Plusle,Plusle,正電拍拍,正电拍拍,Zhèngdiànpāipāi,Jingdihnpaakpaak,-
+312,Minun,Minun,負電拍拍,负电拍拍,Fùdiànpāipāi,Fuhdihnpaakpaak,-
+313,Volbeat,Volbeat,電螢蟲,电萤虫,Diànyíngchóng,Dihnyìhngchùhng,-
+314,Illumise,Illumise,甜甜螢,甜甜萤,Tiántiányíng,Tìhmtìhmyìhng,-
+315,Roselia,Roselia,毒薔薇,毒蔷薇,Dúqiángwéi
+316,Gulpin,Gulpin,溶食獸,溶食兽,Róngshíshòu,Yùhngsihksau,-
+317,Swalot,Swalot,吞食獸,吞食兽,Tūnshíshòu,Tānsihksau,-
+318,Carvanha,Carvanha,利牙魚,利牙鱼,Lìyáyú,Leihngàh'yùh,-
+319,Sharpedo,Sharpedo,巨牙鯊,巨牙鲨,Jùyáshā,Geuihngàhsā,-
+320,Wailmer,Wailmer,吼吼鯨,吼吼鲸,Hǒuhǒujīng,Háuháukìhng,-
+321,Wailord,Wailord,吼鯨王,吼鲸王,Hǒujīngwáng,Háukìhngwòhng,-
+322, ,Numel,呆火駝,呆火驼,Dāihuǒtuó,Ngòihfótòh,-
+323, ,Camerupt,噴火駝,喷火驼,Pēnhuǒtuó,Panfótòh,-
+324, ,Torkoal,煤炭龜,煤炭龟,Méitàngūi,Mùihtaangwāi,-
+325, ,Spoink,跳跳豬,跳跳猪,Tiàotiàozhū,Tiutiujyū,-
+326, ,Grumpig,噗噗豬,噗噗猪,Pūpūzhū,Pokpokjyū,-
+327, ,Spinda,晃晃斑,晃晃斑,Huànghuàngbān,Fóngfóngbāan,-
+328, ,Trapinch,大顎蟻,大颚蚁,Dà'èyǐ,Daaihngohkngáih,-
+329, ,Vibrava,超音波幼蟲,超音波幼虫,Chāoyīnbōyòuchóng,Chīuyāmbōyauchùhng,-
+330, ,Flygon,沙漠蜻蜓,沙漠蜻蜓,Shāmòqīngtíng,Sāmohkchīngtìhng,-
+331, ,Cacnea,刺球仙人掌,刺球仙人掌,Cìqiúxiānrénzhǎng,Chikàuhsīnyàhnjéung,沙漠奈亞 / 沙漠奈亚 Shāmònàiyǎ / Shāmònàiyà (TW/CN)
+332, ,Cacturne,夢歌仙人掌,梦歌仙人掌,Mènggēxiānrénzhǎng,Mùhnggōsīnyàhnjéung,夢歌奈亞 / 梦歌奈亚 Mènggēnàiyǎ / Mènggēnàiyà (TW/CN)
+333, ,Swablu,青綿鳥,青绵鸟,Qīngmiánniǎo,Chīngmìhnníuh,-
+334, ,Altaria,七夕青鳥,七夕青鸟,Qīxìqīngniǎo,Chātjihkchīngníuh,-
+335, ,Zangoose,貓鼬斬,猫鼬斩,Māoyòuzhǎn,Māauyauhjáam,-
+336, ,Seviper,飯匙蛇,饭匙蛇,Fànchíshé,Faahnchìhsèh,-
+337, ,Lunatone,月石,月石,Yuèshí,Yuhtsehk,-
+338, ,Solrock,太陽岩,太阳岩,Tàiyángyán,Taaiyèuhngngàahm,-
+339, ,Barboach,泥泥鰍,泥泥鳅,Níníqiū,Nàihnàihchāu,-
+340, ,Whiscash,鯰魚王,鲶鱼王,Niányúwáng,Níhmyùhwòhng,-
+341, ,Corphish,龍蝦小兵,龙虾小兵,Lóngxiāxiǎobīng,Lùhnghāsíubīng,-
+342, ,Crawdaunt,鐵螯龍蝦,铁螯龙虾,Tiě'áolóngxiā,Titngòuhlùhng'hā,-
+343, ,Baltoy,天秤偶,天秤偶,Tiānpíng'ǒu,Tīnpìhngngáuh,-
+344, ,Claydol,念力土偶,念力土偶,Niànlìtǔ'ōu,Nihmlihktóu'ngáuh,-
+345, ,Lileep,觸手百合,触手百合,Chùshǒubǎihé,Jūksáubaakhahp,-
+346, ,Cradily,搖籃百合,摇篮百合,Yáolánbǎihé,Yìuhlàahmbaakhahp,-
+347, ,Anorith,太古羽蟲,太古羽虫,Tàigǔyǔchóng,Taaigúyúhchùhng,-
+348, ,Armaldo,太古盔甲,太古盔甲,Tàigǔkuījiǎ,Taaigúkwāigaap,-
+349, ,Feebas,醜醜魚,丑丑鱼,Chǒuchǒuyú,Cháucháuyú,笨笨魚 / 笨笨鱼 Bènbènyú (TW/CN)
+350, ,Milotic,美納斯,美纳斯,Měinàsī,Méihnaahpsī,-
+351, ,Castform,飄浮泡泡,飘浮泡泡,Piāofúpàopào,Pīufàuhpóuhpóuh,漂浮泡泡 Piāofúpàopào (TW/CN)
+352, ,Kecleon,變隱龍,变隐龙,Biànyǐnlóng,Binyánlùhng,-
+353, ,Shuppet,怨影娃娃,怨影娃娃,Yuànyǐngwáwá,Yunyíngwāwā,-
+354, ,Banette,詛咒娃娃,诅咒娃娃,Zǔzhòuwáwá,Jojauwāwā,-
+355, ,Duskull,夜巡靈,夜巡灵,Yèxúnlíng,Yehchèuhnlìhng,夜骷顱 / 夜骷颅 Yèkūlú (TW/CN)
+356, ,Dusclops,彷徨夜靈,彷徨夜灵,Fǎnghuángyèlíng,Pòhngwòhngyehlìhng,夜巨人 Yèjùrén (TW/CN)
+357, ,Tropius,熱帶龍,热带龙,Rèdàilóng,Yihtdaailùhng,-
+358, ,Chimecho,風鈴鈴,风铃铃,Fēnglínglíng,Fūnglìhnglìhng,-
+359, ,Absol,阿勃梭魯,阿勃梭鲁,Ābósuōlǔ,Abuhtsōlóuh,-
+360, ,Wynaut,小果然,小果然,Xiǎoguǒrán,Síugwóyìhn,果然仔 Gwóyìhnjái (HK)
+361, ,Snorunt,雪童子,雪童子,Xuětóngzǐ,Syuttùhngjí,-
+362, ,Glalie,冰鬼護,冰鬼护,Bīngguǐhù,Bīnggwáiwuh,-
+363, ,Spheal,海豹球,海豹球,Hǎibàoqiú,Hóipaaukàuh,-
+364, ,Sealeo,海魔獅,海魔狮,Hǎimóshī,Hóimōsī,-
+365, ,Walrein,帝牙海獅,帝牙海狮,Dìyǎhǎishī,Dai'ngàhhóisī,-
+366, ,Clamperl,珍珠貝,珍珠贝,Zhēnzhūbèi,Jānjyūbui,-
+367, ,Huntail,獵斑魚,猎斑鱼,Lièbānyú,Lihpbāanyùh,-
+368, ,Gorebyss,櫻花魚,樱花鱼,Yīnghuāyú,Yīngfāyùh,-
+369, ,Relicanth,古空棘魚,古空棘鱼,Gǔkōngjíyú,Gúhūnggīk'yùh,-
+370, ,Luvdisc,愛心魚,爱心鱼,Àixīnyú,Oisām'yùh,-
+371, ,Bagon,寶貝龍,宝贝龙,Bǎobèilóng,Bóubuilùhng,-
+372, ,Shelgon,甲殼龍,甲壳龙,Jiákēlóng
+373, ,Salamence,暴飛龍,暴飞龙,Bàofēilóng,Bouhfēilùhng,暴蠑螈 / 暴蝾螈 Bàoróngyuán (TW/CN)
+374, ,Beldum,鐵啞鈴,铁哑铃,Tiéyǎlíng,Tit'álìhng,-
+375, ,Metang,金屬怪,金属怪,Jīnshǔguài,Gāmsuhkgwaai,-
+376, ,Metagross,巨金怪,巨金怪,Jùjīnguài,Geuihgāmgwaai,-
+377, ,Regirock,雷吉洛克,雷吉洛克,Léijīluòkě,Lèuihgātlokhāk,-
+378, ,Regice,雷吉艾斯,雷吉艾斯,Léijī'àisī,Lèuihgātngaaihsī,-
+379, ,Registeel,雷吉斯奇魯,雷吉斯奇鲁,Léijīsīqílù,Lèuihgātsīkèihlóuh,-
+380, ,Latias,拉帝亞斯,拉帝亚斯,Lādìyǎsī
+381, ,Latios,拉帝歐斯,拉帝欧斯,Lādì'ōusī,Lāaidai'āusī,-
+382, ,Kyogre,蓋歐卡,盖欧卡,Gài'ōukǎ,Koi'āukā,-
+383, ,Groudon,固拉多,固拉多,Gūlādūo,Gulāaidō,-
+384, ,Rayquaza,烈空坐,烈空坐,Lièkōngzuò,Lihthūngjoh,-
+385, ,Jirachi,基拉祈,基拉祈,Jīlāqí,Gēilāaikèih,-
+386, ,Deoxys,代歐奇希斯,代欧奇希斯,Dài'ōuqíxīsī,Doih'āukèihhēisī,-
+387, ,Turtwig,草苗龜,草苗龟,Cǎomiáoguī,Chóumìuhgwāi,-
+388, ,Grotle,樹林龜,树林龟,Shùlínguī,Syuhlàhmgwāi,-
+389, ,Torterra,土台龜,土台龟,Tǔtáiguī,Tóutòihgwāi,-
+390, ,Chimchar,小火焰猴,小火焰猴,Xiǎohuǒyànhóu,Síufóyihmhàuh,-
+391, ,Monferno,猛火猴,猛火猴,Měnghuǒhóu,Máahngfóhàuh,-
+392, ,Infernape,烈焰猴,烈焰猴,Lièyànhóu,Lihtyihmhàuh,-
+393, ,Piplup,波加曼,波加曼,Bōjiāmàn,Bōgāmaahn,-
+394, ,Prinplup,波皇子,波皇子,Bōwángzǐ,Bōwòhngjí,-
+395, ,Empoleon,帝王拿波,帝王拿波,Dìwángnábō,Daiwòhngnàhbō,-
+396, ,Starly,姆克兒,姆克儿,Mǔkè'ér,Móuhhākyìh,-
+397, ,Staravia,姆克鳥,姆克鸟,Mǔkèniǎo,Móuhhākníuh,-
+398, ,Staraptor,姆克鷹,姆克鹰,Mǔkèyīng,Móuhhākyīng,-
+399, ,Bidoof,大牙狸,大牙狸,Dàyálí,Daaihngàhlèih,-
+400, ,Bibarel,大尾狸,大尾狸,Dàwěilí,Daaihméihlèih,-
+401, ,Kricketot,圓法師,圆法师,Yuánfǎshī,Yùhnfaatsī,-
+402, ,Kricketune,音箱蟀,音箱蟀,Yīnxiāngshuài,Yāmsēungsēut,-
+403, ,Shinx,小貓怪,小猫怪,Xiǎomāoguài,Síumāaugwaai,-
+404, ,Luxio,勒克貓,勒克猫,Lèkèmāo,Lahkhākmāau,-
+405, ,Luxray,倫琴貓,伦琴猫,Lúnqínmāo,Lèuhnkàhmmāau,-
+406, ,Budew,含羞苞,含羞苞,Hánxiūbāo,Hàhmsāubāau,-
+407, ,Roserade,羅絲雷朵,罗丝雷朵,Luósīléiduǒ,Lòhsīlèuidó,-
+408, ,Cranidos,頭蓋龍,头盖龙,Tóugàilóng,Tàuhgoilùhng,-
+409, ,Rampardos,戰槌龍,战槌龙,Zhànchuílóng,Jinchèuihlùhng,-
+410, ,Shieldon,盾甲龍,盾甲龙,Dùnjiǎlóng,Téuhngaaplùhng,-
+411, ,Bastiodon,護城龍,护城龙,Hùchénglóng,Wuhsìhnglùhng,-
+412, ,Burmy,結草兒,结草儿,Jiécǎo'ér,Gitchóuyìh,-
+413, ,Wormadam,結草貴婦,结草贵妇,Jiécǎoguìfù,Gitchóugwaifúh,-
+414, ,Mothim,紳士蛾,绅士蛾,Shēnshì'é,Sānsíngòh,-
+415, ,Combee,三蜜蜂,三蜜蜂,Sānmìfēng,Sāammahtfūng,-
+416, ,Vespiquen,蜂女王,蜂女王,Fēngnǚwáng,Fūngnéuihwòhng,蜂后 Fēnghòu (TW/CN)
+417, ,Pachirisu,帕奇利茲,帕奇利兹,Pàqílìzī,Paakkèileihjī,-
+418, ,Buizel,泳圈鼬,泳圈鼬,Yǒngquānyòu,Wihnghyūnyauh,泳氣鼬 / 泳气鼬 Yǒngqìyòu (TW/CN)
+419, ,Floatzel,浮潛鼬,浮潜鼬,Fúqiǎnyòu,Fàuhchìhmyauh,—
+420, ,Cherubi,櫻花寶,樱花宝,Yīnghuābǎo,Yīngfābóu,-
+421, ,Cherrim,櫻花兒,樱花儿,Yīnghuā'ér,Yīngfāyìh,-
+422, ,Shellos,無殼海兔,无壳海兔,Wúkéhǎitù
+423, ,Gastrodon,海兔獸,海兔兽,Hǎitùshòu,Hóitousau,海牛獸 / 海牛兽 Hǎiniúshòu (TW/CN)
+424, ,Ambipom,雙尾怪手,双尾怪手,Shuāngwěiguàishǒu,Sēungméihgwaaisáu,-
+425, ,Drifloon,飄飄球,飘飘球,Piāopiāoqiú,Pīupīukàuh,-
+426, ,Drifblim,隨風球,随风球,Suífēngqiú,Chèuihfūngkàuh,附和氣球 / 附和气球 Fùhèqìqiú (TW/CN)
+427, ,Buneary,捲捲耳,卷卷耳,Juǎnjuǎn'ěr,Gyúngyún'yíh,-
+428, ,Lopunny,長耳兔,长耳兔,Cháng'ěrtù,Chèuhngyíhtou,-
+429, ,Mismagius,夢妖魔,梦妖魔,Mèngyāomó,Muhngyíumō,-
+430, ,Honchkrow,烏鴉頭頭,乌鸦头头,Wūyātóutóu,Wū'ātàuhtàuh,-
+431, ,Glameow,魅力喵,魅力喵,Mèilìmiāo,Meihlihkmēu,-
+432, ,Purugly,東施喵,东施喵,Dōngshīmiāo,Dūngsīmēu,-
+433, ,Chingling,鈴鐺響,铃铛响,Língdāngxiǎng,Lìhngdōnghéung,鈴噹響 Língdāngxiǎng (TW)
+434, ,Stunky,臭鼬噗,臭鼬噗,Chòuyòupū,Chauyauhpok,-
+435, ,Skuntank,坦克臭鼬,坦克臭鼬,Tǎnkèchòuyòu,Táanhākchauyauh,-
+436, ,Bronzor,銅鏡怪,铜镜怪,Tóngjìngguài,Tùhnggenggwaai,-
+437, ,Bronzong,青銅鐘,青铜钟,Qīngtóngzhōng,Chīngtùhngjūng,-
+438, ,Bonsly,盆才怪,盆才怪,Péncáiguài,Pùhnchòihgwaai,愛哭樹 / 爱哭树 Àikūshù (TW/CN)
+439, ,Mime Jr.,魔尼尼,魔尼尼,Móníní,Mōnèihnèih,-
+440, ,Happiny,小福蛋,小福蛋,Xiǎofúdàn,Síufūkdáan,好運蛋 / 好运蛋 Hǎoyùndàn (TW/CN)
+441, ,Chatot,聒噪鳥,聒噪鸟,Guāzàoniǎo,Kutchouníuh,-
+442, ,Spiritomb,花岩怪,花岩怪,Huāyánguài,Fā'ngàahmgwaai,-
+443, ,Gible,圓陸鯊,圆陆鲨,Yuánlùshā,Yùhnluhksā,-
+444, ,Gabite,尖牙陸鯊,尖牙陆鲨,Jiānyálùshā,Jīmngàhluhksā,-
+445, ,Garchomp,烈咬陸鯊,烈咬陆鲨,Lièyǎolùshā,Lihtngáauhluhksā,-
+446, ,Munchlax,小卡比獸,小卡比兽,Xiǎokǎbǐshòu,Síukābéisau,-
+447, ,Riolu,利歐路,利欧路,Lì'ōulù,Leih'āulouh,利奧路 Leih'oulouh (HK)
+448, ,Lucario,路卡利歐,路卡利欧,Lùkǎlì'ōu,Louhkāleih'āu,路卡利奧 Louhkāleih'ou (HK)
+449, ,Hippopotas,沙河馬,沙河马,Shāhémǎ,Sāhòhmáh,怪河馬 / 怪河马 Guàihémǎ (TW/CN)
+450, ,Hippowdon,河馬獸,河马兽,Hémǎshòu,Hòhmáhsau,-
+451, ,Skorupi,鉗尾蠍,钳尾蝎,Qiánwěixiē,Kìhmméihkit,紫天蠍 / 紫天蝎 Zǐtiānxiē (TW/CN)
+452, ,Drapion,龍王蠍,龙王蝎,Lóngwángxiē,Lùhngwòhngkit,-
+453, ,Croagunk,不良蛙,不良蛙,Bùliángwā,Bātlèuhngwā,-
+454, ,Toxicroak,毒骷蛙,毒骷蛙,Dúkūwā,Duhkfūwā,-
+455, ,Carnivine,尖牙籠,尖牙笼,Jiānyálóng,Jīmngàhlùhng,-
+456, ,Finneon,螢光魚,荧光鱼,Yíngguāngyú,Yìhnggwōngyùh,萤光鱼 Yíngguāngyú (CN)
+457, ,Lumineon,霓虹魚,霓虹鱼,Níhóngyú,Ngàihhùhng'yùh,-
+458, ,Mantyke,小球飛魚,小球飞鱼,Xiǎoqiúfēiyú,Síukàuhfēiyùh,-
+459, ,Snover,雪笠怪,雪笠怪,Xuělìguài,Syutlāpgwaai,-
+460, ,Abomasnow,暴雪王,暴雪王,Bàoxuěwáng,Bouhsyutwòhng,-
+461, ,Weavile,瑪狃拉,玛狃拉,Mǎniǔlā,Máhnáulāai,-
+462, ,Magnezone,自爆磁怪,自爆磁怪,Zìbàocíguài,Jihbaauchìhgwaai,-
+463, ,Lickilicky,大舌舔,大舌舔,Dàshétiǎn,Daaisittím,-
+464, ,Rhyperior,超甲狂犀,超甲狂犀,Chāojiǎkuángxī,Chīugaapkwòhngsāi,超鐵暴龍 / 超铁暴龙 Chāotiěbàolóng (TW/CN)
+465, ,Tangrowth,巨蔓藤,巨蔓藤,Jùmànténg,Geuihmaahntàhng,-
+466, ,Electivire,電擊魔獸,电击魔兽,Diànjímóshòu
+467, ,Magmortar,鴨嘴炎獸,鸭嘴炎兽,Yāzuǐyánshòu,Aapjéuiyìhmsau,鴨嘴焰龍 / 鸭嘴焰龙 Yāzuǐyànlóng (TW/CN)
+468, ,Togekiss,波克基斯,波克基斯,Bōkèjīsī,Bōhākgēisī,-
+469, ,Yanmega,遠古巨蜓,远古巨蜓,Yuǎngǔjùtíng,Yúhngúgeuihtìhng,梅卡陽瑪 / 梅卡阳玛 Méikǎyángmǎ (TW/CN)
+470, ,Leafeon,葉伊布,叶伊布,Yèyībù,Yihpyìhbou,葉精靈 / 叶精灵 Yèjīnglíng (TW/CN)
+471, ,Glaceon,冰伊布,冰伊布,Bīngyībù,Bīngyìhbou,冰精靈 / 冰精灵 Bīngjīnglíng (TW/CN)
+472, ,Gliscor,天蠍王,天蝎王,Tiānxiēwáng,Tīnkitwòhng,-
+473, ,Mamoswine,象牙豬,象牙猪,Xiàngyázhū,Jeuhngngàhjyū,-
+474, ,Porygon-Z,多邊獸Ｚ,多边兽乙型,Duōbiānshòu-Z
+475, ,Gallade,艾路雷朵,艾路雷朵,Àilùléiduǒ,Ngaaihlouhlèuidó,-
+476, ,Probopass,大朝北鼻,大朝北鼻,Dàcháoběibí,Daaichìuhbākbeih,-
+477, ,Dusknoir,黑夜魔靈,黑夜魔灵,Hēiyèmólíng,Hākyehmōlìhng,夜黑魔人 Yèhēimórén (TW/CN)
+478, ,Froslass,雪妖女,雪妖女,Xuěyāonǚ,Syutyíunéuih,-
+479, ,Rotom,洛托姆,洛托姆,Luòtuōmǔ,Loktokmóuh,-
+480, ,Uxie,由克希,由克希,Yóukèxī,Yàuhhākhēi,-
+481, ,Mesprit,艾姆利多,艾姆利多,Àimǔlìduō,Ngaaihmóuhleihdō,-
+482, ,Azelf,亞克諾姆,亚克诺姆,Yǎkènuòmǔ
+483, ,Dialga,帝牙盧卡,帝牙卢卡,Dìyálúkǎ,Daingàhlòuhkā,-
+484, ,Palkia,帕路奇亞,帕路奇亚,Pàlùqíyǎ
+485, ,Heatran,席多藍恩,席多蓝恩,Xíduōlán'ēn,Jihkdōlàahm'yān,-
+486, ,Regigigas,雷吉奇卡斯,雷吉奇卡斯,Léijíqíkǎsī,Lèuihgātkèikāsī,-
+487, ,Giratina,騎拉帝納,骑拉帝纳,Qílādìnà,Kèihlāaidainaahp,-
+488, ,Cresselia,克雷色利亞,克雷色利亚,Kèléisèlìyǎ
+489, ,Phione,霏歐納,霏欧纳,Fēi'ōunà,Fēi'āunaahp,-
+490, ,Manaphy,瑪納霏,玛纳霏,Mǎnàfēi,Máhnaahpfēi,-
+491, ,Darkrai,達克萊伊,达克莱伊,Dákèláiyī,Daahthāklòihyī,-
+492, ,Shaymin,謝米,谢米,Xièmǐ,Jehmáih,潔咪 / 洁咪 Jiémī (TW/CN)
+493, ,Arceus,阿爾宙斯,阿尔宙斯,Ā'ěrzhòusī,Ayíhjauhsī,-
+494, ,Victini,比克提尼,比克提尼,Bǐkètíní,Béihāktàihnèi,-
+495, ,Snivy,藤藤蛇,藤藤蛇,Téngténgshé,Tàhngtàhngsèh,-
+496, ,Servine,青藤蛇,青藤蛇,Qīngténgshé,Chīngtàhngsèh,-
+497, ,Serperior,君主蛇,君主蛇,Jūnzhǔshé,Gwānjyúhsèh,-
+498, ,Tepig,暖暖豬,暖暖猪,Nuǎnnuǎnzhū,Nyúhnnyúhnjyū,-
+499, ,Pignite,炒炒豬,炒炒猪,Chǎochǎozhū,Cháaucháaujyū,-
+500, ,Emboar,炎武王,炎武王,Yánwǔwáng,Yìhmmóuhwòhng,-
+501, ,Oshawott,水水獺,水水獭,Shuǐshuǐtà
+502, ,Dewott,雙刃丸,双刃丸,Shuāngrènwán,Sēungyahnyún,-
+503, ,Samurott,大劍鬼,大剑鬼,Dàjiànguǐ,Daaihgimgwái,-
+504,Patrat,Patrat,探探鼠,探探鼠,Tàntànshǔ,Tāamtāamsyú,-
+505,Watchog,Watchog,步哨鼠,步哨鼠,Bùshàoshǔ,Bouhsaausyú,-
+506,Lillipup,Lillipup,小約克,小约克,Xiǎoyuēkè,Síuyeukhāk,-
+507,Herdier,Herdier,哈約克,哈约克,Hāyuēkè,Hāyeukhāk,-
+508,Stoutland,Stoutland,長毛狗,长毛狗,Chángmáogǒu,Chèuhngmòugáu,-
+509,Purrloin,Purrloin,扒手貓,扒手猫,Páshǒumāo,Pàhsáumāau,-
+510,Liepard,Liepard,酷豹,酷豹,Kùbào,Huhkpaau,-
+511,Pansage,Pansage,花椰猴,花椰猴,Huāyéhóu,Fāyèhhàuh,-
+512,Simisage,Simisage,花椰猿,花椰猿,Huāyéyuán,Fāyèhyùhn,-
+513,Pansear,Pansear,爆香猴,爆香猴,Bàoxiānghóu,Baauhēunghàuh,-
+514,Simisear,Simisear,爆香猿,爆香猿,Bàoxiāngyuán,Baauhēungyùhn,-
+515,Panpour,Panpour,冷水猴,冷水猴,Lěngshuǐhóu,Láahngséuihàuh,-
+516,Simipour,Simipour,冷水猿,冷水猿,Lěngshuǐyuán,Láahngséuiyùhn,-
+517,Munna,Munna,食夢夢,食梦梦,Shímèngmèng,Sihkmuhngmuhng,-
+518,Musharna,Musharna,夢夢蝕,梦梦蚀,Mèngmèngshí,Muhngmuhngsihk,-
+519,Pidove,Pidove,豆豆鴿,豆豆鸽,Dòudòugē,Dauhdauhgap,-
+520,Tranquill,Tranquill,咕咕鴿,咕咕鸽,Gūgūgē,Gūgūgap,波波鴿 / 波波鸽 Bōbōgē (TW/CN)
+521,Unfezant,Unfezant,高傲雉雞,高傲雉鸡,Gāo'àozhìjī,Gōungouhjihgāi,轟隆雉雞 / 轰隆雉鸡 Hōnglóngzhìjī (TW/CN)
+522,Blitzle,Blitzle,斑斑馬,斑斑马,Bānbānmǎ,Bāanbāanmáh,-
+523,Zebstrika,Zebstrika,雷電斑馬,雷电斑马,Léidiànbānmǎ,Lèuihdihnbāanmáh,-
+524,Roggenrola,Roggenrola,石丸子,石丸子,Shíwánzi,Sehkyúnjí,-
+525, ,Boldore,地幔岩,地幔岩,Dìmànyán,Deihmaahnngàahm,-
+526, ,Gigalith,龐岩怪,庞岩怪,Pángyánguài,Pòhngngàahmgwaai,-
+527, ,Woobat,滾滾蝙蝠,滚滚蝙蝠,Gǔngǔnbiānfú,Gwángwánpīnfūk,-
+528, ,Swoobat,心蝙蝠,心蝙蝠,Xīnbiānfú,Sāmpīnfūk,-
+529, ,Drilbur,螺釘地鼠,螺钉地鼠,Luódīngdìshǔ,Lòhdēngdeihsyú,-
+530, ,Excadrill,龍頭地鼠,龙头地鼠,Lóngtóudìshǔ,Lùhngtàudeihsyú,-
+531, ,Audino,差不多娃娃,差不多娃娃,Chàbùduōwáwá,Chābātdōwāwā,-
+532, ,Timburr,搬運小匠,搬运小匠,Bānyùnxiǎojiàng,Būnwahnsíujeuhng,-
+533, ,Gurdurr,鐵骨土人,铁骨土人,Tiěgǔtǔrén,Titgwāttóuyàhn,-
+534, ,Conkeldurr,修建老匠,修建老匠,Xiūjiànlǎojiàng,Sāuginlóuhjeuhng,修繕老頭 / 修缮老头 Xiūshànlǎotóu (TW/CN)
+535, ,Tympole,圓蝌蚪,圆蝌蚪,Yuánkēdǒu,Yùhnfōdáu,-
+536, ,Palpitoad,藍蟾蜍,蓝蟾蜍,Lánchánchú,Làahmsìhmsyùh,-
+537, ,Seismitoad,蟾蜍王,蟾蜍王,Chánchúwáng,Sìhmsyùhwòhng,-
+538, ,Throh,投摔鬼,投摔鬼,Tóushuāiguǐ,Tàuhsēutgwái,投射鬼 Tóushèguǐ (TW/CN)
+539, ,Sawk,打擊鬼,打击鬼,Dǎjíguǐ
+540, ,Sewaddle,蟲寶包,虫宝包,Chóngbǎobāo,Chùhngbóubāau,-
+541, ,Swadloon,寶包繭,宝包茧,Bǎobāojiǎn,Bóubāaugáan,-
+542, ,Leavanny,保母蟲,保姆虫,Bǎomǔchóng,Bóumóuhchùhng,-
+543, ,Venipede,百足蜈蚣,百足蜈蚣,Bǎizúwúgōng,Baakjūknghgūng,-
+544, ,Whirlipede,車輪毬,车轮球,Chēlúnqiú,Chēlèuhnkàuh,-
+545, ,Scolipede,蜈蚣王,蜈蚣王,Wúgōngwáng,Nghgūngwòhng,-
+546, ,Cottonee,木棉球,木棉球,Mùmiánqiú,Muhkmìhnkàuh,-
+547, ,Whimsicott,風妖精,风妖精,Fēngyāojing,Fūngyíujīng,-
+548, ,Petilil,百合根娃娃,百合根娃娃,Bǎihégēnwáwá,Baakhahpgānwāwā,-
+549, ,Lilligant,裙兒小姐,裙儿小姐,Qún'érxiǎojiě,Kwàhnyìhsíujé,-
+550, ,Basculin,野蠻鱸魚,野蛮鲈鱼,Yěmánlúyú,Yéhmàahnlòuhyú,勇士鱸魚 / 勇士鲈鱼 Yǒngshìlúyú (TW/CN)
+551, ,Sandile,黑眼鱷,黑眼鳄,Hēiyǎn'è,Hākngáahnngohk,-
+552, ,Krokorok,混混鱷,混混鳄,Hùnhun'è,Wahnwahnngohk,-
+553, ,Krookodile,流氓鱷,流氓鳄,Liúmáng'è,Làuhmàhnngohk,-
+554, ,Darumaka,火紅不倒翁,火红不倒翁,Huǒhóngbùdǎowēng,Fóhùhngbātdóuyūng,-
+555, ,Darmanitan,達摩狒狒,达摩狒狒,Dámófèifèi,Daahtmōfātfāt,-
+556, ,Maractus,沙鈴仙人掌,沙铃仙人掌,Shālíngxiānrénzhǎng,Sālìhngsīnyàhnjéung,街頭沙鈴 / 街头沙铃 Jiētóushālíng (TW/CN)
+557, ,Dwebble,石居蟹,石居蟹,Shíjūxiè,Sehkgēuiháaih,-
+558, ,Crustle,岩殿居蟹,岩殿居蟹,Yándiànjūxiè,Ngàahmdihngēuiháaih,-
+559, ,Scraggy,滑滑小子,滑滑小子,Huáhuáxiǎozi,Waahtwaahtsíují,滑頭小子 / 滑头小子 Huátóuxiǎozi (TW/CN)
+560, ,Scrafty,頭巾混混,头巾混混,Tóujīnhùnhun,Tàuhgānwahnwahn,-
+561, ,Sigilyph,象徵鳥,象征鸟,Xiàngzhēngniǎo,Jeuhngjīngníuh,-
+562, ,Yamask,哭哭面具,哭哭面具,Kūkūmiànjù,Hūkhūkmihngeuih,-
+563, ,Cofagrigus,死神棺,迭失棺,Sǐshénguān
+564, ,Tirtouga,原蓋海龜,原盖海龟,Yuángàihǎiguī,Yùhngoihóigwāi,-
+565, ,Carracosta,肋骨海龜,肋骨海龟,Lèigǔhǎiguī,Lahkgwāthóigwāi,-
+566, ,Archen,始祖小鳥,始祖小鸟,Shǐzǔxiǎoniǎo,Chíjóusíuníuh,-
+567, ,Archeops,始祖大鳥,始祖大鸟,Shǐzǔdàniǎo,Chíjóudaaihníuh,-
+568, ,Trubbish,破破袋,破破袋,Pòpòdài,Popodoih,-
+569, ,Garbodor,灰塵山,灰尘山,Huīchénshān,Fūichàhnsāan,-
+570, ,Zorua,索羅亞,索罗亚,Suǒluóyǎ
+571, ,Zoroark,索羅亞克,索罗亚克,Suǒluóyǎkè
+572, ,Minccino,泡沫栗鼠,泡沫栗鼠,Pàomòlìshǔ,Póuhmutleuhtsyú,-
+573, ,Cinccino,奇諾栗鼠,奇诺栗鼠,Qínuòlìshǔ,Kèinohkleuhtsyú,-
+574, ,Gothita,哥德寶寶,哥德宝宝,Gēdébǎobao,Gōdākbóubóu,-
+575, ,Gothorita,哥德小童,哥德小童,Gēdéxiǎotóng,Gōdāksíutùhng,-
+576, ,Gothitelle,哥德小姐,哥德小姐,Gēdéxiǎojiě,Gōdāksíujé,-
+577, ,Solosis,單卵細胞球,单卵细胞球,Dānluǎnxìbāoqiú,Dāanléuhnsaibāaukàuh,-
+578, ,Duosion,雙卵細胞球,双卵细胞球,Shuāngluǎnxìbāoqiú,Sēungléuhnsaibāaukàuh,-
+579, ,Reuniclus,人造細胞卵,人造细胞卵,Rénzàoxìbāoluǎn,Yàhnjouhsaibāauléuhn,-
+580, ,Ducklett,鴨寶寶,鸭宝宝,Yābǎobao,Aapbóubóu,-
+581, ,Swanna,舞天鵝,舞天鹅,Wǔtiān'é,Móuhtīnngòh,首席天鵝 / 首席天鹅 Shǒuxítiān'é (TW/CN)
+582, ,Vanillite,迷你冰,迷你冰,Mínǐbīng,Màihnéihbīng,-
+583, ,Vanillish,多多冰,多多冰,Duōduōbīng,Dōdōbīng,-
+584, ,Vanilluxe,雙倍多多冰,双倍多多冰,Shuāngbèiduōduōbīng,Sēungpúihdōdōbīng,-
+585, ,Deerling,四季鹿,四季鹿,Sìjìlù,Seigwailúk,-
+586, ,Sawsbuck,萌芽鹿,萌芽鹿,Méngyálù,Màhngngàhlúk,芽吹鹿 Yáchuīlù (TW/CN)
+587, ,Emolga,電飛鼠,电飞鼠,Diànfēishǔ,Dihnfēisyú,導電飛鼠 / 导电飞鼠 Dǎodiànfēishǔ (TW/CN)
+588, ,Karrablast,蓋蓋蟲,盖盖虫,Gàigàichóng,Goigoichùhng,-
+589, ,Escavalier,騎士蝸牛,骑士蜗牛,Qíshìguāniú
+590, ,Foongus,哎呀球菇,哎呀球菇,Āiyāqiúgū,Āaiyākàuhgū,寶貝球菇 Bǎobèiqiúgū (TW)
+591, ,Amoonguss,敗露球菇,败露球菇,Bàilùqiúgū,Baaihlouhkàuhgū,暴露菇 Bàolùgū (TW)
+592, ,Frillish,輕飄飄,轻飘飘,Qīngpiāopiāo,Hīngpīupīu,-
+593, ,Jellicent,胖嘟嘟,胖嘟嘟,Pàngdūdū,Buhndyūtdyūt,-
+594,Alomomola,Alomomola,保母曼波,保姆曼波,Bǎomǔmànbō,Bóumóuhmaahnbō,-
+595,Joltik,Joltik,電電蟲,电电虫,Diàndiànchóng,Dihndihnchùhng,-
+596,Galvantula,Galvantula,電蜘蛛,电蜘蛛,Diànzhīzhū,Dihnjījyū,-
+597,Ferroseed,Ferroseed,種子鐵球,种子铁球,Zhǒngzǐtiěqiú,Júngjítitkàuh,-
+598,Ferrothorn,Ferrothorn,堅果啞鈴,坚果哑铃,Jiānguǒyǎlíng,Gīngwó'álìhng,-
+599,Klink,Klink,齒輪兒,齿轮儿,Chǐlún'ér,Chílèuhn'yìh,-
+600,Klang,Klang,齒輪組,齿轮组,Chǐlúnzǔ,Chílèuhnjóu,-
+601,Klinklang,Klinklang,齒輪怪,齿轮怪,Chǐlúnguài,Chílèuhn'gwaai,-
+602,Tynamo,Tynamo,麻麻小魚,麻麻小鱼,Mámáxiǎoyú,Màhmàhsíuyùh,-
+603,Eelektrik,Eelektrik,麻麻鰻,麻麻鳗,Mámámán,Màhmàhmàahn,-
+604,Eelektross,Eelektross,麻麻鰻魚王,麻麻鳗鱼王,Mámámányúwáng,Màhmàhmàahnyùhwòhng,-
+605,Elgyem,Elgyem,小灰怪,小灰怪,Xiǎohuīguài,Síufūigwaai,-
+606,Beheeyem,Beheeyem,大宇怪,大宇怪,Dàyǔguài,Daaihyúhgwaai,-
+607,Litwick,Litwick,燭光靈,烛光灵,Zhúguānglíng,Jūkgwōnglìhng,-
+608,Lampent,Lampent,燈火幽靈,灯火幽灵,Dēnghuǒyōulíng,Dāngfóyāulìhng,-
+609,Chandelure,Chandelure,水晶燈火靈,水晶灯火灵,Shuǐjīngdēnghuǒlíng,Séuijīngdāngfólìhng,-
+610,Axew,Axew,牙牙,牙牙,Yáyá,Ngàhngàh,-
+611,Fraxure,Fraxure,斧牙龍,斧牙龙,Fǔyálóng,Fúngàhlùhng,-
+612, ,Haxorus,雙斧戰龍,双斧战龙,Shuāngfǔzhànlóng,Sēungfújinlùhng,-
+613, ,Cubchoo,噴嚏熊,喷嚏熊,Pēntìxióng,Pantaihùhng,-
+614, ,Beartic,凍原熊,冻原熊,Dòngyuánxióng,Dungyúhnhùhng,-
+615, ,Cryogonal,幾何雪花,几何雪花,Jǐhéxuěhuā,Géihòhsyutfā,-
+616, ,Shelmet,小嘴蝸,小嘴蜗,Xiǎozuǐguā
+617, ,Accelgor,敏捷蟲,敏捷虫,Mǐnjiéchóng,Máhnjihtchùhng,-
+618, ,Stunfisk,泥巴魚,泥巴鱼,Níbāyú,Nàihbāyùh,-
+619, ,Mienfoo,功夫鼬,功夫鼬,Gōngfuyòu,Gūngfùhyauh,-
+620, ,Mienshao,師父鼬,师父鼬,Shīfuyòu,Sīfúyauh,-
+621, ,Druddigon,赤面龍,赤面龙,Chìmiànlóng,Chekmihnlùhng,-
+622, ,Golett,泥偶小人,泥偶小人,Ní'ǒuxiǎorén,Nàihngáuhsíuyàhn,-
+623, ,Golurk,泥偶巨人,泥偶巨人,Ní'ǒujùrén,Nàingáuhgeuihyàhn,-
+624, ,Pawniard,駒刀小兵,驹刀小兵,Jūdāoxiǎobīng,Kēuidōusíubīng,-
+625, ,Bisharp,劈斬司令,劈斩司令,Pīzhǎnsīlìng,Pekjáamsīlihng,-
+626, ,Bouffalant,爆炸頭水牛,爆炸头水牛,Bàozhàtóushuǐniú,Baaujatàuhséuingàuh,爆爆頭水牛 / 爆爆头水牛 Bàobàotóushuǐniú (TW/CN)
+627, ,Rufflet,毛頭小鷹,毛头小鹰,Máotóuxiǎoyīng,Mòuhtàuhsíuyīng,-
+628, ,Braviary,勇士雄鷹,勇士雄鹰,Yǒngshìxióngyīng,Yúhngsihhùhngyīng,勇士鷹 / 勇士鹰 Yǒngshìyīng (TW/CN)
+629, ,Vullaby,禿鷹丫頭,秃鹰丫头,Tūyīngyātou,Tūkyīng'ātàuh,禿鷹小子 / 秃鹰小子 Tūyīngxiǎozi (TW/CN)
+630, ,Mandibuzz,禿鷹娜,秃鹰娜,Tūyīngnà,Tūkyīngnàh,-
+631, ,Heatmor,熔蟻獸,熔蚁兽,Róngyǐshòu,Yùhngngáihsau,食蟻爐 / 食蚁炉 Shíyǐlú (TW/CN)
+632, ,Durant,鐵蟻,铁蚁,Tiěyǐ,Titngáih,-
+633, ,Deino,單首龍,单首龙,Dānshǒulóng,Dāansáulùhng,-
+634, ,Zweilous,雙首暴龍,双首暴龙,Shuāngshǒubàolóng,Sēungsáubouhlùhng,雙頭龍 / 双头龙 Shuāngtóulóng (TW/CN)
+635, ,Hydreigon,三首惡龍,三首恶龙,Sānshǒu'èlóng,Sāamsáu'oklùhng,三頭龍 / 三头龙 Sāntóulóng (TW/CN)
+636, ,Larvesta,燃燒蟲,燃烧虫,Ránshāochóng,Yìhnsīuchùhng,-
+637, ,Volcarona,火神蛾,火神蛾,Huǒshén'é,Fósàhnngòh,火神蟲 / 火神虫 Huǒshénchóng (TW/CN)
+638, ,Cobalion,勾帕路翁,勾帕路翁,Gōupàlùwēng,Ngāupaaklouh'yūng,-
+639, ,Terrakion,代拉基翁,代拉基翁,Dàilājīwēng,Doihlāaigēiyūng,-
+640, ,Virizion,畢力吉翁,毕力吉翁,Bìlìjíwēng,Bātlihkgāt'yūng,-
+641, ,Tornadus,龍捲雲,龙卷云,Lóngjuǎnyún,Lùhnggyúnwàhn,-
+642, ,Thundurus,雷電雲,雷电云,Léidiànyún,Lèuihdihnwàhn,-
+643, ,Reshiram,萊希拉姆,莱希拉姆,Láixīlāmǔ,Lòihhēilāaimóuh,雷希拉姆 Léixīlāmǔ (TW/CN)
+644, ,Zekrom,捷克羅姆,捷克罗姆,Jiékèluómǔ,Jihthāklòhmóuh,-
+645, ,Landorus,土地雲,土地云,Tǔdìyún,Tóudeihwàhn,-
+646, ,Kyurem,酋雷姆,酋雷姆,Qiúléimǔ,Yàuhlèuihmóuh,-
+647, ,Keldeo,凱路迪歐,凯路迪欧,Kǎilùdí'ōu,Hóilouhdihk'āu,-
+648, ,Meloetta,美洛耶塔,美洛耶塔,Měiluòyétǎ,Méihlok'yèhtaap,-
+649, ,Genesect,蓋諾賽克特,盖诺赛克特,Gàinuòsàikètè,Koinohkchoihākdahk,-
+650, ,Chespin,哈力栗,哈力栗,Hālìlì,Hālihkleuht,哈力馬龍 Hālihkmáhlùhng (HK)
+651, ,Quilladin,胖胖哈力,胖胖哈力,Pàngpànghālì,Buhnbuhnhālihk,肥仔哈力 Fèihjáihālihk (HK)
+652, ,Chesnaught,布里卡隆,布里卡隆,Bùlǐkǎlóng,Bouléihkālùhng,-
+653, ,Fennekin,火狐狸,火狐狸,Huǒhúlí,Fówùhléi,-
+654, ,Braixen,長尾火狐,长尾火狐,Chángwěihuǒhú,Chèuhngméihfówùh,-
+655, ,Delphox,妖火紅狐,妖火红狐,Yāohuǒhónghú,Yíufóhùhngwùh,-
+656, ,Froakie,呱呱泡蛙,呱呱泡蛙,Guāguāpàowā,Gwāgwāpóuhwā,-
+657, ,Frogadier,呱頭蛙,呱头蛙,Guātóuwā,Gwātàuhwā,
+658, ,Greninja,甲賀忍蛙,甲贺忍蛙,Jiǎhèrěnwā,Gaaphohyánwā,-
+659, ,Bunnelby,掘掘兔,掘掘兔,Juéjuétù,Gwahtgwahttou,-
+660, ,Diggersby,掘地兔,掘地兔,Juédìtù,Gwahtdeihtou,攉土兔 Huōtǔtù (TW)
+661, ,Fletchling,小箭雀,小箭雀,Xiǎojiànquè,Síujinjéuk,-
+662, ,Fletchinder,火箭雀,火箭雀,Huǒjiànquè,Fójinjéuk,-
+663, ,Talonflame,烈箭鷹,烈箭鹰,Lièjiànyīng,Lihtjinyīng,烈箭鶲 Lièjiànwēng (TW)
+664, ,Scatterbug,粉蝶蟲,粉蝶虫,Fěndiéchóng,Fándihpchùhng,粉蛹 Fěnyǒng (TW)
+665, ,Spewpa,粉蝶蛹,粉蝶蛹,Fěndiéyǒng,Fándihpyúng,-
+666, ,Vivillon,彩粉蝶,彩粉蝶,Cǎifěndié,Chóifándihp,碧粉蝶 Bìfěndié (TW)
+667, ,Litleo,小獅獅,小狮狮,Xiǎoshīshī,Síusīsī,-
+668, ,Pyroar,火炎獅,火炎狮,Huǒyánshī,Fóyìhmsī,-
+669, ,Flabébé,花蓓蓓,花蓓蓓,Huābèibèi,Fāpúihpúih,-
+670, ,Floette,花葉蒂,花叶蒂,Huāyèdì,Fāyihpdai,-
+671, ,Florges,花潔夫人,花洁夫人,Huājiéfūrén,Fāgitfùhyàhn,-
+672, ,Skiddo,坐騎小羊,坐骑小羊,Zuòqíxiǎoyáng,Johkèihsíuyèuhng,咩咩羊 Miēmiēyáng (TW)
+673, ,Gogoat,坐騎山羊,坐骑山羊,Zuòqíshānyáng,Johkèihsāanyèuhng,指路羊 Jílouh'yèuhng (HK)
+674, ,Pancham,頑皮熊貓,顽皮熊猫,Wánpíxióngmāo,Wàahnpèihhùhngmāau,-
+675, ,Pangoro,流氓熊貓,霸道熊猫,Liúmángxióngmāo
+676, ,Furfrou,多麗米亞,多丽米亚,Duōlìmǐyǎ
+677, ,Espurr,妙喵,妙喵,Miàomiāo,Miuhmīu,-
+678, ,Meowstic,超能妙喵,超能妙喵,Chāonéngmiàomiāo,Chīunàhngmiuhmīu,-
+679, ,Honedge,獨劍鞘,独剑鞘,Dújiànqiào,Duhkgimchiu,-
+680, ,Doublade,雙劍鞘,双剑鞘,Shuāngjiànqiào,Sēunggimchiu,-
+681, ,Aegislash,堅盾劍怪,坚盾剑怪,Jiāndùnjiànguài,Gīntéuhngimgwaai,-
+682, ,Spritzee,粉香香,粉香香,Fěnxiāngxiāng,Fánhēunghēung,-
+683, ,Aromatisse,芳香精,芳香精,Fāngxiāngjīng,Fōnghēungjīng,-
+684, ,Swirlix,綿綿泡芙,绵绵泡芙,Miánmiánpàofú,Mìhnmìhnpaaufùh,-
+685, ,Slurpuff,胖甜妮,胖甜妮,Pàngtiánní
+686, ,Inkay,好啦魷,好啦鱿,Hǎolayóu,Hóulāyàuh,豪喇花枝 Háolǎhuāzhī (TW)
+687, ,Malamar,烏賊王,乌贼王,Wūzéiwáng,Wūchaahkwòhng,-
+688,Binacle,Binacle,龜腳腳,龟脚脚,Guījiǎojiǎo,Gwāigeukgeuk,-
+689,Barbaracle,Barbaracle,龜足巨鎧,龟足巨铠,Guīzújùkǎi,Gwāijūkgeuihhói,-
+690,Skrelp,Skrelp,垃垃藻,垃垃藻,Lèlèzǎo
+691,Dragalge,Dragalge,毒藻龍,毒藻龙,Dúzǎolóng,Duhkjóulùhng,毒拉蜜妮 Dúlāmìní (TW)
+692,Clauncher,Clauncher,鐵臂槍蝦,铁臂枪虾,Tiěbìqiāngxiā,Titbeichēunghàh,-
+693,Clawitzer,Clawitzer,鋼炮臂蝦,钢炮臂虾,Gāngpàobìxiā,Gōngpaaubeihàh,-
+694,Helioptile,Helioptile,傘電蜥,伞电蜥,Sǎndiànxī,Saandihnsīk,發電蜥 Faatdihnsīk (HK)
+695,Heliolisk,Heliolisk,光電傘蜥,光电伞蜥,Guāngdiànsǎnxī,Gwōngdihnsaansīk,電傘查特 Diànsǎnchátè (TW)
+696,Tyrunt,Tyrunt,寶寶暴龍,宝宝暴龙,Bǎobaobàolóng,Bóubóubouhlùhng,暴龍仔 Bouhlùhngjái (HK)
+697,Tyrantrum,Tyrantrum,怪顎龍,怪颚龙,Guài'èlóng,Gwaaingohklùhng,-
+698,Amaura,Amaura,冰雪龍,冰雪龙,Bīngxuělóng,Bīngsyutlùhng,-
+699,Aurorus,Aurorus,冰雪巨龍,冰雪巨龙,Bīngxuějùlóng,Bīngsyutgeuihlùhng,-
+700,Sylveon,Sylveon,仙子伊布,仙子伊布,Xiānzǐyībù,Sīnjíyìhbou,仙子精靈 / 仙子精灵 Xiānzǐjīnglíng (TW/CN)
+701,Hawlucha,Hawlucha,摔角鷹人,摔角鹰人,Shuāijiǎoyīngrén,Sēutgokyīngyàhn,戰鬥飛鳥 Zhàndòufēiniǎo (TW)
+702,Dedenne,Dedenne,咚咚鼠,咚咚鼠,Dōngdōngshǔ,Dūngdūngsyú,-
+703,Carbink,Carbink,小碎鑽,小碎钻,Xiǎosuìzuàn,Síuseuijyūn,-
+704,Goomy,Goomy,黏黏寶,黏黏宝,Niánniánbǎo,Nìhmnìhmbóu,-
+705, ,Sliggoo,黏美兒,黏美儿,Niánměi'er,Nìhmméihyìh,黏美伊兒 Niánměiyī'er (TW)
+706, ,Goodra,黏美龍,黏美龙,Niánměilóng,Nìhmméihlùhng,黏美露龍 Niánměilùlóng (TW)
+707, ,Klefki,鑰圈兒,钥圈儿,Yàoquān'ér,Yeuhkhyūnyìh,鎖圈兒 Sóhyūnyìh (HK)
+708, ,Phantump,小木靈,小木灵,Xiǎomùlíng,Síumuhklìhng,-
+709, ,Trevenant,朽木妖,朽木妖,Xiǔmùyāo,Náumuhkyíu,-
+710, ,Pumpkaboo,南瓜精,南瓜精,Nánguājīng,Nàahmgwājīng,-
+711, ,Gourgeist,南瓜怪人,南瓜怪人,Nánguāguàirén,Nàahmgwāgwaaiyàhn,-
+712, ,Bergmite,冰寶,冰宝,Bīngbǎo,Bīngbóu,-
+713, ,Avalugg,冰岩怪,冰岩怪,Bīngyánguài,Bīngngàahmgwaai,-
+714, ,Noibat,嗡蝠,嗡蝠,Wēngfú,Yūngfūk,-
+715, ,Noivern,音波龍,音波龙,Yīnbōlóng,Yāmbōlùhng,音波飛龍 Yāmbōfēilùhng (HK)
+716, ,Xerneas,哲爾尼亞斯,哲尔尼亚斯,Zhé'ěrníyǎsī
+717, ,Yveltal,伊裴爾塔爾,伊裴尔塔尔,Yīpéi'ěrtǎ'ěr,Yīpùihyíhtaapyíh,伊秘魯塔路 Yībeilóuhtaaplouh (HK)
+718, ,Zygarde,基格爾德,基格尔德,Jīgé'ěrdé,Gēigaakyíhdāk,-
+719, ,Diancie,蒂安希,蒂安希,Dì'ānxī,Dai'ōnhēi,-
+720, ,Hoopa,胡帕,胡帕,Húpà,Wùhpaak,-
+721, ,Volcanion,波爾凱尼恩,波尔凯尼恩,Bō'ěrkǎiní'ēn,Bōyíhhóinèihyān,-
+722, ,Rowlet,木木梟,木木枭,Mùmùxiāo,Muhkmuhkhīu,-
+723, ,Dartrix,投羽梟,投羽枭,Tóuyǔxiāo,Tàuhyúhhīu,-
+724, ,Decidueye,狙射樹梟,狙射树枭,Jūshèshùxiāo,Jēuisehsyuhhīu,-
+725, ,Litten,火斑喵,火斑喵,Huǒbānmiāo,Fóbāanmēu,-
+726, ,Torracat,炎熱喵,炎热喵,Yánrèmiāo,Yìhmyihtmēu,-
+727, ,Incineroar,熾焰咆哮虎,炽焰咆哮虎,Chìyànpáoxiāohǔ,Chiyihmpàauhhāaufú,-
+728, ,Popplio,球球海獅,球球海狮,Qiúqiúhǎishī,Kàuhkàuhhóisī,-
+729, ,Brionne,花漾海獅,花漾海狮,Huāyànghǎishī,Fāyeuhnghóisī,-
+730, ,Primarina,西獅海壬,西狮海壬,Xīshīhǎirén,Sāisīhóiyàhm,-
+731, ,Pikipek,小篤兒,小笃儿,Xiǎodǔ'ér,Síudūk'yìh,-
+732, ,Trumbeak,喇叭啄鳥,喇叭啄鸟,Lǎbāzhuóniǎo,Lābādeukníuh,-
+733, ,Toucannon,銃嘴大鳥,铳嘴大鸟,Chòngzuǐdàniǎo,Chungjéuidaaihníuh,-
+734, ,Yungoos,貓鼬少,猫鼬少,Māoyòushào,Māauyauhsiu,-
+735, ,Gumshoos,貓鼬探長,猫鼬探长,Māoyòutànzhǎng,Māauyauhtaamjéung,-
+736, ,Grubbin,強顎雞母蟲,强颚鸡母虫,Qiáng'èjīmǔchóng,Kèuhngngohkgāimóuhchùhng,-
+737, ,Charjabug,蟲電寶,虫电宝,Chóngdiànbǎo,Chùhngdihnbóu,-
+738, ,Vikavolt,鍬農炮蟲,锹农炮虫,Qiāonóngpàochóng,Chīunùhngpàauhchùhng,-
+739, ,Crabrawler,好勝蟹,好胜蟹,Hàoshèngxiè,Housingháaih,-
+740, ,Crabominable,好勝毛蟹,好胜毛蟹,Hàoshèngmáoxiè,Housingmòuhháaih,-
+741, ,Oricorio,花舞鳥,花舞鸟,Huāwǔniǎo,Fāmóuhníuh,-
+742, ,Cutiefly,萌虻,萌虻,Méngméng,Màhngmòhng,-
+743, ,Ribombee,蝶結萌虻,蝶结萌虻,Diéjiéméngméng,Dihpgitmàhngmòhng,-
+744, ,Rockruff,岩狗狗,岩狗狗,Yángǒugǒu,Ngàahmgáugáu,-
+745, ,Lycanroc,鬃岩狼人,鬃岩狼人,Zōngyánlángrén,Jūngngàahmlòhngyàhn,-
+746, ,Wishiwashi,弱丁魚,弱丁鱼,Ruòdīngyú,Yeuhkdīngyùh,-
+747, ,Mareanie,好壞星,好坏星,Hǎohuàixīng,Hóuwaaihsīng,-
+748, ,Toxapex,超壞星,超坏星,Chāohuàixīng,Chīuwaaihsīng,-
+749, ,Mudbray,泥驢仔,泥驴仔,Nílǘzǎi,Nàihlèuihjái,-
+750, ,Mudsdale,重泥挽馬,重泥挽马,Zhòngníwǎnmǎ,Chúhngnàihwáahnmáh,-
+751, ,Dewpider,滴蛛,滴蛛,Dīzhū,Dīkjyū,-
+752, ,Araquanid,滴蛛霸,滴蛛霸,Dīzhūbà,Dīkjyūba,-
+753, ,Fomantis,偽螳草,伪螳草,Wěitángcǎo,Ngaihtòhngchóu,-
+754, ,Lurantis,蘭螳花,兰螳花,Lántánghuā,Làahntòhngfā,-
+755, ,Morelull,睡睡菇,睡睡菇,Shuìshuìgū,Seuihseuihgū,-
+756, ,Shiinotic,燈罩夜菇,灯罩夜菇,Dēngzhàoyègū,Dāngjaauyehgū,-
+757, ,Salandit,夜盜火蜥,夜盗火蜥,Yèdàohuǒxī,Yehdouhfósīk,-
+758, ,Salazzle,焰后蜥,焰后蜥,Yànhòuxī,Yihmhauhsīk,-
+759, ,Stufful,童偶熊,童偶熊,Tóng'ǒuxióng,Tùhngngáuhhùhng,-
+760, ,Bewear,穿著熊,穿着熊,Chuānzhuóxióng,Chyūnjeukhùhng,-
+761, ,Bounsweet,甜竹竹,甜竹竹,Tiánzhúzhú,Tìhmjūkjūk,-
+762, ,Steenee,甜舞妮,甜舞妮,Tiánwǔní
+763, ,Tsareena,甜冷美后,甜冷美后,Tiánlěngměihòu,Tìhmláahngméihhauh,-
+764, ,Comfey,花療環環,花疗环环,Huāliáohuánhuán,Fālìuhwàahnwàahn,-
+765, ,Oranguru,智揮猩,智挥猩,Zhìhuīxīng,Jifāisīng,-
+766, ,Passimian,投擲猴,投掷猴,Tóuzhíhóu
+767, ,Wimpod,膽小蟲,胆小虫,Dǎnxiǎochóng,Dáamsíuchùhng,-
+768, ,Golisopod,具甲武者,具甲武者,Jùjiǎwǔzhě,Geuihgaapmóuhjé,-
+769, ,Sandygast,沙丘娃,沙丘娃,Shāqiūwá,Sāyāuwā,-
+770,Palossand,Palossand,噬沙堡爺,噬沙堡爷,Shìshābǎoyé,Saihsābóuyèh,-
+771,Pyukumuku,Pyukumuku,拳海參,拳海参,Quánhǎishēn,Kyùhnhóisām,-
+772,Type: Null,Type: Null,屬性：空,属性：空,Shǔxìng: Kōng,Suhksing: Hūng,-
+773,Silvally,Silvally,銀伴戰獸,银伴战兽,Yínbànzhànshòu,Ngàhnbuhnjinsau,-
+774,Minior,Minior,小隕星,小陨星,Xiǎoyǔnxīng,Síuwáhnsīng,-
+775,Komala,Komala,樹枕尾熊,树枕尾熊,Shùzhěnwěixióng,Syuhjámméihhùhng,-
+776,Turtonator,Turtonator,爆焰龜獸,爆焰龟兽,Bàoyànguīshòu,Baauyihmgwāisau,-
+777,Togedemaru,Togedemaru,托戈德瑪爾,托戈德玛尔,Tuōgēdémǎ'ěr,Tokgōdākmáhyíh,-
+778,Mimikyu,Mimikyu,謎擬Ｑ,谜拟丘,Mínǐ-Q
+779,Bruxish,Bruxish,磨牙彩皮魚,磨牙彩皮鱼,Móyácǎipíyú,Mòhngàhchóipèihyùh,-
+780,Drampa,Drampa,老翁龍,老翁龙,Lǎowēnglóng,Lóuhyūnglùhng,-
+781,Dhelmise,Dhelmise,破破舵輪,破破舵轮,Pòpòduòlún,Popotòhlèuhn,-
+782,Jangmo-o,Jangmo-o,心鱗寶,心鳞宝,Xīnlínbǎo,Sāmlèuhnbóu,-
+783,Hakamo-o,Hakamo-o,鱗甲龍,鳞甲龙,Línjiǎlóng,Lèuhngaaplùhng,-
+784,Kommo-o,Kommo-o,杖尾鱗甲龍,杖尾鳞甲龙,Zhàngwěilínjiǎlóng,Jeuhngméihlèuhngaaplùhng,-
+785,Tapu Koko,Tapu Koko,卡璞・鳴鳴,卡璞・鸣鸣,Kǎpú Míngmíng,Kāpok Mìhngmìhng,-
+786,Tapu Lele,Tapu Lele,卡璞・蝶蝶,卡璞・蝶蝶,Kǎpú Diédié,Kāpok Dihpdihp,-
+787,Tapu Bulu,Tapu Bulu,卡璞・哞哞,卡璞・哞哞,Kǎpú Mōumōu,Kāpok Màuhmàuh,-
+788,Tapu Fini,Tapu Fini,卡璞・鰭鰭,卡璞・鳍鳍,Kǎpú Qíqí,Kāpok Kèihkèih,-
+789, ,Cosmog,科斯莫古,科斯莫古,Kēsīmògǔ,Fōsīmohkgú,-
+790, ,Cosmoem,科斯莫姆,科斯莫姆,Kēsīmòmǔ,Fōsīmohkmóuh,-
+791, ,Solgaleo,索爾迦雷歐,索尔迦雷欧,Suǒ'ěrjiāléi'ōu,Sok'yíhgālèuih'āu,-
+792, ,Lunala,露奈雅拉,露奈雅拉,Lùnàiyǎlā,Louhnoihngáhlāai,-
+793, ,Nihilego,虛吾伊德,虚吾伊德,Xūwúyīdé,Hēui'nghyīdāk,-
+794, ,Buzzwole,爆肌蚊,爆肌蚊,Bàojīwén,Baaugēimān,-
+795, ,Pheromosa,費洛美螂,费洛美螂,Fèiluòměiláng,Failokméihlòhng,-
+796, ,Xurkitree,電束木,电束木,Diànshùmù,Dihnchūkmuhk,-
+797, ,Celesteela,鐵火輝夜,铁火辉夜,Tiěhuǒhuīyè,Titfófāiyeh,-
+798, ,Kartana,紙御劍,纸御剑,Zhǐyùjiàn,Jíyuhgim,-
+799, ,Guzzlord,惡食大王,恶食大王,Èshídàwáng,Oksihkdaaihwòhng,-
+800, ,Necrozma,奈克洛茲瑪,奈克洛兹玛,Nàikèluòzīmǎ,Noihhāklokjīmá,-
+801, ,Magearna,瑪機雅娜,玛机雅娜,Mǎjīyǎnà,Máhgēingáhnàh,-
+802, ,Marshadow,瑪夏多,玛夏多,Mǎxiàduō,Máhahdō,-
+803, ,Poipole,毒貝比,毒贝比,Dúbèibǐ,Duhkbuibéi,-
+804, ,Naganadel,四顎針龍,四颚针龙,Sì'èzhēnlóng,Sei'ngohkjāmlùhng,-
+805, ,Stakataka,壘磊石,垒磊石,Lěilěishí,Léuihléuihsehk,-
+806, ,Blacephalon,砰頭小丑,砰头小丑,Pēngtóuxiǎochǒu,Pīngtàuhsíucháu,-
+807, ,Zeraora,捷拉奧拉,捷拉奥拉,Jiélā'àolā,Jihtlāai'oulāai,-
+808, ,Meltan,美錄坦,美录坦,Měilùtǎn,Méihluhktáan,-
+809, ,Melmetal,美錄梅塔,美录梅塔,Měilùméitǎ,Méihluhkmùihtaap,-
+810, ,Grookey,敲音猴,敲音猴,Qiāoyīnhóu,Hāauyāmhàuh,-
+811, ,Thwackey,啪咚猴,啪咚猴,Pādōnghóu,Pāakdūnghàuh,-
+812,Rillaboom,Rillaboom,轟擂金剛猩,轰擂金刚猩,Hōngléijīngāngxīng,Gwānglèuihgāmgōngsīng,-
+813,Scorbunny,Scorbunny,炎兔兒,炎兔儿,Yántù'er,Yìhmtouyìh,-
+814,Raboot,Raboot,騰蹴小將,腾蹴小将,Téngcùxiǎojiàng,Tàhngjūksíujeung,-
+815,Cinderace,Cinderace,閃焰王牌,闪焰王牌,Shǎnyànwángpái,Símyihmwòhngpáai,-
+816,Sobble,Sobble,淚眼蜥,泪眼蜥,Lèiyǎnxī,Leuih'ngáahnsīk,-
+817,Drizzile,Drizzile,變澀蜥,变涩蜥,Biànsèxī,Binsaapsīk,-
+818,Inteleon,Inteleon,千面避役,千面避役,Qiānmiànbìyì,Chīnmihnbeihyihk,-
+819,Skwovet,Skwovet,貪心栗鼠,贪心栗鼠,Tānxīnlìshǔ,Tāamsāmleuhtsyú,-
+820,Greedent,Greedent,藏飽栗鼠,藏饱栗鼠,Cángbǎolìshǔ,Chòhngbáauleuhtsyú,-
+821,Rookidee,Rookidee,稚山雀,稚山雀,Zhìshānquè,Jihsāanjéuk,-
+822,Corvisquire,Corvisquire,藍鴉,蓝鸦,Lányā,Làahm'ā,-
+823,Corviknight,Corviknight,鋼鎧鴉,钢铠鸦,Gāngkǎiyā,Gonghói'ā,-
+824,Blipbug,Blipbug,索偵蟲,索侦虫,Suǒzhēnchóng,Sokjīngchùhng,-
+825,Dottler,Dottler,天罩蟲,天罩虫,Tiānzhàochóng,Tīnjaauchùhng,-
+826,Orbeetle,Orbeetle,以歐路普,以欧路普,Yǐ'ōulùpǔ,Yíh'āulouhpóu,-
+827,Nickit,Nickit,偷兒狐,狡小狐,Tōu'erhú
+828,Thievul,Thievul,狐大盜,猾大狐,Húdàdào
+829, ,Gossifleur,幼棉棉,幼棉棉,Yòumiánmián,Yaumìhnmìhn,-
+830, ,Eldegoss,白蓬蓬,白蓬蓬,Báipéngpéng,Baahkpùhngpùhng,-
+831, ,Wooloo,毛辮羊,毛辫羊,Máobiànyáng,Mòuhbīnyèuhng,-
+832, ,Dubwool,毛毛角羊,毛毛角羊,Máomáojiǎoyáng,Mòuhmòuhgokyèuhng,-
+833, ,Chewtle,咬咬龜,咬咬龟,Yǎoyǎoguī,Ngáauhngáauhgwāi,-
+834, ,Drednaw,暴噬龜,暴噬龟,Bàoshìguī,Bouhsaihgwāi,-
+835, ,Yamper,來電汪,来电汪,Láidiànwāng,Lòihdihnwōng,-
+836, ,Boltund,逐電犬,逐电犬,Zhúdiànquǎn,Juhkdihnhyún,-
+837, ,Rolycoly,小炭仔,小炭仔,Xiǎotànzǎi,Síutaanjái,-
+838, ,Carkol,大炭車,大炭车,Dàtànchē,Daaihtaanchē,-
+839,Coalossal,Coalossal,巨炭山,巨炭山,Jùtànshān,Geuihtaansāan,-
+840,Applin,Applin,啃果蟲,啃果虫,Kěnguǒchóng,Hánggwóchùhng,-
+841,Flapple,Flapple,蘋裹龍,苹裹龙,Píngguǒlóng,Pìhnggwólùhng,-
+842,Appletun,Appletun,豐蜜龍,丰蜜龙,Fēngmìlóng,Fūngmahtlùhng,-
+843,Silicobra,Silicobra,沙包蛇,沙包蛇,Shābāoshé,Sābāausèh,-
+844,Sandaconda,Sandaconda,沙螺蟒,沙螺蟒,Shāluómǎng,Sālòhmóhng,-
+845,Cramorant,Cramorant,古月鳥,古月鸟,Gǔyuèniǎo,Gúyuhtníuh,-
+846,Arrokuda,Arrokuda,刺梭魚,刺梭鱼,Cìsuōyú,Chisōyùh,-
+847,Barraskewda,Barraskewda,戽斗尖梭,戽斗尖梭,Hùdǒujiānsuō,Fudáujīmsō,-
+848,Toxel,Toxel,毒電嬰,电音婴,Dúdiànyīng
+849,Toxtricity,Toxtricity,顫弦蠑螈,颤弦蝾螈,Chànxiánróngyuán,Jinyìhnwìhngyùhn,-
+850,Sizzlipede,Sizzlipede,燒火蚣,烧火蚣,Shāohuǒgōng,Sīufógūng,-
+851,Centiskorch,Centiskorch,焚焰蚣,焚焰蚣,Fényàngōng,Fàhnyihmgūng,-
+852,Clobbopus,Clobbopus,拳拳蛸,拳拳蛸,Quánquánxiāo,Kyùhnkyùhnsīu,-
+853,Grapploct,Grapploct,八爪武師,八爪武师,Bāzhuǎwǔshī,Baatjáaumóuhsī,-
+854,Sinistea,Sinistea,來悲茶,来悲茶,Láibēichá,Lòihbēichàh,-
+855,Polteageist,Polteageist,怖思壺,怖思壶,Bùsīhú,Bousīwùh,-
+856,Hatenna,Hatenna,迷布莉姆,迷布莉姆,Míbùlìmǔ,Màihbouleihmóuh,-
+857,Hattrem,Hattrem,提布莉姆,提布莉姆,Tíbùlìmǔ,Tàihbouleihmóuh,-
+858,Hatterene,Hatterene,布莉姆溫,布莉姆温,Bùlìmǔwēn,Bouleihmóuhwān,-
+859,Impidimp,Impidimp,搗蛋小妖,捣蛋小妖,Dǎodànxiǎoyāo,Dóudáansíuyíu,-
+860,Morgrem,Morgrem,詐唬魔,诈唬魔,Zhàhǔmó,Jafúmō,-
+861,Grimmsnarl,Grimmsnarl,長毛巨魔,长毛巨魔,Chángmáojùmó,Chèuhngmòuhgeuihmō,-
+862,Obstagoon,Obstagoon,堵攔熊,堵拦熊,Dǔlánxióng,Dóulàahnhùhng,-
+863,Perrserker,Perrserker,喵頭目,喵头目,Miāotóumù,Mīutàuhmuhk,-
+864,Cursola,Cursola,魔靈珊瑚,魔灵珊瑚,Mólíngshānhú,Mōlìhngsāanwùh,-
+865,Sirfetch'd,Sirfetch'd,蔥遊兵,葱游兵,Cōngyóubīng,Chūngyàuhbīng,-
+866,Mr. Rime,Mr. Rime,踏冰人偶,踏冰人偶,Tàbīngrén'ǒu,Daahpbīngyàhnngáuh,-
+867, ,Runerigus,死神板,迭失板,Sǐshénbǎn
+868, ,Milcery,小仙奶,小仙奶,Xiǎoxiānnǎi,Síusīnnáaih,-
+869,Alcremie,Alcremie,霜奶仙,霜奶仙,Shuāngnǎixiān,Sēungnáaihsīn,-
+870,Falinks,Falinks,列陣兵,列阵兵,Lièzhènbīng,Lihtjahnbīng,-
+871,Pincurchin,Pincurchin,啪嚓海膽,啪嚓海胆,Pācāhǎidǎn,Pāakchaathóidáam,-
+872,Snom,Snom,雪吞蟲,雪吞虫,Xuětūnchóng,Syuttānchùhng,-
+873,Frosmoth,Frosmoth,雪絨蛾,雪绒蛾,Xuěróng'é,Syutyùhngngòh,-
+874,Stonjourner,Stonjourner,巨石丁,巨石丁,Jùshídīng,Geuihsehkdīng,-
+875,Eiscue,Eiscue,冰砌鵝,冰砌鹅,Bīngqì'é,Bīngchaingòh,-
+876,Indeedee,Indeedee,愛管侍,爱管侍,Àiguǎnshì,Oigúnsih,-
+877,Morpeko,Morpeko,莫魯貝可,莫鲁贝可,Mòlǔbèikě,Mohklóuhbuihó,-
+878,Cufant,Cufant,銅象,铜象,Tóngxiàng,Tùhngjeuhng,-
+879,Copperajah,Copperajah,大王銅象,大王铜象,Dàwángtóngxiàng,Daaihwòhngtùhngjeuhng,-
+880,Dracozolt,Dracozolt,雷鳥龍,雷鸟龙,Léiniǎolóng,Lèuihníuhlùhng,-
+881,Arctozolt,Arctozolt,雷鳥海獸,雷鸟海兽,Léiniǎohǎishòu,Lèuihníuhhóisau,-
+882,Dracovish,Dracovish,鰓魚龍,鳃鱼龙,Sāiyúlóng,Sōiyùhlùhng,-
+883,Arctovish,Arctovish,鰓魚海獸,鳃鱼海兽,Sāiyúhǎishòu,Sōiyùhhóisau,-
+884,Duraludon,Duraludon,鋁鋼龍,铝钢龙,Lǚgānglóng,Léuihgonglùhng,-
+885,Dreepy,Dreepy,多龍梅西亞,多龙梅西亚,Duōlóngméixīyǎ,Dōlùhngmùihsāi'a,-
+886,Drakloak,Drakloak,多龍奇,多龙奇,Duōlóngqí,Dōlùhngkèih,-
+887,Dragapult,Dragapult,多龍巴魯托,多龙巴鲁托,Duōlóngbālǔtuō,Dōlùhngbālóuhtok,-
+888,Zacian,Zacian,蒼響,苍响,Cāngxiǎng,Chōnghéung,-
+889,Zamazenta,Zamazenta,藏瑪然特,藏玛然特,Zàngmǎrántè,Johngmáhyìhndahk,-
+890,Eternatus,Eternatus,無極汰那,无极汰那,Wújítàinà,Mòuhgihktaaináh,-
+891,Kubfu,Kubfu,熊徒弟,熊徒弟,Xióngtúdì,Hùhngtòuhdái,-
+892,Urshifu,Urshifu,武道熊師,武道熊师,Wǔdàoxióngshī,Móuhdouhhùhngsī,-
+893,Zarude,Zarude,薩戮德,萨戮德,Sàlùdé,Saatluhkdāk,-
+894,Regieleki,Regieleki,雷吉艾勒奇,雷吉艾勒奇,Léijí'àilèqí,Lèuihgātngaaihlahkkèih,-
+895,Regidrago,Regidrago,雷吉鐸拉戈,雷吉铎拉戈,Léijíduólāgē,Lèuihgātdohklāaigwō,-
+896,Glastrier,Glastrier,雪暴馬,雪暴马,Xuěbàomǎ,Syutbouhmáh,-
+897,Spectrier,Spectrier,靈幽馬,灵幽马,Língyōumǎ,Lìhngyāumáh,-
+898,Calyrex,Calyrex,蕾冠王,蕾冠王,Lěiguànwáng,Léuihgunwòhng,-
+899,Wyrdeer,Wyrdeer,詭角鹿,诡角鹿,Guǐjiǎolù,Gwáigokluhk,-
+900,Kleavor,Kleavor,劈斧螳螂,劈斧螳螂,Pīfǔtángláng,Pekfútòhnglòhng,-
+901,Ursaluna,Ursaluna,月月熊,月月熊,Yuèyuèxióng,Yuhtyuhthùhng,-
+902,Basculegion,Basculegion,幽尾玄魚,幽尾玄鱼,Yōuwěixuányú,Yāuméihyùhnyùh,-
+903,Sneasler,Sneasler,大狃拉,大狃拉,Dàniǔlā,Daaihnáulāai,-
+904,Overqwil,Overqwil,萬針魚,万针鱼,Wànzhēnyú,Maahnjāmyùh,-
+905,Enamorus,Enamorus,眷戀雲,眷恋云,Juànliànyún,Gyunlyúnwàhn,-

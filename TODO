@@ -1,16 +1,27 @@
 #ANCHOR TO BE DONE
-TODO For the selecting generations can we also have Mega Pokémon an Gigantamax Pokemon as an option to add too. (For server owners and admins to change) patreon only
-TODO Yes we would like more GIFs added to the bot ideally every single gif including the shiny versions. So we can do a shiny rank like 1 shiny in 500 Pokémon then this can be added 
-	to the shiny leaderboard. Maybe we can have a button like this ✨
-	So every 500th time you guess a shiny will appear (I will write a description for this) 
-
-TODO I would like double points option for individual users and increased chance of shiny 1 in 300 guesses Patreon only
-TODO Once I complete all the descriptions then I'm going to translate them to all major languages. I'd like this to be a free option where they can select which language of the bot 
-	they'd like to use is that possible? (Only admin and owner) can change this. This will allow us to go worldwide. The bot can it accept answers in multiple languages?? So if we 
-	did Pikachu in Italian or English or in any language both would work 
-TODO refine gif scripts to add more gifs
+TODO Generation selection only for patreons
 TODO add points info on the New question embed
 TODO Check patreon verification
+TODO I would like double points option for individual users and increased chance of shiny 1 in 300 guesses Patreon only
+
+TODO shiny version only in the solution
+TODO shiny rank like 1 shiny in 500 Pokémon then this can be added to the shiny leaderboard. Maybe we can have a button 
+	like this ✨. So every 500th time you guess a shiny will appear (I will write a description for this) 
+TODO Different languages free option where they can select which language of the bot they'd like to use (Only admin and owner). The bot 
+	accepts answers in multiple languages
+TODO refine gif scripts to add more gifs
+TODO accept answer also without the attribute gmax, galar ...
+
+
+TODO GIFS DATABASE
+	- Save descriptions into a dataframe and try to parse the pokemon of correspondance
+	- All the new gifs don't have the black version
+	X Integrate the pokemon_data.csv with all the new pokemons
+	- create another csv file only for descriptions with all the languages
+
+TODO add command Wtp!shinyrecord or /shinyrecord This will show what shiny Pokémon they have got
+	Please also add this button with the rest of the buttons which will be the shiny global leaderboard (✨)
+TODO Pokémon to spawn every 10 minutes
 
 
 ----------------------------------------------------------

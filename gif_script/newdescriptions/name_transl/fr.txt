@@ -1,0 +1,905 @@
+001,Bulbasaur,Bulbasaur,Bulbizarre
+002,Ivysaur,Ivysaur,Herbizarre
+003,Venusaur,Venusaur,Florizarre
+004,Charmander,Charmander,Salamèche
+005,Charmeleon,Charmeleon,Reptincel
+006,Charizard,Charizard,Dracaufeu
+007,Squirtle,Squirtle,Carapuce
+008,Wartortle,Wartortle,Carabaffe
+009,Blastoise,Blastoise,Tortank
+010,Caterpie,Caterpie,Chenipan
+011,Metapod,Metapod,Chrysacier
+012,Butterfree,Butterfree,Papilusion
+013,Weedle,Weedle,Aspicot
+014,Kakuna,Kakuna,Coconfort
+015,Beedrill,Beedrill,Dardargnan
+016,Pidgey,Pidgey,Roucool
+017,Pidgeotto,Pidgeotto,Roucoups
+018,Pidgeot,Pidgeot,Roucarnage
+019,Rattata,Rattata,Rattata
+020,Raticate,Raticate,Rattatac
+021,Spearow,Spearow,Piafabec
+022,Fearow,Fearow,Rapasdepic
+023,Ekans,Ekans,Abo
+024,Arbok,Arbok,Arbok
+025,Pikachu,Pikachu,Pikachu
+026,Raichu,Raichu,Raichu
+027,Sandshrew,Sandshrew,Sabelette
+028,Sandslash,Sandslash,Sablaireau
+029,Nidoran♀,Nidoran♀,Nidoran♀
+030,Nidorina,Nidorina,Nidorina
+031,Nidoqueen,Nidoqueen,Nidoqueen
+032,Nidoran♂,Nidoran♂,Nidoran♂
+033,Nidorino,Nidorino,Nidorino
+034,Nidoking,Nidoking,Nidoking
+035,Clefairy,Clefairy,Mélofée
+036,Clefable,Clefable,Mélodelfe
+037,Vulpix,Vulpix,Goupix
+038,Ninetales,Ninetales,Feunard
+039,Jigglypuff,Jigglypuff,Rondoudou
+040,Wigglytuff,Wigglytuff,Grodoudou
+041,Zubat,Zubat,Nosferapti
+042,Golbat,Golbat,Nosferalto
+043,Oddish,Oddish,Mystherbe
+044,Gloom,Gloom,Ortide
+045,Vileplume,Vileplume,Rafflesia
+046,Paras,Paras,Paras
+047,Parasect,Parasect,Parasect
+048,Venonat,Venonat,Mimitoss
+049,Venomoth,Venomoth,Aéromite
+050,Diglett,Diglett,Taupiqueur
+051,Dugtrio,Dugtrio,Triopikeur
+052,Meowth,Meowth,Miaouss
+053,Persian,Persian,Persian
+054,Psyduck,Psyduck,Psykokwak
+055,Golduck,Golduck,Akwakwak
+056,Mankey,Mankey,Férosinge
+057,Primeape,Primeape,Colossinge
+058,Growlithe,Growlithe,Caninos
+059,Arcanine,Arcanine,Arcanin
+060,Poliwag,Poliwag,Ptitard
+061,Poliwhirl,Poliwhirl,Têtarte
+062,Poliwrath,Poliwrath,Tartard
+063,Abra,Abra,Abra
+064,Kadabra,Kadabra,Kadabra
+065,Alakazam,Alakazam,Alakazam
+066,Machop,Machop,Machoc
+067,Machoke,Machoke,Machopeur
+068,Machamp,Machamp,Mackogneur
+069,Bellsprout,Bellsprout,Chétiflor
+070,Weepinbell,Weepinbell,Boustiflor
+071,Victreebel,Victreebel,Empiflor
+072,Tentacool,Tentacool,Tentacool
+073,Tentacruel,Tentacruel,Tentacruel
+074,Geodude,Geodude,Racaillou
+075,Graveler,Graveler,Gravalanch
+076,Golem,Golem,Grolem
+077,Ponyta,Ponyta,Ponyta
+078,Rapidash,Rapidash,Galopa
+079,Slowpoke,Slowpoke,Ramoloss
+080,Slowbro,Slowbro,Flagadoss
+081,Magnemite,Magnemite,Magnéti
+082,Magneton,Magneton,Magnéton
+083,Farfetch'd,Farfetch'd,Canarticho
+084,Doduo,Doduo,Doduo
+085,Dodrio,Dodrio,Dodrio
+086,Seel,Seel,Otaria
+087,Dewgong,Dewgong,Lamantine
+088,Grimer,Grimer,Tadmorv
+089,Muk,Muk,Grotadmorv
+090,Shellder,Shellder,Kokiyas
+091,Cloyster,Cloyster,Crustabri
+092,Gastly,Gastly,Fantominus
+093,Haunter,Haunter,Spectrum
+094,Gengar,Gengar,Ectoplasma
+095,Onix,Onix,Onix
+096,Drowzee,Drowzee,Soporifik
+097,Hypno,Hypno,Hypnomade
+098,Krabby,Krabby,Krabby
+099,Kingler,Kingler,Krabboss
+100,Voltorb,Voltorb,Voltorbe
+101,Electrode,Electrode,Électrode
+102,Exeggcute,Exeggcute,Noeunoeuf
+103,Exeggutor,Exeggutor,Noadkoko
+104,Cubone,Cubone,Osselait
+105,Marowak,Marowak,Ossatueur
+106,Hitmonlee,Hitmonlee,Kicklee
+107,Hitmonchan,Hitmonchan,Tygnon
+108,Lickitung,Lickitung,Excelangue
+109,Koffing,Koffing,Smogo
+110,Weezing,Weezing,Smogogo
+111,Rhyhorn,Rhyhorn,Rhinocorne
+112,Rhydon,Rhydon,Rhinoféros
+113,Chansey,Chansey,Leveinard
+114,Tangela,Tangela,Saquedeneu
+115,Kangaskhan,Kangaskhan,Kangourex
+116,Horsea,Horsea,Hypotrempe
+117,Seadra,Seadra,Hypocéan
+118,Goldeen,Goldeen,Poissirène
+119,Seaking,Seaking,Poissoroy
+120,Staryu,Staryu,Stari
+121,Starmie,Starmie,Staross
+122,Mr. Mime,Mr. Mime,M. Mime
+123,Scyther,Scyther,Insécateur
+124,Jynx,Jynx,Lippoutou
+125,Electabuzz,Electabuzz,Élektek
+126,Magmar,Magmar,Magmar
+127,Pinsir,Pinsir,Scarabrute
+128,Tauros,Tauros,Tauros
+129,Magikarp,Magikarp,Magicarpe
+130,Gyarados,Gyarados,Léviator
+131,Lapras,Lapras,Lokhlass
+132,Ditto,Ditto,Métamorph
+133,Eevee,Eevee,Évoli
+134,Vaporeon,Vaporeon,Aquali
+135,Jolteon,Jolteon,Voltali
+136,Flareon,Flareon,Pyroli
+137,Porygon,Porygon,Porygon
+138,Omanyte,Omanyte,Amonita
+139,Omastar,Omastar,Amonistar
+140,Kabuto,Kabuto,Kabuto
+141,Kabutops,Kabutops,Kabutops
+142,Aerodactyl,Aerodactyl,Ptéra
+143,Snorlax,Snorlax,Ronflex
+144,Articuno,Articuno,Artikodin
+145,Zapdos,Zapdos,Électhor
+146,Moltres,Moltres,Sulfura
+147,Dratini,Dratini,Minidraco
+148,Dragonair,Dragonair,Draco
+149,Dragonite,Dragonite,Dracolosse
+150,Mewtwo,Mewtwo,Mewtwo
+151,Mew,Mew,Mew
+152,Chikorita,Chikorita,Germignon
+153,Bayleef,Bayleef,Macronium
+154,Meganium,Meganium,Méganium
+155,Cyndaquil,Cyndaquil,Héricendre
+156,Quilava,Quilava,Feurisson
+157,Typhlosion,Typhlosion,Typhlosion
+158,Totodile,Totodile,Kaiminus
+159,Croconaw,Croconaw,Crocrodil
+160,Feraligatr,Feraligatr,Aligatueur
+161,Sentret,Sentret,Fouinette
+162,Furret,Furret,Fouinar
+163,Hoothoot,Hoothoot,Hoothoot
+164,Noctowl,Noctowl,Noarfang
+165,Ledyba,Ledyba,Coxy
+166,Ledian,Ledian,Coxyclaque
+167,Spinarak,Spinarak,Mimigal
+168,Ariados,Ariados,Migalos
+169,Crobat,Crobat,Nostenfer
+170,Chinchou,Chinchou,Loupio
+171,Lanturn,Lanturn,Lanturn
+172,Pichu,Pichu,Pichu
+173,Cleffa,Cleffa,Mélo
+174,Igglybuff,Igglybuff,Toudoudou
+175,Togepi,Togepi,Togepi
+176,Togetic,Togetic,Togetic
+177,Natu,Natu,Natu
+178,Xatu,Xatu,Xatu
+179,Mareep,Mareep,Wattouat
+180,Flaaffy,Flaaffy,Lainergie
+181,Ampharos,Ampharos,Pharamp
+182,Bellossom,Bellossom,Joliflor
+183,Marill,Marill,Marill
+184,Azumarill,Azumarill,Azumarill
+185,Sudowoodo,Sudowoodo,Simularbre
+186,Politoed,Politoed,Tarpaud
+187,Hoppip,Hoppip,Granivol
+188,Skiploom,Skiploom,Floravol
+189,Jumpluff,Jumpluff,Cotovol
+190,Aipom,Aipom,Capumain
+191,Sunkern,Sunkern,Tournegrin
+192,Sunflora,Sunflora,Héliatronc
+193,Yanma,Yanma,Yanma
+194,Wooper,Wooper,Axoloto
+195,Quagsire,Quagsire,Maraiste
+196,Espeon,Espeon,Mentali
+197,Umbreon,Umbreon,Noctali
+198,Murkrow,Murkrow,Cornèbre
+199,Slowking,Slowking,Roigada
+200,Misdreavus,Misdreavus,Feuforêve
+201,Unown,Unown,Zarbi
+202,Wobbuffet,Wobbuffet,Qulbutoké
+203,Girafarig,Girafarig,Girafarig
+204,Pineco,Pineco,Pomdepik
+205,Forretress,Forretress,Foretress
+206,Dunsparce,Dunsparce,Insolourdo
+207,Gligar,Gligar,Scorplane
+208,Steelix,Steelix,Steelix
+209,Snubbull,Snubbull,Snubbull
+210,Granbull,Granbull,Granbull
+211,Qwilfish,Qwilfish,Qwilfish
+212,Scizor,Scizor,Cizayox
+213, ,Shuckle,Caratroc
+214, ,Heracross,Scarhino
+215, ,Sneasel,Farfuret
+216, ,Teddiursa,Teddiursa
+217, ,Ursaring,Ursaring
+218, ,Slugma,Limagma
+219, ,Magcargo,Volcaropod
+220, ,Swinub,Marcacrin
+221, ,Piloswine,Cochignon
+222, ,Corsola,Corayon
+223, ,Remoraid,Rémoraid
+224, ,Octillery,Octillery
+225, ,Delibird,Cadoizo
+226, ,Mantine,Démanta
+227, ,Skarmory,Airmure
+228, ,Houndour,Malosse
+229, ,Houndoom,Démolosse
+230, ,Kingdra,Hyporoi
+231, ,Phanpy,Phanpy
+232, ,Donphan,Donphan
+233, ,Porygon2,Porygon2
+234, ,Stantler,Cerfrousse
+235, ,Smeargle,Queulorior
+236, ,Tyrogue,Debugant
+237, ,Hitmontop,Kapoera
+238,Smoochum,Smoochum,Lippouti
+239,Elekid,Elekid,Élekid
+240,Magby,Magby,Magby
+241,Miltank,Miltank,Écrémeuh
+242,Blissey,Blissey,Leuphorie
+243,Raikou,Raikou,Raikou
+244,Entei,Entei,Entei
+245,Suicune,Suicune,Suicune
+246,Larvitar,Larvitar,Embrylex
+247,Pupitar,Pupitar,Ymphect
+248,Tyranitar,Tyranitar,Tyranocif
+249,Lugia,Lugia,Lugia
+250,Ho-Oh,Ho-Oh,Ho-Oh
+251,Celebi,Celebi,Celebi
+252,Treecko,Treecko,Arcko
+253,Grovyle,Grovyle,Massko
+254, ,Sceptile,Jungko
+255, ,Torchic,Poussifeu
+256, ,Combusken,Galifeu
+257, ,Blaziken,Braségali
+258, ,Mudkip,Gobou
+259, ,Marshtomp,Flobio
+260, ,Swampert,Laggron
+261, ,Poochyena,Medhyèna
+262, ,Mightyena,Grahyèna
+263, ,Zigzagoon,Zigzaton
+264, ,Linoone,Linéon
+265, ,Wurmple,Chenipotte
+266, ,Silcoon,Armulys
+267, ,Beautifly,Charmillon
+268, ,Cascoon,Blindalys
+269, ,Dustox,Papinox
+270, ,Lotad,Nénupiot
+271, ,Lombre,Lombre
+272, ,Ludicolo,Ludicolo
+273, ,Seedot,Grainipiot
+274, ,Nuzleaf,Pifeuil
+275, ,Shiftry,Tengalice
+276, ,Taillow,Nirondelle
+277, ,Swellow,Hélédelle
+278, ,Wingull,Goélise
+279, ,Pelipper,Bekipan
+280, ,Ralts,Tarsal
+281, ,Kirlia,Kirlia
+282,Gardevoir,Gardevoir,Gardevoir
+283,Surskit,Surskit,Arakdo
+284,Masquerain,Masquerain,Maskadra
+285,Shroomish,Shroomish,Balignon
+286,Breloom,Breloom,Chapignon
+287,Slakoth,Slakoth,Parecool
+288,Vigoroth,Vigoroth,Vigoroth
+289,Slaking,Slaking,Monaflèmit
+290,Nincada,Nincada,Ningale
+291,Ninjask,Ninjask,Ninjask
+292,Shedinja,Shedinja,Munja
+293,Whismur,Whismur,Chuchmur
+294,Loudred,Loudred,Ramboum
+295,Exploud,Exploud,Brouhabam
+296,Makuhita,Makuhita,Makuhita
+297,Hariyama,Hariyama,Hariyama
+298,Azurill,Azurill,Azurill
+299,Nosepass,Nosepass,Tarinor
+300,Skitty,Skitty,Skitty
+301,Delcatty,Delcatty,Delcatty
+302,Sableye,Sableye,Ténéfix
+303,Mawile,Mawile,Mysdibule
+304, ,Aron,Galekid
+305, ,Lairon,Galegon
+306, ,Aggron,Galeking
+307, ,Meditite,Méditikka
+308, ,Medicham,Charmina
+309, ,Electrike,Dynavolt
+310, ,Manectric,Élecsprint
+311, ,Plusle,Posipi
+312, ,Minun,Négapi
+313, ,Volbeat,Muciole
+314, ,Illumise,Lumivole
+315, ,Roselia,Rosélia
+316, ,Gulpin,Gloupti
+317, ,Swalot,Avaltout
+318, ,Carvanha,Carvanha
+319, ,Sharpedo,Sharpedo
+320, ,Wailmer,Wailmer
+321, ,Wailord,Wailord
+322, ,Numel,Chamallot
+323, ,Camerupt,Camérupt
+324, ,Torkoal,Chartor
+325, ,Spoink,Spoink
+326, ,Grumpig,Groret
+327, ,Spinda,Spinda
+328, ,Trapinch,Kraknoix
+329, ,Vibrava,Vibraninf
+330, ,Flygon,Libégon
+331, ,Cacnea,Cacnea
+332, ,Cacturne,Cacturne
+333, ,Swablu,Tylton
+334, ,Altaria,Altaria
+335, ,Zangoose,Mangriff
+336, ,Seviper,Séviper
+337, ,Lunatone,Séléroc
+338, ,Solrock,Solaroc
+339, ,Barboach,Barloche
+340, ,Whiscash,Barbicha
+341, ,Corphish,Écrapince
+342, ,Crawdaunt,Colhomard
+343, ,Baltoy,Balbuto
+344, ,Claydol,Kaorine
+345, ,Lileep,Lilia
+346, ,Cradily,Vacilys
+347, ,Anorith,Anorith
+348, ,Armaldo,Armaldo
+349, ,Feebas,Barpau
+350, ,Milotic,Milobellus
+351, ,Castform,Morphéo
+352, ,Kecleon,Kecleon
+353, ,Shuppet,Polichombr
+354, ,Banette,Branette
+355, ,Duskull,Skelénox
+356, ,Dusclops,Téraclope
+357, ,Tropius,Tropius
+358, ,Chimecho,Éoko
+359, ,Absol,Absol
+360, ,Wynaut,Okéoké
+361, ,Snorunt,Stalgamin
+362, ,Glalie,Oniglali
+363, ,Spheal,Obalie
+364, ,Sealeo,Phogleur
+365, ,Walrein,Kaimorse
+366, ,Clamperl,Coquiperl
+367, ,Huntail,Serpang
+368, ,Gorebyss,Rosabyss
+369, ,Relicanth,Relicanth
+370, ,Luvdisc,Lovdisc
+371, ,Bagon,Draby
+372, ,Shelgon,Drackhaus
+373, ,Salamence,Drattak
+374, ,Beldum,Terhal
+375, ,Metang,Métang
+376, ,Metagross,Métalosse
+377, ,Regirock,Regirock
+378, ,Regice,Regice
+379, ,Registeel,Registeel
+380, ,Latias,Latias
+381, ,Latios,Latios
+382, ,Kyogre,Kyogre
+383, ,Groudon,Groudon
+384, ,Rayquaza,Rayquaza
+385, ,Jirachi,Jirachi
+386, ,Deoxys,Deoxys
+387, ,Turtwig,Tortipouss
+388, ,Grotle,Boskara
+389, ,Torterra,Torterra
+390, ,Chimchar,Ouisticram
+391, ,Monferno,Chimpenfeu
+392, ,Infernape,Simiabraz
+393, ,Piplup,Tiplouf
+394, ,Prinplup,Prinplouf
+395, ,Empoleon,Pingoléon
+396, ,Starly,Étourmi
+397, ,Staravia,Étourvol
+398, ,Staraptor,Étouraptor
+399, ,Bidoof,Keunotor
+400, ,Bibarel,Castorno
+401, ,Kricketot,Crikzik
+402, ,Kricketune,Mélokrik
+403, ,Shinx,Lixy
+404, ,Luxio,Luxio
+405, ,Luxray,Luxray
+406, ,Budew,Rozbouton
+407, ,Roserade,Roserade
+408, ,Cranidos,Kranidos
+409, ,Rampardos,Charkos
+410, ,Shieldon,Dinoclier
+411, ,Bastiodon,Bastiodon
+412, ,Burmy,Cheniti
+413, ,Wormadam,Cheniselle
+414, ,Mothim,Papilord
+415, ,Combee,Apitrini
+416, ,Vespiquen,Apireine
+417, ,Pachirisu,Pachirisu
+418, ,Buizel,Mustébouée
+419, ,Floatzel,Mustéflott
+420, ,Cherubi,Ceribou
+421, ,Cherrim,Ceriflor
+422, ,Shellos,Sancoki
+423, ,Gastrodon,Tritosor
+424, ,Ambipom,Capidextre
+425, ,Drifloon,Baudrive
+426, ,Drifblim,Grodrive
+427, ,Buneary,Laporeille
+428, ,Lopunny,Lockpin
+429, ,Mismagius,Magirêve
+430, ,Honchkrow,Corboss
+431, ,Glameow,Chaglam
+432, ,Purugly,Chaffreux
+433, ,Chingling,Korillon
+434, ,Stunky,Moufouette
+435, ,Skuntank,Moufflair
+436, ,Bronzor,Archéomire
+437, ,Bronzong,Archéodong
+438, ,Bonsly,Manzaï
+439, ,Mime Jr.,Mime Jr.
+440, ,Happiny,Ptiravi
+441, ,Chatot,Pijako
+442, ,Spiritomb,Spiritomb
+443, ,Gible,Griknot
+444, ,Gabite,Carmache
+445, ,Garchomp,Carchacrok
+446, ,Munchlax,Goinfrex
+447, ,Riolu,Riolu
+448, ,Lucario,Lucario
+449, ,Hippopotas,Hippopotas
+450, ,Hippowdon,Hippodocus
+451, ,Skorupi,Rapion
+452, ,Drapion,Drascore
+453, ,Croagunk,Cradopaud
+454, ,Toxicroak,Coatox
+455, ,Carnivine,Vortente
+456, ,Finneon,Écayon
+457, ,Lumineon,Luminéon
+458, ,Mantyke,Babimanta
+459, ,Snover,Blizzi
+460, ,Abomasnow,Blizzaroi
+461, ,Weavile,Dimoret
+462, ,Magnezone,Magnézone
+463, ,Lickilicky,Coudlangue
+464, ,Rhyperior,Rhinastoc
+465, ,Tangrowth,Bouldeneu
+466, ,Electivire,Élekable
+467, ,Magmortar,Maganon
+468, ,Togekiss,Togekiss
+469, ,Yanmega,Yanméga
+470, ,Leafeon,Phyllali
+471, ,Glaceon,Givrali
+472, ,Gliscor,Scorvol
+473,Mamoswine,Mamoswine,Mammochon
+474,Porygon-Z,Porygon-Z,Porygon-Z
+475,Gallade,Gallade,Gallame
+476,Probopass,Probopass,Tarinorme
+477,Dusknoir,Dusknoir,Noctunoir
+478,Froslass,Froslass,Momartik
+479,Rotom,Rotom,Motisma
+480,Uxie,Uxie,Créhelf
+481,Mesprit,Mesprit,Créfollet
+482,Azelf,Azelf,Créfadet
+483,Dialga,Dialga,Dialga
+484,Palkia,Palkia,Palkia
+485,Heatran,Heatran,Heatran
+486,Regigigas,Regigigas,Regigigas
+487,Giratina,Giratina,Giratina
+488,Cresselia,Cresselia,Cresselia
+489,Phione,Phione,Phione
+490,Manaphy,Manaphy,Manaphy
+491,Darkrai,Darkrai,Darkrai
+492,Shaymin,Shaymin,Shaymin
+493,Arceus,Arceus,Arceus
+494,Victini,Victini,Victini
+495,Snivy,Snivy,Vipélierre
+496,Servine,Servine,Lianaja
+497,Serperior,Serperior,Majaspic
+498,Tepig,Tepig,Gruikui
+499,Pignite,Pignite,Grotichon
+500,Emboar,Emboar,Roitiflam
+501,Oshawott,Oshawott,Moustillon
+502,Dewott,Dewott,Mateloutre
+503,Samurott,Samurott,Clamiral
+504,Patrat,Patrat,Ratentif
+505,Watchog,Watchog,Miradar
+506,Lillipup,Lillipup,Ponchiot
+507,Herdier,Herdier,Ponchien
+508,Stoutland,Stoutland,Mastouffe
+509,Purrloin,Purrloin,Chacripan
+510,Liepard,Liepard,Léopardus
+511, ,Pansage,Feuillajou
+512, ,Simisage,Feuiloutan
+513, ,Pansear,Flamajou
+514, ,Simisear,Flamoutan
+515, ,Panpour,Flotajou
+516, ,Simipour,Flotoutan
+517, ,Munna,Munna
+518, ,Musharna,Mushana
+519, ,Pidove,Poichigeon
+520, ,Tranquill,Colombeau
+521, ,Unfezant,Déflaisan
+522, ,Blitzle,Zébribon
+523, ,Zebstrika,Zéblitz
+524, ,Roggenrola,Nodulithe
+525, ,Boldore,Géolithe
+526, ,Gigalith,Gigalithe
+527, ,Woobat,Chovsourir
+528, ,Swoobat,Rhinolove
+529, ,Drilbur,Rototaupe
+530, ,Excadrill,Minotaupe
+531, ,Audino,Nanméouïe
+532, ,Timburr,Charpenti
+533, ,Gurdurr,Ouvrifier
+534, ,Conkeldurr,Bétochef
+535, ,Tympole,Tritonde
+536, ,Palpitoad,Batracné
+537, ,Seismitoad,Crapustule
+538, ,Throh,Judokrak
+539, ,Sawk,Karaclée
+540, ,Sewaddle,Larveyette
+541, ,Swadloon,Couverdure
+542, ,Leavanny,Manternel
+543, ,Venipede,Venipatte
+544, ,Whirlipede,Scobolide
+545, ,Scolipede,Brutapode
+546, ,Cottonee,Doudouvet
+547, ,Whimsicott,Farfaduvet
+548, ,Petilil,Chlorobule
+549, ,Lilligant,Fragilady
+550, ,Basculin,Bargantua
+551, ,Sandile,Mascaïman
+552, ,Krokorok,Escroco
+553, ,Krookodile,Crocorible
+554, ,Darumaka,Darumarond
+555, ,Darmanitan,Darumacho
+556, ,Maractus,Maracachi
+557, ,Dwebble,Crabicoque
+558, ,Crustle,Crabaraque
+559, ,Scraggy,Baggiguane
+560, ,Scrafty,Baggaïd
+561, ,Sigilyph,Cryptéro
+562, ,Yamask,Tutafeh
+563, ,Cofagrigus,Tutankafer
+564, ,Tirtouga,Carapagos
+565, ,Carracosta,Mégapagos
+566, ,Archen,Arkéapti
+567, ,Archeops,Aéroptéryx
+568, ,Trubbish,Miamiasme
+569, ,Garbodor,Miasmax
+570, ,Zorua,Zorua
+571, ,Zoroark,Zoroark
+572,Minccino,Minccino,Chinchidou
+573,Cinccino,Cinccino,Pashmilla
+574,Gothita,Gothita,Scrutella
+575,Gothorita,Gothorita,Mesmérella
+576,Gothitelle,Gothitelle,Sidérella
+577,Solosis,Solosis,Nucléos
+578,Duosion,Duosion,Méios
+579,Reuniclus,Reuniclus,Symbios
+580,Ducklett,Ducklett,Couaneton
+581,Swanna,Swanna,Lakmécygne
+582,Vanillite,Vanillite,Sorbébé
+583,Vanillish,Vanillish,Sorboul
+584,Vanilluxe,Vanilluxe,Sorbouboul
+585,Deerling,Deerling,Vivaldaim
+586,Sawsbuck,Sawsbuck,Haydaim
+587,Emolga,Emolga,Emolga
+588,Karrablast,Karrablast,Carabing
+589,Escavalier,Escavalier,Lançargot
+590,Foongus,Foongus,Trompignon
+591,Amoonguss,Amoonguss,Gaulet
+592,Frillish,Frillish,Viskuse
+593,Jellicent,Jellicent,Moyade
+594,Alomomola,Alomomola,Mamanbo
+595,Joltik,Joltik,Statitik
+596,Galvantula,Galvantula,Mygavolt
+597,Ferroseed,Ferroseed,Grindur
+598,Ferrothorn,Ferrothorn,Noacier
+599,Klink,Klink,Tic
+600,Klang,Klang,Clic
+601,Klinklang,Klinklang,Cliticlic
+602,Tynamo,Tynamo,Anchwatt
+603,Eelektrik,Eelektrik,Lampéroie
+604,Eelektross,Eelektross,Ohmassacre
+605,Elgyem,Elgyem,Lewsor
+606,Beheeyem,Beheeyem,Neitram
+607,Litwick,Litwick,Funécire
+608,Lampent,Lampent,Mélancolux
+609,Chandelure,Chandelure,Lugulabre
+610,Axew,Axew,Coupenotte
+611,Fraxure,Fraxure,Incisache
+612,Haxorus,Haxorus,Tranchodon
+613,Cubchoo,Cubchoo,Polarhume
+614,Beartic,Beartic,Polagriffe
+615,Cryogonal,Cryogonal,Hexagel
+616,Shelmet,Shelmet,Escargaume
+617,Accelgor,Accelgor,Limaspeed
+618,Stunfisk,Stunfisk,Limonde
+619,Mienfoo,Mienfoo,Kungfouine
+620,Mienshao,Mienshao,Shaofouine
+621,Druddigon,Druddigon,Drakkarmin
+622,Golett,Golett,Gringolem
+623,Golurk,Golurk,Golemastoc
+624,Pawniard,Pawniard,Scalpion
+625,Bisharp,Bisharp,Scalproie
+626,Bouffalant,Bouffalant,Frison
+627,Rufflet,Rufflet,Furaiglon
+628,Braviary,Braviary,Gueriaigle
+629,Vullaby,Vullaby,Vostourno
+630,Mandibuzz,Mandibuzz,Vaututrice
+631,Heatmor,Heatmor,Aflamanoir
+632,Durant,Durant,Fermite
+633,Deino,Deino,Solochi
+634,Zweilous,Zweilous,Diamat
+635,Hydreigon,Hydreigon,Trioxhydre
+636,Larvesta,Larvesta,Pyronille
+637,Volcarona,Volcarona,Pyrax
+638,Cobalion,Cobalion,Cobaltium
+639,Terrakion,Terrakion,Terrakium
+640,Virizion,Virizion,Viridium
+641,Tornadus,Tornadus,Boréas
+642,Thundurus,Thundurus,Fulguris
+643,Reshiram,Reshiram,Reshiram
+644,Zekrom,Zekrom,Zekrom
+645,Landorus,Landorus,Démétéros
+646,Kyurem,Kyurem,Kyurem
+647,Keldeo,Keldeo,Keldeo
+648,Meloetta,Meloetta,Meloetta
+649,Genesect,Genesect,Genesect
+650,Chespin,Chespin,Marisson
+651,Quilladin,Quilladin,Boguérisse
+652,Chesnaught,Chesnaught,Blindépique
+653,Fennekin,Fennekin,Feunnec
+654,Braixen,Braixen,Roussil
+655,Delphox,Delphox,Goupelin
+656,Froakie,Froakie,Grenousse
+657,Frogadier,Frogadier,Croâporal
+658,Greninja,Greninja,Amphinobi
+659,Bunnelby,Bunnelby,Sapereau
+660,Diggersby,Diggersby,Excavarenne
+661,Fletchling,Fletchling,Passerouge
+662,Fletchinder,Fletchinder,Braisillon
+663,Talonflame,Talonflame,Flambusard
+664,Scatterbug,Scatterbug,Lépidonille
+665,Spewpa,Spewpa,Pérégrain
+666,Vivillon,Vivillon,Prismillon
+667,Litleo,Litleo,Hélionceau
+668,Pyroar,Pyroar,Némélios
+669,Flabébé,Flabébé,Flabébé
+670,Floette,Floette,Floette
+671,Florges,Florges,Florges
+672,Skiddo,Skiddo,Cabriolaine
+673,Gogoat,Gogoat,Chevroum
+674,Pancham,Pancham,Pandespiègle
+675,Pangoro,Pangoro,Pandarbare
+676,Furfrou,Furfrou,Couafarel
+677,Espurr,Espurr,Psystigri
+678,Meowstic,Meowstic,Mistigrix
+679,Honedge,Honedge,Monorpale
+680,Doublade,Doublade,Dimoclès
+681,Aegislash,Aegislash,Exagide
+682,Spritzee,Spritzee,Fluvetin
+683,Aromatisse,Aromatisse,Cocotine
+684,Swirlix,Swirlix,Sucroquin
+685,Slurpuff,Slurpuff,Cupcanaille
+686,Inkay,Inkay,Sepiatop
+687,Malamar,Malamar,Sepiatroce
+688,Binacle,Binacle,Opermine
+689,Barbaracle,Barbaracle,Golgopathe
+690,Skrelp,Skrelp,Venalgue
+691,Dragalge,Dragalge,Kravarech
+692,Clauncher,Clauncher,Flingouste
+693, ,Clawitzer,Gamblast
+694, ,Helioptile,Galvaran
+695, ,Heliolisk,Iguolta
+696, ,Tyrunt,Ptyranidur
+697, ,Tyrantrum,Rexillius
+698, ,Amaura,Amagara
+699,Aurorus,Aurorus,Dragmara
+700,Sylveon,Sylveon,Nymphali
+701,Hawlucha,Hawlucha,Brutalibré
+702,Dedenne,Dedenne,Dedenne
+703,Carbink,Carbink,Strassie
+704,Goomy,Goomy,Mucuscule
+705,Sliggoo,Sliggoo,Colimucus
+706,Goodra,Goodra,Muplodocus
+707,Klefki,Klefki,Trousselin
+708,Phantump,Phantump,Brocélôme
+709,Trevenant,Trevenant,Desséliande
+710,Pumpkaboo,Pumpkaboo,Pitrouille
+711,Gourgeist,Gourgeist,Banshitrouye
+712,Bergmite,Bergmite,Grelaçon
+713,Avalugg,Avalugg,Séracrawl
+714,Noibat,Noibat,Sonistrelle
+715,Noivern,Noivern,Bruyverne
+716,Xerneas,Xerneas,Xerneas
+717,Yveltal,Yveltal,Yveltal
+718,Zygarde,Zygarde,Zygarde
+719,Diancie,Diancie,Diancie
+720,Hoopa,Hoopa,Hoopa
+721,Volcanion,Volcanion,Volcanion
+722,Rowlet,Rowlet,Brindibou
+723,Dartrix,Dartrix,Efflèche
+724,Decidueye,Decidueye,Archéduc
+725,Litten,Litten,Flamiaou
+726,Torracat,Torracat,Matoufeu
+727,Incineroar,Incineroar,Félinferno
+728,Popplio,Popplio,Otaquin
+729,Brionne,Brionne,Otarlette
+730,Primarina,Primarina,Oratoria
+731,Pikipek,Pikipek,Picassaut
+732,Trumbeak,Trumbeak,Piclairon
+733,Toucannon,Toucannon,Bazoucan
+734,Yungoos,Yungoos,Manglouton
+735,Gumshoos,Gumshoos,Argouste
+736,Grubbin,Grubbin,Larvibule
+737,Charjabug,Charjabug,Chrysapile
+738,Vikavolt,Vikavolt,Lucanon
+739,Crabrawler,Crabrawler,Crabagarre
+740,Crabominable,Crabominable,Crabominable
+741,Oricorio,Oricorio,Plumeline
+742,Cutiefly,Cutiefly,Bombydou
+743,Ribombee,Ribombee,Rubombelle
+744,Rockruff,Rockruff,Rocabot
+745,Lycanroc,Lycanroc,Lougaroc
+746,Wishiwashi,Wishiwashi,Froussardine
+747,Mareanie,Mareanie,Vorastérie
+748,Toxapex,Toxapex,Prédastérie
+749,Mudbray,Mudbray,Tiboudet
+750,Mudsdale,Mudsdale,Bourrinos
+751,Dewpider,Dewpider,Araqua
+752,Araquanid,Araquanid,Tarenbulle
+753,Fomantis,Fomantis,Mimantis
+754,Lurantis,Lurantis,Floramantis
+755,Morelull,Morelull,Spododo
+756,Shiinotic,Shiinotic,Lampignon
+757,Salandit,Salandit,Tritox
+758,Salazzle,Salazzle,Malamandre
+759,Stufful,Stufful,Nounourson
+760,Bewear,Bewear,Chelours
+761,Bounsweet,Bounsweet,Croquine
+762,Steenee,Steenee,Candine
+763,Tsareena,Tsareena,Sucreine
+764,Comfey,Comfey,Guérilande
+765,Oranguru,Oranguru,Gouroutan
+766,Passimian,Passimian,Quartermac
+767,Wimpod,Wimpod,Sovkipou
+768,Golisopod,Golisopod,Sarmuraï
+769,Sandygast,Sandygast,Bacabouh
+770,Palossand,Palossand,Trépassable
+771,Pyukumuku,Pyukumuku,Concombaffe
+772,Type: Null,Type: Null,Type:0
+773,Silvally,Silvally,Silvallié
+774,Minior,Minior,Météno
+775,Komala,Komala,Dodoala
+776,Turtonator,Turtonator,Boumata
+777,Togedemaru,Togedemaru,Togedemaru
+778,Mimikyu,Mimikyu,Mimiqui
+779,Bruxish,Bruxish,Denticrisse
+780,Drampa,Drampa,Draïeul
+781,Dhelmise,Dhelmise,Sinistrail
+782,Jangmo-o,Jangmo-o,Bébécaille
+783,Hakamo-o,Hakamo-o,Écaïd
+784,Kommo-o,Kommo-o,Ékaïser
+785,Tapu Koko,Tapu Koko,Tokorico
+786,Tapu Lele,Tapu Lele,Tokopiyon
+787,Tapu Bulu,Tapu Bulu,Tokotoro
+788,Tapu Fini,Tapu Fini,Tokopisco
+789,Cosmog,Cosmog,Cosmog
+790,Cosmoem,Cosmoem,Cosmovum
+791,Solgaleo,Solgaleo,Solgaleo
+792,Lunala,Lunala,Lunala
+793,Nihilego,Nihilego,Zéroïd
+794,Buzzwole,Buzzwole,Mouscoto
+795,Pheromosa,Pheromosa,Cancrelove
+796,Xurkitree,Xurkitree,Câblifère
+797,Celesteela,Celesteela,Bamboiselle
+798,Kartana,Kartana,Katagami
+799,Guzzlord,Guzzlord,Engloutyran
+800,Necrozma,Necrozma,Necrozma
+801,Magearna,Magearna,Magearna
+802,Marshadow,Marshadow,Marshadow
+803,Poipole,Poipole,Vémini
+804,Naganadel,Naganadel,Mandrillon
+805,Stakataka,Stakataka,Ama-Ama
+806,Blacephalon,Blacephalon,Pierroteknik
+807,Zeraora,Zeraora,Zeraora
+808,Meltan,Meltan,Meltan
+809,Melmetal,Melmetal,Melmetal
+810,Grookey,Grookey,Ouistempo
+811,Thwackey,Thwackey,Badabouin
+812,Rillaboom,Rillaboom,Gorythmic
+813,Scorbunny,Scorbunny,Flambino
+814,Raboot,Raboot,Lapyro
+815,Cinderace,Cinderace,Pyrobut
+816,Sobble,Sobble,Larméléon
+817,Drizzile,Drizzile,Arrozard
+818,Inteleon,Inteleon,Lézargus
+819,Skwovet,Skwovet,Rongourmand
+820,Greedent,Greedent,Rongrigou
+821,Rookidee,Rookidee,Minisange
+822,Corvisquire,Corvisquire,Bleuseille
+823,Corviknight,Corviknight,Corvaillus
+824,Blipbug,Blipbug,Larvadar
+825,Dottler,Dottler,Coléodôme
+826,Orbeetle,Orbeetle,Astronelle
+827,Nickit,Nickit,Goupilou
+828,Thievul,Thievul,Roublenard
+829,Gossifleur,Gossifleur,Tournicoton
+830,Eldegoss,Eldegoss,Blancoton
+831,Wooloo,Wooloo,Moumouton
+832,Dubwool,Dubwool,Moumouflon
+833,Chewtle,Chewtle,Khélocrok
+834,Drednaw,Drednaw,Torgamord
+835,Yamper,Yamper,Voltoutou
+836,Boltund,Boltund,Fulgudog
+837,Rolycoly,Rolycoly,Charbi
+838,Carkol,Carkol,Wagomine
+839,Coalossal,Coalossal,Monthracite
+840,Applin,Applin,Verpom
+841,Flapple,Flapple,Pomdrapi
+842,Appletun,Appletun,Dratatin
+843,Silicobra,Silicobra,Dunaja
+844,Sandaconda,Sandaconda,Dunaconda
+845,Cramorant,Cramorant,Nigosier
+846,Arrokuda,Arrokuda,Embrochet
+847,Barraskewda,Barraskewda,Hastacuda
+848,Toxel,Toxel,Toxizap
+849,Toxtricity,Toxtricity,Salarsen
+850,Sizzlipede,Sizzlipede,Grillepattes
+851,Centiskorch,Centiskorch,Scolocendre
+852,Clobbopus,Clobbopus,Poulpaf
+853,Grapploct,Grapploct,Krakos
+854,Sinistea,Sinistea,Théffroi
+855,Polteageist,Polteageist,Polthégeist
+856,Hatenna,Hatenna,Bibichut
+857,Hattrem,Hattrem,Chapotus
+858,Hatterene,Hatterene,Sorcilence
+859,Impidimp,Impidimp,Grimalin
+860,Morgrem,Morgrem,Fourbelin
+861,Grimmsnarl,Grimmsnarl,Angoliath
+862,Obstagoon,Obstagoon,Ixon
+863,Perrserker,Perrserker,Berserkatt
+864,Cursola,Cursola,Corayôme
+865,Sirfetch'd,Sirfetch'd,Palarticho
+866,Mr. Rime,Mr. Rime,M. Glaquette
+867,Runerigus,Runerigus,Tutétékri
+868,Milcery,Milcery,Crèmy
+869,Alcremie,Alcremie,Charmilly
+870,Falinks,Falinks,Hexadron
+871,Pincurchin,Pincurchin,Wattapik
+872,Snom,Snom,Frissonille
+873,Frosmoth,Frosmoth,Beldeneige
+874,Stonjourner,Stonjourner,Dolman
+875,Eiscue,Eiscue,Bekaglaçon
+876,Indeedee,Indeedee,Wimessir
+877,Morpeko,Morpeko,Morpeko
+878,Cufant,Cufant,Charibari
+879,Copperajah,Copperajah,Pachyradjah
+880,Dracozolt,Dracozolt,Galvagon
+881,Arctozolt,Arctozolt,Galvagla
+882,Dracovish,Dracovish,Hydragon
+883,Arctovish,Arctovish,Hydragla
+884,Duraludon,Duraludon,Duralugon
+885,Dreepy,Dreepy,Fantyrm
+886,Drakloak,Drakloak,Dispareptil
+887,Dragapult,Dragapult,Lanssorien
+888,Zacian,Zacian,Zacian
+889,Zamazenta,Zamazenta,Zamazenta
+890,Eternatus,Eternatus,Éthernatos
+891,Kubfu,Kubfu,Wushours
+892,Urshifu,Urshifu,Shifours
+893,Zarude,Zarude,Zarude
+894,Regieleki,Regieleki,Regieleki
+895,Regidrago,Regidrago,Regidrago
+896,Glastrier,Glastrier,Blizzeval
+897,Spectrier,Spectrier,Spectreval
+898,Calyrex,Calyrex,Sylveroy
+899,Wyrdeer,Wyrdeer,Cerbyllin
+900,Kleavor,Kleavor,Hachécateur
+901,Ursaluna,Ursaluna,Ursaking
+902,Basculegion,Basculegion,Paragruel
+903,Sneasler,Sneasler,Farfurex
+904,Overqwil,Overqwil,Qwilpik
+905,Enamorus,Enamorus,Amovénus

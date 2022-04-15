@@ -1,11 +1,9 @@
 # folders
-gif_script/
 base_gifs/
 .vscode/
 __pycache__/
 gifsDaRifare/
 gifs/original/
-gifWorkspace/
 pycord-env/
 
 # files
