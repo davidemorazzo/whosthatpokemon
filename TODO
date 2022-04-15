@@ -18,10 +18,12 @@ TODO GIFS DATABASE
 	- All the new gifs don't have the black version
 	X Integrate the pokemon_data.csv with all the new pokemons
 	- create another csv file only for descriptions with all the languages
+	- add all of the unowns (A,B,C,D...)
 
 TODO add command Wtp!shinyrecord or /shinyrecord This will show what shiny Pokémon they have got
 	Please also add this button with the rest of the buttons which will be the shiny global leaderboard (✨)
 TODO Pokémon to spawn every 10 minutes
+
 
 
 ----------------------------------------------------------

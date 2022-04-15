@@ -7,7 +7,7 @@ import glob
 
 SOURCE = 'gif_script\\newdescriptions\\english.txt'
 FILENAME = 'gif_script\\newdescriptions\\descriptions_english.csv'
-POKEDEX = 'gif_script\\newdescriptions\\pokemon_names.csv'
+POKEDEX = 'gif_script\\newdescriptions\\new_database1.csv'
 
 def parse_description_file(src, df = None) -> pd.DataFrame:
 	with open(src, 'r', encoding='UTF-8') as f:
@@ -20,64 +20,45 @@ def parse_description_file(src, df = None) -> pd.DataFrame:
 		df = pd.DataFrame(descriptions, columns=[col_name])
 
 	new_descr = df
-	pokemon_data = pd.read_csv(POKEDEX)
-	pokemon_data.index = pokemon_data['name']
+	pokemon_data = pd.read_csv(POKEDEX, index_col='name')
 
 	new_descr = pd.DataFrame(index=pokemon_data.index, columns=[col_name])
 	for idx in new_descr.index:
 		for description in descriptions:
+			# pokemon set to find
 			poke_translated = pokemon_data.loc[idx, col_name].replace('-', ' ').split(' ')
-			poke_en = pokemon_data.loc[idx, 'en'].replace('-', ' ').split(' ')
+			poke_translated = set(poke_translated)
+			poke_en = pokemon_data.loc[idx, 'en'].split(' ')
+			poke_en = set(poke_en)
+
+			# get words until first parenthesis hoping it is the full pokemon name
 			description_pokemon = description.split(' (')[0].lower()
-			x = description_pokemon
 			description_pokemon = description_pokemon.replace('alolan', 'alola')
 			description_pokemon = description_pokemon.replace('galarian', 'galar')
 			words = description_pokemon.strip().lower().split(' ')
-			if set(poke_translated) == set(words):
+			words = set(words)
+			
+			
+			if poke_translated == words:
 				new_descr.loc[idx, col_name] = description
-				s = True
+				descriptions.remove(description)
 				break
-			elif set(poke_en) == set(words):
+			elif poke_en == words:
 				new_descr.loc[idx, col_name] = description
-				s = True
+				descriptions.remove(description)
 				break
-	i =  list(set(df[col_name]) - set(new_descr['en']))
-	
-
-
-			# for c in itertools.permutations(poke_translated, r=None):
-			# 	string = ' '.join(c)
-			# 	string = string.replace('alola', 'alolan')
-			# 	string = string.replace('galar', 'galarian')
-			# 	if string in description.lower().strip():
-			# 		new_descr.loc[idx, col_name] = description
-			# 		descriptions.remove(description)
-# 
-	# index of pokemons in the dataframe
-	# pokemons_idx = list(pokemon_data['name']).copy()
-# 
-	# for description in descriptions:
-	# 	for poke in pokemons_idx:
-	# 		if pd.notna(description):
-	# 			poke_translated = [pokemon_data.loc[poke, col_name]]
-	# 			for c in itertools.permutations(poke_translated, r=None):
-	# 				string = ' '.join(c)
-	# 				string = string.replace('alola', 'alolan')
-	# 				string = string.replace('galar', 'galarian')
-	# 				if string in description.lower().strip():
-	# 					new_descr.loc[new_descr[col_name] == description, 'pokemon'] = poke
-	# 					pokemons_idx.remove(poke)
-						
 
 	# new_descr.to_csv('gif_script\\newdescriptions\\descriptions_english_with_pokemon.csv', index=False)
 	# print('Pokemons not assigned ', pokemons_idx)
 	# print('Descriptions without pokemon: ', len(new_descr[new_descr['pokemon'].isna()]))
+	
 	return new_descr
 
 if __name__ == '__main__':
 	pokemon_data = pd.read_csv(POKEDEX, index_col='name')
 	pokemons = list(pokemon_data.index).copy()
 	output_df = pd.DataFrame(index=pokemon_data.index)
+
 	# for each file in the folder newdescriptions\source
 	for f in glob.glob('gif_script\\newdescriptions\\source\\*.txt'):
 		a = f.split('\\')[-1].removesuffix('.txt')
