@@ -2,7 +2,6 @@
 base_gifs/
 .vscode/
 __pycache__/
-gifsDaRifare/
 gifs/original/
 pycord-env/
 
@@ -10,6 +9,5 @@ pycord-env/
 pokemon_data.csv
 copyHerokuDB.BAT
 profiling/logs.csv
-gifWorkspace/
 discord.log
 upgradePycord.BAT
