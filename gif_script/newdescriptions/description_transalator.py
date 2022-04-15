@@ -14,7 +14,7 @@ async def main():
 	t = []
 	loop = asyncio.get_event_loop()
 	for idx in pokemon_data.index:
-		for lang in ['fr', 'es', 'it', 'ko' 'de', 'hi', 'ja', 'zh-cn']:
+		for lang in ['fr', 'es', 'it', 'ko', 'de', 'hi', 'ja', 'zh-cn']:
 			t1 = loop.run_in_executor(None, translate, idx, description_df, lang, lang)
 			t.append(t1)
 	

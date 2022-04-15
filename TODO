@@ -14,10 +14,10 @@ TODO accept answer also without the attribute gmax, galar ...
 
 
 TODO GIFS DATABASE
-	- Save descriptions into a dataframe and try to parse the pokemon of correspondance
+	X Save descriptions into a dataframe and try to parse the pokemon of correspondance
 	- All the new gifs don't have the black version
 	X Integrate the pokemon_data.csv with all the new pokemons
-	- create another csv file only for descriptions with all the languages
+	X create another csv file only for descriptions with all the languages
 	- add all of the unowns (A,B,C,D...)
 
 TODO add command Wtp!shinyrecord or /shinyrecord This will show what shiny Pokémon they have got
