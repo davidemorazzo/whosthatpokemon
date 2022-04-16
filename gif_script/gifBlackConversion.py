@@ -68,7 +68,7 @@ def convert_gif(original_filename, base_directory):
             f.write(f"{original_filename} {black_counter}\n")
 
 if __name__ == '__main__':
-    BASE_DIRECTORY = "D:\Programmazione\Fiverr\\andychand400 v2\\gifs"
+    BASE_DIRECTORY = "D:\\Programmazione\\Fiverr\\whosthatpokemon\gif_script\\gifWorkspace"
     files = [f for f in os.listdir(BASE_DIRECTORY) if f.endswith(".gif")]
     black_gifs = os.listdir(BASE_DIRECTORY+"\\blacked\\") 
 
