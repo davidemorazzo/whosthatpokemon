@@ -15,7 +15,7 @@ TODO accept answer also without the attribute gmax, galar ...
 
 TODO GIFS DATABASE
 	X Save descriptions into a dataframe and try to parse the pokemon of correspondance
-	- All the new gifs don't have the black version
+	X All the new gifs don't have the black version
 	X Integrate the pokemon_data.csv with all the new pokemons
 	X create another csv file only for descriptions with all the languages
 	- add all of the unowns (A,B,C,D...)
@@ -29,6 +29,8 @@ TODO Pokémon to spawn every 10 minutes
 ----------------------------------------------------------
 # ANCHOR TO BE TESTED
 TODO Please disable the one time click for the buttons please so only is the cooldown timer that we are using to prevent people from spamming.
+
+TODO test the pokemon database for index and gif path
 
 
 
