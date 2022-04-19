@@ -13,6 +13,7 @@ import logging
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
 POKEMON_DATAFRAME = "pokemon_data.csv"
+POKEMON_DESCRIPTIONS = 'descriptions.csv'
 
 def noDirectMessage(ctx):
     if ctx.guild != None:
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     bot = commands.AutoShardedBot(command_prefix=getServerPrefix, intents=intents)
     bot.remove_command("help")
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
-    bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME))
+    bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME, POKEMON_DESCRIPTIONS))
     bot.add_check(noDirectMessage)
     bot.customGuildPrefixes = {}
 

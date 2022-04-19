@@ -31,19 +31,20 @@ from .utils import(
 
 from .buttons import FourButtons
 from .generationBtn import GenButtons
+from .languageBtn import LangButtons
 
 class guildNotActive(commands.errors.CheckFailure):
     pass
 
 class whosThatPokemon(commands.Cog):
-    def __init__(self, bot, engine, data_path):
+    def __init__(self, bot, engine, data_path, description_path):
         load_dotenv()
         self.bot = bot
         self.db_engine = engine
         self.async_session = sqlalchemy.orm.sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.color = Colour.red()
-        self.pokemonDataFrame = pd.read_csv(data_path, index_col='name')
-        self.pokemonDataFrame = self.pokemonDataFrame[self.pokemonDataFrame['clear_path'].notna()]
+        self.pokedexDataFrame = pd.read_csv(data_path, index_col='name')
+        self.descriptionDataFrame = pd.read_csv(description_path, index_col='name')
         self.cooldown = cooldown()
         self.pokemonGenerations = {
             'kanto':'1', 
@@ -56,6 +57,15 @@ class whosThatPokemon(commands.Cog):
             'gmax':'g', 
             'galar':'j'}
         self.logger = logging.getLogger('discord')
+        self.languages = {'English':'en', 
+                        'Français':'fr',
+                        'Español':'es',
+                        'Italiano':'it',
+                        '한국인':'ko',
+                        'Deutsch':'de',
+                        'हिन्दी':'hi', 
+                        '日本':'jp', 
+                        '简体中文':'zh'}
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -109,13 +119,15 @@ class whosThatPokemon(commands.Cog):
                 guild_tier = 0
 
         ## => CREATE LIST
-        tier_filter = self.pokemonDataFrame['tier'].notna() >= guild_tier
-        no_gen_filter =  self.pokemonDataFrame['generation'].isna()
+        complete_data = self.pokedexDataFrame['clear_path'].notna() & \
+                        self.pokedexDataFrame['blacked_path'].notna() 
+        tier_filter = self.pokedexDataFrame['tier'].notna() >= guild_tier
+        no_gen_filter =  self.pokedexDataFrame['generation'].isna()
 
-        gifList = list(self.pokemonDataFrame[tier_filter & no_gen_filter].index)
+        gifList = list(self.pokedexDataFrame[complete_data & tier_filter & no_gen_filter].index)
         for generation in self.pokemonGenerations.keys():
             if self.pokemonGenerations[generation] in poke_generation:
-                gifList += list(self.pokemonDataFrame[self.pokemonDataFrame['generation']==generation].index)
+                gifList += list(self.pokedexDataFrame[self.pokedexDataFrame['generation']==generation].index)
             
         return gifList
             
@@ -141,7 +153,7 @@ class whosThatPokemon(commands.Cog):
             embed = Embed(color=self.color)
             embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar.url)
             embed.description = "Type the name of the pokémon to guess it"
-            thumb = File(self.pokemonDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
+            thumb = File(self.pokedexDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
             embed.set_thumbnail(url="attachment://gif.gif")
             
             ## => MEMORIZE THE SOLUTION
@@ -312,18 +324,17 @@ class whosThatPokemon(commands.Cog):
                     userGlobalPoints += entry.points
                 await session.commit()
 
-            ## => GET SERVER PREFIX
-            guildPrefix = await self.getServerPrefix(message)# last element should be the custom prefix, if not present it is standard prefix
 
-            description = self.pokemonDataFrame.loc[raw_solution]['description']
+            description = self.descriptionDataFrame.loc[raw_solution]['en']
             if description.strip() != "":
                 ## => SEND CORRECT-GUESS MESSAGE WITH DESCRIPTION
                 embed = Embed(color=self.color)
                 embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-                embed.description = f"{message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
+                embed.description = f"{message.author.mention} ** You're correct! **"
                 embed.description += "\n" + description + "\n."
-                embed.set_footer(text=f"You can check local and global ranks by typing:\n {guildPrefix}rank 1-30\n {guildPrefix}rank global 1-30")
-                clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+                embed.add_field(name="Points", value=f"``` Server: {serverWins}\n Global: {userGlobalPoints} ```", inline=False)
+                embed.set_footer(text=f"You can check local and global ranks with /rank command.")
+                clearThumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
                 embed.set_thumbnail(url="attachment://clear.gif")
                 await message.channel.send(file=clearThumb, embed=embed)
             else:
@@ -331,7 +342,7 @@ class whosThatPokemon(commands.Cog):
                 embed = Embed(color=self.color)
                 embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
                 embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
-                embed.set_footer(text=f"You can check local and global ranks by typing:\n {guildPrefix}rank 1-30\n {guildPrefix}rank global 1-30")
+                embed.set_footer(text=f"You can check local and global ranks with /rank command.")
                 pika = File("./gifs/pikachu.gif", "pikachu.gif")
                 embed.set_thumbnail(url="attachment://pikachu.gif")
                 await message.channel.send(file=pika, embed=embed)
@@ -421,12 +432,12 @@ class whosThatPokemon(commands.Cog):
             channelIstance = await GetChannelIstance(session, guild_id, channel_id)
             raw_solution = channelIstance.current_pokemon
         
-        description = self.pokemonDataFrame.loc[raw_solution]['description']
+        description = self.descriptionDataFrame.loc[raw_solution]['en']
         if description.strip() != "":
             clearEmbed = Embed(color=self.color)
             clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
             clearEmbed.description = description
-            clearThumb = File(self.pokemonDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+            clearThumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
             clearEmbed.set_thumbnail(url="attachment://clear.gif")
             return clearEmbed, clearThumb
         else:
@@ -490,6 +501,39 @@ class whosThatPokemon(commands.Cog):
     async def selectGen(self, ctx):
 
         await self.only_admin(ctx)
+        try:
+            await self.is_patreon(ctx.guild.id)
+        except:
+            embed = self.embedText("You need to be a Patreon to use this command")
+            await ctx.send_response(embed=embed)
+            return
+        
         embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
         view = await self.generationButtons(ctx.guild)
         await ctx.send_response(embed=embed, view=view)
+
+    async def is_patreon(self, guild_id):
+        """
+        Check if the guild is patreon. Used for check
+        """
+        async with self.async_session() as session:
+            guild = await session.execute(select(botGuilds).filter_by(guild_id=str(guild_id)))
+            guild = guild.scalars().first()
+            if guild.patreon == False:
+                raise Exception("This guild is not patreon")
+
+    @slash_command(name="selectlanguage",
+                 description="Select the language used in the game. Admin only")
+    async def selectLanguage(self, ctx):
+            
+            await self.only_admin(ctx)
+            try:
+                await self.is_patreon(ctx.guild.id)
+            except:
+                embed = self.embedText("You need to be a Patreon to use this command")
+                await ctx.send_response(embed=embed)
+                return
+            
+            embed = self.embedText("Select the language you want.")
+            view = LangButtons(self, ctx.guild.id)
+            await ctx.send_response(embed=embed, view=view)

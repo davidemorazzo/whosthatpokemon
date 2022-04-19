@@ -61,21 +61,25 @@ fname_clear = glob.glob(gif_folder + 'clear/*.gif')
 fname_clear = [os.path.normpath(i) for i in fname_clear]
 fname_blacked = glob.glob(gif_folder + 'blacked/*.gif')
 fname_blacked = [os.path.normpath(i) for i in fname_blacked]
-errors = set([])
+errors_clear = set([])
+errors_blacked = set([])
 for idx in pokemon_data.index:
 	if (not pd.isna(pokemon_data.loc[idx, 'clear_path'])) and\
 		 os.path.normpath(pokemon_data.loc[idx, 'clear_path']) not in fname_clear:
 		success = False
-		errors.add(idx)
+		errors_clear.add(idx)
 	if (not pd.isna(pokemon_data.loc[idx, 'blacked_path'])) and\
 		os.path.normpath(pokemon_data.loc[idx, 'blacked_path']) not in fname_blacked:
 		success = False
-		errors.add(idx)
+		errors_blacked.add(idx)
 
 if success:
 	print('--- PASS ---')
 else:
 	if VERBOSE:
-		print(f"	FILES NOT FOUND: {list(errors)}")
-		print('number of errors: ', len(errors))
+		print(f"	FILES NOT FOUND:")
+		print(f"		- clear: {errors_clear}")
+		print('number of errors: ', len(errors_clear))
+		print(f"		- blacked: {errors_blacked}")
+		print('number of errors: ', len(errors_blacked))
 	print('--- FAIL ---')
