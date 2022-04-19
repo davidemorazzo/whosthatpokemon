@@ -6,7 +6,6 @@ gifs/original/
 pycord-env/
 
 # files
-pokemon_data.csv
 copyHerokuDB.BAT
 profiling/logs.csv
 discord.log

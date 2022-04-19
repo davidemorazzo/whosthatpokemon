@@ -21,8 +21,6 @@ class Dropdown(discord.ui.Select):
             for language in self.langs
         ]
 
-		# TODO make default current language
-
         # The placeholder is what will be shown when no option is chosen
         super().__init__(
             placeholder="Choose the language...",
@@ -35,7 +33,7 @@ class Dropdown(discord.ui.Select):
         """
         record the selected language in the database
         """
-        lang = self.values
+        lang = self.values[0]
         async with self.poke_cog.async_session() as session:
             guildInfo = await session.execute(select(botGuilds).filter_by(guild_id=str(self.guild_id)))
             guildInfo = guildInfo.scalars().first()
