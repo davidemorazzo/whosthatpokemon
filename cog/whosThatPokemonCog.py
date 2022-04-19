@@ -29,6 +29,7 @@ from .utils import(
     cooldown
 )
 
+from str.string_db import string_translator
 from .buttons import FourButtons
 from .generationBtn import GenButtons
 from .languageBtn import LangButtons
@@ -66,6 +67,7 @@ class whosThatPokemon(commands.Cog):
                         'हिन्दी':'hi', 
                         '日本':'jp', 
                         '简体中文':'zh'}
+        self.strings = string_translator('./str/strings.csv', self.async_session)
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -152,7 +154,7 @@ class whosThatPokemon(commands.Cog):
             ## => SEND EMBED
             embed = Embed(color=self.color)
             embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar.url)
-            embed.description = "Type the name of the pokémon to guess it"
+            embed.description = await self.strings.get('question', guild.id)
             thumb = File(self.pokedexDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
             embed.set_thumbnail(url="attachment://gif.gif")
             
@@ -176,9 +178,10 @@ class whosThatPokemon(commands.Cog):
         ## => CREATE HINT EMBED
         async with self.async_session() as session:
             thisGuild = await GetChannelIstance(session,guild_id, channel_id)
+            strings = await self.strings.get_batch(['not_guessing', 'hint'], guild_id)
 
             if not thisGuild or not thisGuild.guessing:
-                embed=self.embedText("You are not currently guessing pokémons, use the start command to begin!")
+                embed=self.embedText(strings[0])
                 return embed
             else:
                 ## => SCRAMBLE THE SOLUTION
@@ -192,7 +195,7 @@ class whosThatPokemon(commands.Cog):
 
                 # shuffle(solution)
                 scrambled = ''.join(solution).replace("-", " ")
-                embed = self.embedText(f"Here's a hint: {scrambled}")
+                embed = self.embedText(f"{strings[1]} {scrambled}")
                 return embed
     
     async def getRank(self, global_flag, number, guild_id):
@@ -223,10 +226,11 @@ class whosThatPokemon(commands.Cog):
                         username = None
 
                 if username: # if username not founded => not added to the leaderboard
+                    string = await self.strings.get('win_count', guild_id)
                     if global_flag:
-                        text = text + f"#{num+1} {username} | Win count: {user[2]}\n"
+                        text = text + f"#{num+1} {username} | {string}: {user[2]}\n"
                     else:
-                        text = text + f"#{num+1} {username} | Win count: {user.points_from_reset}\n"
+                        text = text + f"#{num+1} {username} | {string}: {user.points_from_reset}\n"
                     
                     num = num + 1
                 
@@ -247,21 +251,8 @@ class whosThatPokemon(commands.Cog):
             return True
         else:
             await ctx.delete()
-            raise commands.errors.NotOwner("Only administrator can run this command")
-    
-    async def getServerPrefix(self, message):
-        p = BaseProfiler("getServerPrefix_cog")
-        if message.guild:
-            ## => SERVER MESSAGE
-            async with self.async_session() as session:
-                guildInfo = await GetGuildInfo(session, message.guild.id)
-                if guildInfo.prefix:
-                    return guildInfo.prefix
-                else:
-                    return "wtp!"
-        else:
-            ## => DIRECT MESSAGE
-            return "wtp!"
+            string = await self.strings.get('only_admin', ctx.guild.id)
+            raise commands.errors.NotOwner(string)
 	
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -326,23 +317,22 @@ class whosThatPokemon(commands.Cog):
 
 
             description = self.descriptionDataFrame.loc[raw_solution]['en']
+            t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks'], message.guild.id)
+            correct_s, points_s, server_s, global_s, ranks_s = t
+
+            embed = Embed(color=self.color)
+            embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
+            embed.description = f"{message.author.mention} ** {correct_s} **"
+            embed.add_field(name=points_s, value=f"``` {server_s}: {serverWins}\n {global_s}: {userGlobalPoints} ```", inline=False)
+            embed.set_footer(text=ranks_s)
             if description.strip() != "":
                 ## => SEND CORRECT-GUESS MESSAGE WITH DESCRIPTION
-                embed = Embed(color=self.color)
-                embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-                embed.description = f"{message.author.mention} ** You're correct! **"
                 embed.description += "\n" + description + "\n."
-                embed.add_field(name="Points", value=f"``` Server: {serverWins}\n Global: {userGlobalPoints} ```", inline=False)
-                embed.set_footer(text=f"You can check local and global ranks with /rank command.")
                 clearThumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
                 embed.set_thumbnail(url="attachment://clear.gif")
                 await message.channel.send(file=clearThumb, embed=embed)
             else:
                 ## => SEND CORRECT-GUESS MESSAGE STANDARD
-                embed = Embed(color=self.color)
-                embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-                embed.description = f"Pikachu: {message.author.mention} You're correct! You now have {serverWins} local wins and {userGlobalPoints} global wins!\n"
-                embed.set_footer(text=f"You can check local and global ranks with /rank command.")
                 pika = File("./gifs/pikachu.gif", "pikachu.gif")
                 embed.set_thumbnail(url="attachment://pikachu.gif")
                 await message.channel.send(file=pika, embed=embed)
@@ -368,7 +358,8 @@ class whosThatPokemon(commands.Cog):
                 await session.commit()
 
             elif guildInfo.guessing:
-                embed = self.embedText("The game is already started! To skip this pokémon use wtp!skip")
+                string = await self.strings.get('start_error', ctx.guild.id)
+                embed = self.embedText(string)
                 await ctx.send_response(embed=embed)
                 return
         
@@ -382,12 +373,15 @@ class whosThatPokemon(commands.Cog):
         ## => UPDATE THE DB
         async with self.async_session() as session:
             thisGuild = await GetChannelIstance(session, ctx.guild.id , ctx.channel.id)
+            t = await self.strings.get_batch(['stop_error', 'stop_ok'], ctx.guild.id)
+            stop_error, stop_ok = t
+            
             if not thisGuild:
-                embed = self.embedText("The game is not running on this channel, to start use wtp!start")
+                embed = self.embedText(stop_error)
             else:
                 thisGuild.guessing = False
                 await session.commit()
-                embed = self.embedText("Guessing has been stopped! To resume the game use the start command")
+                embed = self.embedText(stop_ok)
         await ctx.send_response(embed=embed)
 
 

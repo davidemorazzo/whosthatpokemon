@@ -12,8 +12,8 @@ from profiling.profiler import BaseProfiler
 import logging
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
-POKEMON_DATAFRAME = "pokemon_data.csv"
-POKEMON_DESCRIPTIONS = 'descriptions.csv'
+POKEMON_DATAFRAME = "str/pokemon_data.csv"
+POKEMON_DESCRIPTIONS = 'str/descriptions.csv'
 
 def noDirectMessage(ctx):
     if ctx.guild != None:
