@@ -443,7 +443,8 @@ class whosThatPokemon(commands.Cog):
         cooldownAmount = 20
         id = ctx.channel_id
         if self.cooldown.is_on_cooldown(id, 'skip_btn', cooldownAmount):
-            await ctx.response.send_message(embed=self.embedText("Command on cooldown"), ephemeral=True)
+            string = await self.strings.get('skip_cooldown', ctx.guild.id)
+            await ctx.response.send_message(embed=self.embedText(string), ephemeral=True)
             self.logger.debug(f"{id}/skip_btn  ->  on cooldown")
             return
 
@@ -457,7 +458,8 @@ class whosThatPokemon(commands.Cog):
         file, embed = await self.createQuestion(ctx.guild, skip=True, channel=str(ctx.channel.id))
         if not file:
             ## => GUILD NOT GUESSING
-            embed = self.embedText("Start playing with Wtp!start")
+            string = await self.strings.get('skip_error', ctx.guild.id)
+            embed = self.embedText(string)
             await ctx.respond(embed=embed)
             return
 
@@ -470,12 +472,14 @@ class whosThatPokemon(commands.Cog):
         await self.only_admin(ctx)
         ## => POINTS_FROM_RESET TO 0 IN THE DB
         async with self.async_session() as session:
-            guildPlayers = await session.execute(select(userPoints).filter_by(guild_id = str(ctx.guild.id)))
+            guildPlayers = await session.execute(select(userPoints
+                                ).filter_by(guild_id = str(ctx.guild.id)))
             guildPlayers = guildPlayers.scalars().all()
             for player in guildPlayers:
                 player.points_from_reset = 0
             await session.commit()
-        embed = self.embedText("Local ranks reset succesful!")
+        string = await self.strings.get('reset_ok', ctx.guild.id)
+        embed = self.embedText(string)
         await ctx.send_response(embed=embed)
 
     async def generationButtons(self, guild):
@@ -498,11 +502,11 @@ class whosThatPokemon(commands.Cog):
         try:
             await self.is_patreon(ctx.guild.id)
         except:
-            embed = self.embedText("You need to be a Patreon to use this command")
+            string = await self.strings.get('patreon_error', ctx.guild.id)
+            embed = self.embedText(string)
             await ctx.send_response(embed=embed)
             return
         
-        embed = self.embedText("Select the generations you want. Green button means it is selected.\n Remember to click save")
         view = await self.generationButtons(ctx.guild)
         await ctx.send_response(embed=embed, view=view)
 
@@ -514,7 +518,8 @@ class whosThatPokemon(commands.Cog):
             guild = await session.execute(select(botGuilds).filter_by(guild_id=str(guild_id)))
             guild = guild.scalars().first()
             if guild.patreon == False:
-                raise Exception("This guild is not patreon")
+                string = await self.strings.get('patreon_error', guild_id)
+                raise Exception(string)
 
     @slash_command(name="selectlanguage",
                  description="Select the language used in the game. Admin only")
@@ -524,10 +529,10 @@ class whosThatPokemon(commands.Cog):
             try:
                 await self.is_patreon(ctx.guild.id)
             except:
-                embed = self.embedText("You need to be a Patreon to use this command")
+                string = await self.strings.get('patreon_error', ctx.guild.id)
+                embed = self.embedText(string)
                 await ctx.send_response(embed=embed)
                 return
             
-            embed = self.embedText("Select the language you want.")
             view = LangButtons(self, ctx.guild.id)
             await ctx.send_response(embed=embed, view=view)

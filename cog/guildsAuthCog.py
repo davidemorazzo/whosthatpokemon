@@ -16,6 +16,8 @@ from cog.whosThatPokemonCog import(
     patreonUsers,
     GetGuildInfo)
 from patreonAPI import fetch_patreons
+from str.string_db import string_translator
+
 import asyncio
 
 class guildsAuthCog(commands.Cog):
@@ -30,9 +32,9 @@ class guildsAuthCog(commands.Cog):
         # self.verification.start()
         self.free_period = True
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
-        self.patreonInstructions = "\n**IMPORTANT: ** The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
         self.logger = logging.getLogger('discord')
+        self.strings = string_translator('str/strings.csv', self.async_session)
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         """Return the discord id of the patreon if there is a match, None otherwise"""
@@ -188,16 +190,20 @@ class guildsAuthCog(commands.Cog):
                 inline=False
             )
 
+        t = await self.strings.get_batch(['activation', 'whitelist', 'free_bot', 'trial_days', 'activation_ok', 'activation_error', 'instructions'], 
+                                ctx.guild.id)
+        activation, whitelist, free_bot, trial_days, activation_ok, activation_error, instructions = t
+
         if ctx.guild.id in self.guildWhiteList:
-            embed.set_footer(text="ACTIVATION:  This guild is whitelisted, so activation is not needed.")
+            embed.set_footer(text=f"{activation}:  {whitelist}")
         elif self.free_period:
-            embed.description = f"**ACTIVATION:**  The bot is free for now! Please support us on Patreon! [Patreon link]({self.patreon_link})"
+            embed.description = f"**{activation}:** {free_bot} [Patreon link]({self.patreon_link})"
         elif trial_flag:
-            embed.description = f"**ACTIVATION:**  {days_left} days left before trial period will end. To keep using the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions+"\n"
+            embed.description = f"**{activation}:**  {days_left} {trial_days} [Patreon link]({self.patreon_link})"+instructions+"\n"
         elif guildInfo.patreon == False:
-            embed.descriprion = f"**ACTIVATION:**  the bot is not activated. To activate the bot please subscribe to our patreon! [Patreon link]({self.patreon_link})"+self.patreonInstructions
+            embed.descriprion = f"**{activation}:**  {activation_error} [Patreon link]({self.patreon_link})"+instructions
         elif guildInfo.patreon_discord_id != None:
-            embed.set_footer(text="ACTIVATION:  the bot is activated with patreon subscription")
+            embed.set_footer(text=f"{activation}:  {activation_ok}")
 
         bot_msg = await ctx.send_response(embed=embed)
     
@@ -253,7 +259,8 @@ class guildsAuthCog(commands.Cog):
         elif isinstance(error, commands.errors.NoPrivateMessage):
             return
         elif isinstance(error, guildNotActive):
-            embed = self.embedText(f"Trial period has expired! To gain full access to the bot please activate the bot using this link {self.patreon_link}")
+            string = self.strings.get('expired', ctx.guild.id)
+            embed = self.embedText(f"{string} {self.patreon_link}")
             await ctx.send(embed = embed)
             self.logger.debug("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
         elif isinstance(error, commands.errors.MissingPermissions):

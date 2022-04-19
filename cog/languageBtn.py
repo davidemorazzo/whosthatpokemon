@@ -40,7 +40,8 @@ class Dropdown(discord.ui.Select):
             guildInfo.language = lang
             await session.commit()
         
-        embed = self.poke_cog.embedText("Language set!")
+        string = await self.poke_cog.strings.get_string('lang_ok', interaction.guild_id)
+        embed = self.poke_cog.embedText(string)
         await interaction.response.edit_message(
                                     embed = embed, 
                                     view=None, 

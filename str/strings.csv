@@ -12,3 +12,20 @@ ranks,You can check local and global ranks with /rank command.,,,,,,,,
 start_error,The game is already started!,,,,,,,,
 stop_error,The game is not running on this channel,,,,,,,,
 stop_ok,Guessing has been stopped! To resume the game use the start command,,,,,,,,
+skip_cooldown,Command on cooldown
+btn_cooldown,Button on cooldown
+skip_error,Start playing with Wtp!start
+reset_ok,Local ranks reset succesful!
+patreon_error,You need to be a Patreon to use this command
+server_rank,Server Rank
+global_rank,Global Rank
+generation_ok,Generations set!
+activation,ACTIVATION
+whitelist,"This guild is whitelisted, so activation is not needed."
+free_bot,The bot is free for now! Please support us on Patreon!
+trial_days,days left before trial period will end. To keep using the bot please subscribe to our patreon!
+activation_ok,the bot is activated with patreon subscription
+activation_error,the bot is not activated. To activate the bot please subscribe to our patreon!
+instructions,"The patreon subscription have to be made by the owner of the server, otherwise the bot will not activate. Remember to connect from patreon to your discord account!"
+expired,"Trial period has expired! To gain full access to the bot please activate the bot using this link"
+lang_ok,Language set!

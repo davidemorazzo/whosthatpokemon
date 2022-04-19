@@ -6,6 +6,7 @@ class GenButtons(discord.ui.View):
     def __init__(self, poke_cog, active_gens, guild_id):
         super().__init__(timeout=60)
         self.poke_cog = poke_cog
+        self.string_db = poke_cog.strings
         self.active_gens = active_gens
         self.add_item(Dropdown(self.poke_cog, active_gens, guild_id))
 
@@ -45,7 +46,8 @@ class Dropdown(discord.ui.Select):
             guildInfo.poke_generation = selection_string
             await session.commit()
         
-        embed = self.poke_cog.embedText("Generations set!")
+        string = await self.string_db.get('generation_ok', self.guild_id)
+        embed = self.poke_cog.embedText(string)
         await interaction.response.edit_message(
                                     embed = embed, 
                                     view=None, 

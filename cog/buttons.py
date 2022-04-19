@@ -9,6 +9,7 @@ class FourButtons(discord.ui.View):
         self.hint_button = "❓"
         self.global_rank_button = "🌍"
         self.logger = self.poke_cog.logger
+        self.string_db = self.poke_cog.strings
         # TODO: da finire
 
     async def on_cooldown(self, btn_name:str, interaction:discord.Interaction)->bool:
@@ -17,7 +18,8 @@ class FourButtons(discord.ui.View):
                                                 btn_name,
                                                 60):
             self.logger.debug(f"{interaction.message.id}/{interaction.custom_id} on cooldown")
-            await interaction.response.send_message(embed=self.poke_cog.embedText("Button on cooldown"), ephemeral=True)
+            string = await self.string_db.get('btn_cooldown', interaction.guild_id)
+            await interaction.response.send_message(embed=self.poke_cog.embedText(string), ephemeral=True)
             return True
         return False
 
@@ -55,7 +57,8 @@ class FourButtons(discord.ui.View):
                             channel=str(interaction.channel_id))
         if not file:
             ## => GUILD NOT GUESSING
-            embed = self.embedText("Start playing with Wtp!start")
+            string = await self.string_db.get('skip_error', interaction.guild_id)
+            embed = self.embedText(string)
             await interaction.follow(embed=embed)
             return
         await interaction.followup.send(file=file, embed=embed, view=FourButtons(self.poke_cog))
@@ -76,7 +79,8 @@ class FourButtons(discord.ui.View):
         ## => SEND EMBED     
         embed = discord.Embed(color=self.poke_cog.color)
         embed.set_author(name=self.poke_cog.bot.user.name)
-        embed.add_field(name=f"Server Rank {self.rank_button}", value = text)
+        string = await self.string_db.get('server_rank', interaction.guild_id)
+        embed.add_field(name=f"{string} {self.rank_button}", value = text)
         thumbnail = discord.File("./gifs/trophy.gif", "trophy.gif")
         embed.set_thumbnail(url="attachment://trophy.gif")
         await interaction.response.send_message(embed=embed, file=thumbnail, ephemeral=False)
@@ -98,7 +102,8 @@ class FourButtons(discord.ui.View):
         ## => SEND EMBED     
         embed = discord.Embed(color=self.poke_cog.color)
         embed.set_author(name=self.poke_cog.bot.user.name)
-        embed.add_field(name=f"Global Rank {self.global_rank_button}", value = text)
+        string = await self.string_db.get('global_rank', interaction.guild_id)
+        embed.add_field(name=f"{string} {self.global_rank_button}", value = text)
         thumbnail = discord.File("./gifs/globe.gif", "trophy.gif")
         embed.set_thumbnail(url="attachment://trophy.gif")
         await interaction.followup.send(embed=embed, file=thumbnail, ephemeral=False)
