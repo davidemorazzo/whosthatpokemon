@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord import Embed, File, Colour
 from discord.commands import slash_command, Option, permissions
 
@@ -15,6 +15,7 @@ from random import choice
 from collections import Counter
 from datetime import datetime
 import pandas as pd
+import asyncio
 
 from database import (
     botGuilds, 
@@ -38,7 +39,7 @@ class guildNotActive(commands.errors.CheckFailure):
     pass
 
 class whosThatPokemon(commands.Cog):
-    def __init__(self, bot, engine, data_path, description_path):
+    def __init__(self, bot:discord.Bot, engine, data_path, description_path):
         load_dotenv()
         self.bot = bot
         self.db_engine = engine
@@ -167,7 +168,7 @@ class whosThatPokemon(commands.Cog):
             
         return gifList
             
-    async def createQuestion(self, guild, skip=False, channel=None):
+    async def createQuestion(self, guild:discord.Guild, skip=False, channel_id:int=None) -> tuple:
         async with self.async_session() as session:
             p = BaseProfiler("createQuestion")
             # get guild patreon tier
@@ -194,7 +195,7 @@ class whosThatPokemon(commands.Cog):
             
             ## => MEMORIZE THE SOLUTION
             async with self.async_session() as session:
-                thisGuild = await GetChannelIstance(session, guild.id, channel)
+                thisGuild = await GetChannelIstance(session, guild.id, channel_id)
                 if not thisGuild:
                     return None, None
                 if skip and thisGuild.guessing == False:
@@ -375,7 +376,7 @@ class whosThatPokemon(commands.Cog):
 
             ## => SEND NEW QUESTION
             if channelIstance.guessing:
-                file, embed = await self.createQuestion(message.guild, channel=channelIstance.channel_id)
+                file, embed = await self.createQuestion(message.guild, channel_id=channelIstance.channel_id)
                 await message.channel.send(file=file, embed=embed, view=FourButtons(self))
                 
         # await self.bot.process_commands(message)
@@ -400,7 +401,7 @@ class whosThatPokemon(commands.Cog):
                 return
         
         ## => GET NEW POKEMON
-        file, embed = await self.createQuestion(ctx.guild, channel=str(ctx.channel.id))
+        file, embed = await self.createQuestion(ctx.guild, channel_id=str(ctx.channel.id))
         await ctx.send_response(file=file, embed=embed, view=FourButtons(self))
             
 
@@ -492,7 +493,7 @@ class whosThatPokemon(commands.Cog):
         solution_embed, clear_thumb = await self.solution_embed(ctx.guild_id, ctx.channel_id)
         await ctx.respond(file=clear_thumb, embed=solution_embed)
 
-        file, embed = await self.createQuestion(ctx.guild, skip=True, channel=str(ctx.channel.id))
+        file, embed = await self.createQuestion(ctx.guild, skip=True, channel_id=str(ctx.channel.id))
         if not file:
             ## => GUILD NOT GUESSING
             string = await self.strings.get('skip_error', ctx.guild.id)
@@ -574,3 +575,24 @@ class whosThatPokemon(commands.Cog):
             view = LangButtons(self, ctx.guild.id)
             await ctx.send_response(embed=embed, view=view)
     
+
+
+    @tasks.loop(minutes=10)
+    async def pokemon_spawn(self):
+        # TODO da inserire orario ultima vincita sul canale
+        async with self.async_session() as session:
+            stmt = select(botChannelIstance).where(botChannelIstance.guessing == True)
+            result = await session.execute(stmt)
+            channels = result.scalars().all()
+
+        async def spawn(channel_istance:botChannelIstance):
+
+            guild_obj = await self.bot.fetch_guild(channel_istance.guild_id)
+            channel_obj = guild_obj.get_channel(channel_istance.channel_id)
+            if channel_obj:
+                file, embed = self.createQuestion(guild_obj, channel_id=channel_obj.id)
+                if file:
+                    await channel_obj.send(file=file, embed=embed)
+
+        for channel in channels:
+            asyncio.create_task(spawn(channel))
