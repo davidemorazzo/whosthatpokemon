@@ -73,23 +73,43 @@ class whosThatPokemon(commands.Cog):
         text = text.replace('"', '\"').replace("'", "\'")
         return Embed(description=f"**{text}**", color=self.color)
 
-    def correctGuess(self, guess:str, solution:str) -> bool:
+    def correctGuess(self, guess:str, solution:str, language_id:str) -> bool:
+        """
+        Return if the 'guess' is correct. Valid guesses are:
+            - Guild language with identifiers
+            - English with identifiers
+            - English with no identifiers
+        """
+
         compare = lambda x, y: Counter(x)==Counter(y)
+
+        # Get solution in 'en' and the guild language
+        en_solution = self.pokedexDataFrame.loc[solution,'en']
+        translated_solution = self.pokedexDataFrame.loc[solution, language_id]
+        
         ## => DECIDE IF THE GUESS IS CORRECT
-        guess = guess.lower().strip()
-        wordSolution = solution.split('-')
-        guess = guess.replace('-o', ' o') # fix kommo-o ...
+        en_solution = en_solution.lower().strip().split(' ')
+        translated_solution = translated_solution.lower().strip().split(' ')
         wordGuess = guess.split(' ')
+        # No identifiers solution is also valid
+        no_ident = en_solution.remove('gigantamax'
+                            ).remove('galar'
+                            ).remove('alola'
+                            ).remove('mega'
+                            ).remove('x'
+                            ).remove('y')
+        
         
         ## => REPLACE IDENTIFIERS
-        if "y" in wordGuess and "mega" in wordGuess:
-            wordGuess.remove("mega")
-            wordGuess.remove("y")
-            wordGuess.append("megay")
-        if "x" in wordGuess and "mega" in wordGuess:
-            wordGuess.remove("mega")
-            wordGuess.remove("x")
-            wordGuess.append("megax")
+        # if "y" in wordGuess and "mega" in wordGuess:
+        #     wordGuess.remove("mega")
+        #     wordGuess.remove("y")
+        #     wordGuess.append("megay")
+        # if "x" in wordGuess and "mega" in wordGuess:
+        #     wordGuess.remove("mega")
+        #     wordGuess.remove("x")
+        #     wordGuess.append("megax")
+        
         if "gmax" in wordGuess:
             wordGuess.remove("gmax")
             wordGuess.append("gigantamax")   
@@ -101,7 +121,21 @@ class whosThatPokemon(commands.Cog):
             wordGuess.append("alola")
 
         ## => FINAL COMPARISON
-        return compare(wordSolution, wordGuess)
+        result = compare(en_solution, wordGuess) or \
+                compare(translated_solution, wordGuess) or \
+                compare(no_ident, wordGuess)
+
+        return result
+
+    async def get_guild_lang(self, guild_id) -> str:
+        """
+        Return the guild language ID
+        """
+        async with self.async_session() as session:
+            stmt = select(botGuilds.language).where(botGuilds.guild_id == str(guild_id))
+            result = await session.execute(stmt)
+            language = result.scalars().first()
+            return language
     
     async def getGuildGifList(self, guildObj) -> list:
         """Get list of available gifs for the specified guild. They are chosen by the selected
@@ -273,7 +307,7 @@ class whosThatPokemon(commands.Cog):
         raw_solution = channelIstance.current_pokemon
         if not raw_solution or channelIstance.is_guessed:
             return
-        if self.correctGuess(message.content, raw_solution):
+        if self.correctGuess(message.content, raw_solution, guildInfo.language):
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
@@ -315,11 +349,13 @@ class whosThatPokemon(commands.Cog):
                     userGlobalPoints += entry.points
                 await session.commit()
 
-
-            description = self.descriptionDataFrame.loc[raw_solution]['en']
+            # Get description and strings in the correct language
+            language_id = await self.get_guild_lang(message.guild.id)
+            description = self.descriptionDataFrame.loc[raw_solution][language_id]
             t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks'], message.guild.id)
             correct_s, points_s, server_s, global_s, ranks_s = t
-
+            
+            # Create and send response embed
             embed = Embed(color=self.color)
             embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
             embed.description = f"{message.author.mention} ** {correct_s} **"
@@ -426,7 +462,8 @@ class whosThatPokemon(commands.Cog):
             channelIstance = await GetChannelIstance(session, guild_id, channel_id)
             raw_solution = channelIstance.current_pokemon
         
-        description = self.descriptionDataFrame.loc[raw_solution]['en']
+        language_id = await self.get_guild_lang(guild_id)
+        description = self.descriptionDataFrame.loc[raw_solution][language_id]
         if description.strip() != "":
             clearEmbed = Embed(color=self.color)
             clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
@@ -536,3 +573,4 @@ class whosThatPokemon(commands.Cog):
             
             view = LangButtons(self, ctx.guild.id)
             await ctx.send_response(embed=embed, view=view)
+    
