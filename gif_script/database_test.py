@@ -3,8 +3,8 @@ import glob
 import os
 
 gif_folder = 'gifs/'
-pokemon_data = pd.read_csv('pokemon_data1.csv', index_col='name')
-descriptions = pd.read_csv('descriptions.csv', index_col='name')
+pokemon_data = pd.read_csv('str/pokemon_data.csv', index_col='name')
+descriptions = pd.read_csv('str/descriptions.csv', index_col='name')
 VERBOSE = True
 
 # Name translation missing

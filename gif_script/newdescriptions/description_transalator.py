@@ -9,8 +9,8 @@ def translate(idx, df:pd.DataFrame, col_name:str, lang:str):
 	return df
 
 async def main():
-	pokemon_data = pd.read_csv('gif_script\\newdescriptions\\new_database1.csv', index_col='name')
-	description_df = pd.read_csv('gif_script\\newdescriptions\\descriptions_english_with_pokemon.csv', index_col='name')
+	pokemon_data = pd.read_csv('str/strings.csv', index_col='name')
+	description_df = pd.read_csv('str/strings.csv', index_col='name')
 	t = []
 	loop = asyncio.get_event_loop()
 	for idx in pokemon_data.index:
@@ -25,7 +25,7 @@ async def main():
 		t = [i for i in t if i.done()==False]
 	
 	await asyncio.sleep(1)
-	description_df.to_csv('gif_script\\newdescriptions\\descriptions_english_with_pokemon.csv')
+	description_df.to_csv('str/strings.csv')
 	pass
 	
 

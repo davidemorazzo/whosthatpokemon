@@ -51,7 +51,8 @@ if __name__ == '__main__':
         engine = init_database(LOCAL_DB_STRING)
         BOT_TOKEN = "ODU1MzkyOTMxMjAzMjUyMjM0.YMx0vw.GUK6TGjobT6Ez2KE4KrCi21RFdQ" ## => TOKEN DI DAVIDE
         logger.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+        # handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+        handler = logging.StreamHandler()
         handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
         logger.addHandler(handler)  
         logger.info("Bot initialized for local machine")

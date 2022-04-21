@@ -54,7 +54,7 @@ class FourButtons(discord.ui.View):
             await interaction.response.send_message(file=clear_thumb, embed=solution_embed)
         file, embed = await self.poke_cog.createQuestion(interaction.guild,
                             skip=True,
-                            channel=str(interaction.channel_id))
+                            channel_id=str(interaction.channel_id))
         if not file:
             ## => GUILD NOT GUESSING
             string = await self.string_db.get('skip_error', interaction.guild_id)

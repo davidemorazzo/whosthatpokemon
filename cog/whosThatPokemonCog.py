@@ -46,6 +46,9 @@ class whosThatPokemon(commands.Cog):
         self.async_session = sqlalchemy.orm.sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.color = Colour.red()
         self.pokedexDataFrame = pd.read_csv(data_path, index_col='name')
+        complete_data = self.pokedexDataFrame['clear_path'].notna() & \
+                        self.pokedexDataFrame['blacked_path'].notna() 
+        self.pokedexDataFrame = self.pokedexDataFrame[complete_data]
         self.descriptionDataFrame = pd.read_csv(description_path, index_col='name')
         self.cooldown = cooldown()
         self.pokemonGenerations = {
@@ -89,16 +92,21 @@ class whosThatPokemon(commands.Cog):
         translated_solution = self.pokedexDataFrame.loc[solution, language_id]
         
         ## => DECIDE IF THE GUESS IS CORRECT
+        identifiers = ['gigantamax', 'galar', 'alola', 'mega', 'x', 'y', 'forme', 'style']
+        no_ident = en_solution.split(' ')
+        no_ident = [word for word in no_ident if word not in identifiers]
+        # no_ident = en_solution.replace('gigantamax', ''
+        #                     ).replace('galar', ''
+        #                     ).replace('alola', ''
+        #                     ).replace('mega', ''
+        #                     ).replace('x', ''
+        #                     ).replace('y', ''
+        #                     ).replace('forme', ''
+        #                     ).split(' ')
         en_solution = en_solution.lower().strip().split(' ')
         translated_solution = translated_solution.lower().strip().split(' ')
-        wordGuess = guess.split(' ')
+        wordGuess = guess.lower().split(' ')
         # No identifiers solution is also valid
-        no_ident = en_solution.remove('gigantamax'
-                            ).remove('galar'
-                            ).remove('alola'
-                            ).remove('mega'
-                            ).remove('x'
-                            ).remove('y')
         
         
         ## => REPLACE IDENTIFIERS
@@ -155,17 +163,16 @@ class whosThatPokemon(commands.Cog):
             else:
                 guild_tier = 0
 
-        ## => CREATE LIST
-        complete_data = self.pokedexDataFrame['clear_path'].notna() & \
-                        self.pokedexDataFrame['blacked_path'].notna() 
+        ## => CREATE LIST OF GIFS
         tier_filter = self.pokedexDataFrame['tier'].notna() >= guild_tier
         no_gen_filter =  self.pokedexDataFrame['generation'].isna()
 
-        gifList = list(self.pokedexDataFrame[complete_data & tier_filter & no_gen_filter].index)
+        # Add to the list the correct generations
+        gifList = list(self.pokedexDataFrame[no_gen_filter].index)
         for generation in self.pokemonGenerations.keys():
             if self.pokemonGenerations[generation] in poke_generation:
                 gifList += list(self.pokedexDataFrame[self.pokedexDataFrame['generation']==generation].index)
-            
+
         return gifList
             
     async def createQuestion(self, guild:discord.Guild, skip=False, channel_id:int=None) -> tuple:
@@ -546,7 +553,7 @@ class whosThatPokemon(commands.Cog):
             return
         
         view = await self.generationButtons(ctx.guild)
-        await ctx.send_response(embed=embed, view=view)
+        await ctx.send_response(view=view)
 
     async def is_patreon(self, guild_id):
         """
@@ -573,7 +580,7 @@ class whosThatPokemon(commands.Cog):
                 return
             
             view = LangButtons(self, ctx.guild.id)
-            await ctx.send_response(embed=embed, view=view)
+            await ctx.send_response(view=view)
     
 
 

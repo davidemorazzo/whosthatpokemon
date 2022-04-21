@@ -46,7 +46,7 @@ class Dropdown(discord.ui.Select):
             guildInfo.poke_generation = selection_string
             await session.commit()
         
-        string = await self.string_db.get('generation_ok', self.guild_id)
+        string = await self.poke_cog.strings.get('generation_ok', self.guild_id)
         embed = self.poke_cog.embedText(string)
         await interaction.response.edit_message(
                                     embed = embed, 
