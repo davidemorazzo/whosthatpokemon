@@ -13,7 +13,7 @@ from sqlalchemy import desc
 from dotenv import load_dotenv
 from random import choice
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import asyncio
 
@@ -72,6 +72,7 @@ class whosThatPokemon(commands.Cog):
                         '日本':'jp', 
                         '简体中文':'zh'}
         self.strings = string_translator('./str/strings.csv', self.async_session)
+        self.pokemon_spawn.start()
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
@@ -322,6 +323,7 @@ class whosThatPokemon(commands.Cog):
                 ## => UPDATE GUILD STATUS
                 channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
                 channelIstance.is_guessed = True
+                channelIstance.last_win_date = str(datetime.utcnow())
                 await session.commit()
                 ## => FETCH USER
                 currentUser = await session.execute(select(userPoints).filter_by(guild_id=str(message.guild.id), user_id=str(message.author.id)))
@@ -384,7 +386,7 @@ class whosThatPokemon(commands.Cog):
             ## => SEND NEW QUESTION
             if channelIstance.guessing:
                 file, embed = await self.createQuestion(message.guild, channel_id=channelIstance.channel_id)
-                await message.channel.send(file=file, embed=embed, view=FourButtons(self))
+                await message.channel.send(file=file, embed=embed, view=FourButtons(self, language_id))
                 
         # await self.bot.process_commands(message)
     
@@ -507,8 +509,8 @@ class whosThatPokemon(commands.Cog):
             embed = self.embedText(string)
             await ctx.respond(embed=embed)
             return
-
-        await ctx.respond(file=file, embed=embed, view=FourButtons(self))
+        lang_id = await self.get_guild_lang(ctx.guild_id)
+        await ctx.respond(file=file, embed=embed, view=FourButtons(self, lang_id))
         
     @slash_command(name="resetrank", 
                     description="Reset to zero the points of this server players. Global points will be kept. Only administrator")
@@ -535,8 +537,9 @@ class whosThatPokemon(commands.Cog):
             guildInfo = await s.execute(select(botGuilds).filter_by(guild_id=str(guild.id)))
             guildInfo = guildInfo.scalars().first()
             poke_generation = guildInfo.poke_generation
+            lang_id = guildInfo.language
         
-        view = GenButtons(self, poke_generation, guild.id)
+        view = GenButtons(self, poke_generation, guild.id, lang_id)
         return view
 
     @slash_command(name="selectgenerations",
@@ -569,37 +572,48 @@ class whosThatPokemon(commands.Cog):
     @slash_command(name="selectlanguage",
                  description="Select the language used in the game. Admin only")
     async def selectLanguage(self, ctx):
-            
-            await self.only_admin(ctx)
-            try:
-                await self.is_patreon(ctx.guild.id)
-            except:
-                string = await self.strings.get('patreon_error', ctx.guild.id)
-                embed = self.embedText(string)
-                await ctx.send_response(embed=embed)
-                return
-            
-            view = LangButtons(self, ctx.guild.id)
-            await ctx.send_response(view=view)
+        await self.only_admin(ctx)
+        try:
+            await self.is_patreon(ctx.guild.id)
+        except:
+            string = await self.strings.get('patreon_error', ctx.guild.id)
+            embed = self.embedText(string)
+            await ctx.send_response(embed=embed)
+            return
+        
+        lang_id = await self.get_guild_lang(ctx.guild_id)
+        view = LangButtons(self, ctx.guild.id, lang_id)
+        await ctx.send_response(view=view)
     
 
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(minutes=5)
     async def pokemon_spawn(self):
-        # TODO da inserire orario ultima vincita sul canale
         async with self.async_session() as session:
-            stmt = select(botChannelIstance).where(botChannelIstance.guessing == True)
+            stmt = select(botChannelIstance
+                    ).join(botGuilds, botChannelIstance.guild_id == botGuilds.guild_id
+                    ).filter(botChannelIstance.guessing == True
+                    ).filter(botGuilds.currently_joined == True)
             result = await session.execute(stmt)
             channels = result.scalars().all()
 
-        async def spawn(channel_istance:botChannelIstance):
-
-            guild_obj = await self.bot.fetch_guild(channel_istance.guild_id)
-            channel_obj = guild_obj.get_channel(channel_istance.channel_id)
+        async def spawn(channel_istance:botChannelIstance, time:datetime):
+            try:
+                guild_obj = await self.bot.fetch_guild(channel_istance.guild_id)
+                channel_obj = guild_obj.get_channel(channel_istance.channel_id)
+            except:
+                return
             if channel_obj:
-                file, embed = self.createQuestion(guild_obj, channel_id=channel_obj.id)
-                if file:
-                    await channel_obj.send(file=file, embed=embed)
+                # Check if there are no wins in the last 10 mins
+                if not channel_istance.last_win_date or\
+                    channel_istance.last_win_date < time - timedelta(minutes=9):
+                    file, embed = self.createQuestion(guild_obj, channel_id=channel_obj.id)
+                    if file:
+                        await channel_obj.send(file=file, embed=embed)
 
+
+        # Run the spawns in async way
+        now = datetime.utcnow()
         for channel in channels:
-            asyncio.create_task(spawn(channel))
+            asyncio.create_task(spawn(channel, now))
+        self.logger.debug('Spawning pokemon tasks running')

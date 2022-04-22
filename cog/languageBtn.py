@@ -3,15 +3,15 @@ from sqlalchemy import select
 from database import botGuilds
 
 class LangButtons(discord.ui.View):
-    def __init__(self, poke_cog, guild_id):
+    def __init__(self, poke_cog, guild_id, lang_id:str):
         super().__init__(timeout=60)
         self.poke_cog = poke_cog
         self.langs = poke_cog.languages
-        self.add_item(Dropdown(self.poke_cog, self.langs, guild_id))
+        self.add_item(Dropdown(self.poke_cog, self.langs, guild_id, lang_id))
 
 
 class Dropdown(discord.ui.Select):
-    def __init__(self, poke_cog, langs, guild_id):
+    def __init__(self, poke_cog, langs, guild_id, lang_id:str):
         self.poke_cog = poke_cog
         self.langs = langs
         self.guild_id = guild_id
@@ -21,9 +21,9 @@ class Dropdown(discord.ui.Select):
             for language in self.langs
         ]
 
-        # The placeholder is what will be shown when no option is chosen
+        string = self.poke_cog.strings.s_get('lang_btn', lang_id)
         super().__init__(
-            placeholder="Choose the language...",
+            placeholder=string,
             min_values=1,
             max_values=1,
             options=options,

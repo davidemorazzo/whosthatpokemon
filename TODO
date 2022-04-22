@@ -5,7 +5,6 @@ TODO increased chance of shiny 1 in 300 guesses Patreon only
 TODO shiny version only in the solution
 TODO shiny rank like 1 shiny in 500 Pokémon then this can be added to the shiny leaderboard. Maybe we can have a button 
 	like this ✨. So every 500th time you guess a shiny will appear (I will write a description for this) 
-TODO refine gif scripts to add more gifs
 
 
 TODO GIFS DATABASE
@@ -24,17 +23,17 @@ TODO Pokémon to spawn every 10 minutes
 
 ----------------------------------------------------------
 # ANCHOR TO BE TESTED
-TODO Please disable the one time click for the buttons please so only is the cooldown timer that we are using to prevent people from spamming.
 
 TODO test the pokemon database for index and gif path
 TODO Generation selection only for patreons
 TODO I would like double points option for individual users for patreons
-TODO add points info on the New question embed
 TODO accept answer also without the attribute gmax, galar ...
-TODO Different languages free option where they can select which language of the bot they'd like to use (Only admin and owner). The bot 
-	accepts answers in multiple languages
 
 
 
 ----------------------------------------------------------
 # ANCHOR DONE
+- add points info on the New question embed
+- Different languages free option where they can select which language of the bot they'd like to use (Only admin and owner). The bot 
+	accepts answers in multiple languages
+- Please disable the one time click for the buttons please so only is the cooldown timer that we are using to prevent people from spamming.

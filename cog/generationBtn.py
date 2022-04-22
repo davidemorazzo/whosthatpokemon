@@ -3,16 +3,16 @@ from sqlalchemy import select
 from database import botGuilds
 
 class GenButtons(discord.ui.View):
-    def __init__(self, poke_cog, active_gens, guild_id):
+    def __init__(self, poke_cog, active_gens, guild_id, lang_id:str):
         super().__init__(timeout=60)
         self.poke_cog = poke_cog
         self.string_db = poke_cog.strings
         self.active_gens = active_gens
-        self.add_item(Dropdown(self.poke_cog, active_gens, guild_id))
+        self.add_item(Dropdown(self.poke_cog, active_gens, guild_id, lang_id))
 
 
 class Dropdown(discord.ui.Select):
-    def __init__(self, poke_cog, active_gens, guild_id):
+    def __init__(self, poke_cog, active_gens, guild_id, lang_id:str):
         self.poke_cog = poke_cog
         self.active_gens = active_gens
         self.guild_id = guild_id
@@ -27,9 +27,10 @@ class Dropdown(discord.ui.Select):
             if self.poke_cog.pokemonGenerations[o.label] in active_gens:
                 o.default = True
 
-        # The placeholder is what will be shown when no option is chosen
+        # Get strings
+        string = self.poke_cog.strings.s_get('generation_select', lang_id)
         super().__init__(
-            placeholder="Choose the pokemon generations...",
+            placeholder=string,
             min_values=1,
             max_values=len(generations),
             options=options,

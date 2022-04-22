@@ -1,7 +1,7 @@
 import discord
 
 class FourButtons(discord.ui.View):
-    def __init__(self, poke_cog):
+    def __init__(self, poke_cog, lang_id:str):
         super().__init__(timeout=None)
         self.poke_cog = poke_cog
         self.skip_button = "⏭️"
@@ -10,7 +10,16 @@ class FourButtons(discord.ui.View):
         self.global_rank_button = "🌍"
         self.logger = self.poke_cog.logger
         self.string_db = self.poke_cog.strings
-        # TODO: da finire
+        # Get button label string
+        self.hint_btn_label = self.string_db.s_get('hint_btn', lang_id)
+        self.skip_btn_label = self.string_db.s_get('skip_btn', lang_id)
+        self.rank_btn_label = self.string_db.s_get('lrank_btn', lang_id)
+        self.global_rank_btn_label = self.string_db.s_get('grank_btn', lang_id)
+        # Assign to buttons labels
+        self.children[0].label = self.hint_btn_label
+        self.children[1].label = self.skip_btn_label
+        self.children[2].label = self.rank_btn_label
+        self.children[3].label = self.global_rank_btn_label
 
     async def on_cooldown(self, btn_name:str, interaction:discord.Interaction)->bool:
         # Check cooldown for spicific messages or for the channel
@@ -61,7 +70,7 @@ class FourButtons(discord.ui.View):
             embed = self.embedText(string)
             await interaction.follow(embed=embed)
             return
-        await interaction.followup.send(file=file, embed=embed, view=FourButtons(self.poke_cog))
+        await interaction.followup.send(file=file, embed=embed, view=FourButtons(self.poke_cog, self.lang_id))
         # Start cooldown
         self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
 

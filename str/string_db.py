@@ -7,6 +7,12 @@ class string_translator():
 	def __init__(self, string_db:str, sessionmaker:sessionmaker) -> str:
 		self.df = pd.read_csv(string_db, index_col='name')
 		self.a_session = sessionmaker
+
+	def s_get(self, id:str, lang_id:str):
+		"""
+		Get a single string given the language id
+		"""
+		return str(self.df.loc[id, lang_id])
 	
 	async def get (self, id:str, guild_id:str):
 		"""
@@ -19,7 +25,7 @@ class string_translator():
 			if guild_info:
 				language = guild_info.language
 		
-		return self.df.loc[id, language]
+		return str(self.df.loc[id, language])
 	
 	async def get_batch(self, ids:list, guild_id:str) -> tuple:
 		"""
