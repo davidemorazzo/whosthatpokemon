@@ -1,58 +1,78 @@
-import os
+import asyncio
+import os, shutil, stat
 from PIL import Image
 from subprocess import check_output
 import glob
 
-def split_gif(base_directory, giffilename):
-    files = glob.glob(base_directory+'\\frames\\*')
+def split_gif(base_directory, giffilename, frames_dir):
+    files = glob.glob(frames_dir+"/*.png")
     for f in files:
         os.remove(f)
-    command = f'"C:\\Program Files\\ImageMagick-7.1.0-Q16\\magick.exe" convert -coalesce -channel rgba "{base_directory}\\{giffilename}" "{base_directory}\\frames\\xx_%05d.png"'
+    command = f'"C:\\Program Files\\ImageMagick-7.1.0-Q16\\magick.exe" convert -coalesce -channel rgba "{base_directory}\\{giffilename}" "{frames_dir}\\xx_%05d.png"'
     check_output(command, shell=True)
 
-def convert_gif(original_filename, base_directory):
+def convert_gif(original_filename, base_directory, num):
     
     """
     Resave the gifs to eliminate the trail effect
     """
 
-    ## => SPLIT GIF INTO FRAMES USING IMAGEMAGICK
     try:
-        os.mkdir(base_directory+"\\frames\\")
-        os.mkdir(base_directory+"\\fixed\\")
-    except :
-        pass
-    split_gif(base_directory, original_filename) # all frames in the folder ./frames
-    frames = []
-    black_counter = 0
+        ## => SPLIT GIF INTO FRAMES USING IMAGEMAGICK
+        frames_dir = base_directory + f'/frames_{num}'
+        try:
+            os.mkdir(frames_dir)
+        except :
+            pass
+        split_gif(base_directory, original_filename, frames_dir) # all frames in the folder ./frames
+        frames = []
+        black_counter = 0
+        
+        # list all frames 
+        files = glob.glob(frames_dir+"/*.png")
+        for num, filename in enumerate(files):
+            original_img = Image.open(filename)
+            frames.append(original_img)
+
+        ## => CREATE NEW GIF
+        if len(frames)>1:
+            frames[0].save(f"{base_directory}\\fixed\\{original_filename.split('.')[0]}.gif", save_all=True, append_images=frames[1:], optimize=True, duration=40, loop=0, disposal=2)
+        else:
+            with open(base_directory+"\\logfile.txt", "a") as f:
+                f.write(f"{original_filename}       NO FRAMES\n")
+            print("No frames: ", original_filename)
+        if black_counter != 0:
+            with open(base_directory+"\\logfile.txt", "a") as f:
+                f.write(f"{original_filename} {black_counter}\n")
+    except:
+        with open(base_directory+"\\logfile.txt", "a") as f:
+            f.write(f"{original_filename}       CORRUPTED\n")
+        print("Corrupted: ", original_filename)    
     
-    # list all frames 
-    files = [f for f in os.listdir(base_directory+"\\frames\\") if f.endswith(".png")]
-    for num, filename in enumerate(files):
-        original_img = Image.open(base_directory+"\\frames\\"+filename)
-        frames.append(original_img)
+    ## => CLEAN UP
+    def on_rm_error( func, path, exc_info):
+        # path contains the path of the file that couldn't be removed
+        # let's just assume that it's read-only and unlink it.
+        os.chmod( path, stat.S_IWRITE )
+        os.unlink( path )
 
-    ## => CREATE NEW GIF
-    if len(frames)>1:
-        frames[0].save(f"{base_directory}\\fixed\\{original_filename.split('.')[0]}.gif", save_all=True, append_images=frames[1:], optimize=True, duration=40, loop=0, disposal=2)
-    else:
-        with open(base_directory+"\\logfile.txt", "a") as f:
-            f.write(f"{original_filename}       NO FRAMES\n")
-        print("No frames: ", original_filename)
-    if black_counter != 0:
-        with open(base_directory+"\\logfile.txt", "a") as f:
-            f.write(f"{original_filename} {black_counter}\n")
+    shutil.rmtree( frames_dir, onerror = on_rm_error )
 
-if __name__ == '__main__':
-    BASE_DIRECTORY = "D:\\Programmazione\\Fiverr\\andychand400 v2\\gifs\\clear"
+async def main():
+    BASE_DIRECTORY = "D:/Programmazione/Fiverr/whosthatpokemon/gifs/clear"
     files = [f for f in os.listdir(BASE_DIRECTORY+"") if f.endswith(".gif")]
-    black_gifs = os.listdir(BASE_DIRECTORY+"\\fixed\\") 
+    loop = asyncio.get_event_loop()
+    t = []
 
     for num, file in enumerate(files):
-        if not file in black_gifs:
-            try:
-                convert_gif(file, BASE_DIRECTORY)
-                print(f"{num}. Converted {file}")
-            except:
-                with open(BASE_DIRECTORY+"\\logfile.txt", "a") as f:
-                    f.write(f"{file}       CORRUPTED\n")
+        e = loop.run_in_executor(None, convert_gif,file, BASE_DIRECTORY, num)
+        t.append(e)
+    
+    while t:
+        await asyncio.sleep(0.5)
+        t = [task for task in t if not task.done()]
+        print(f"{len(t)} tasks remaining")
+
+
+if __name__ == '__main__':
+        asyncio.run(main())
