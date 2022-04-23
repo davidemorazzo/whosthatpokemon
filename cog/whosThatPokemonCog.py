@@ -16,6 +16,7 @@ from collections import Counter
 from datetime import datetime, timedelta
 import pandas as pd
 import asyncio
+from dateutil import parser
 
 from database import (
     botGuilds, 
@@ -600,14 +601,14 @@ class whosThatPokemon(commands.Cog):
         async def spawn(channel_istance:botChannelIstance, time:datetime):
             try:
                 guild_obj = await self.bot.fetch_guild(channel_istance.guild_id)
-                channel_obj = guild_obj.get_channel(channel_istance.channel_id)
+                channel_obj = await self.bot.fetch_channel(channel_istance.channel_id)
             except:
                 return
             if channel_obj:
                 # Check if there are no wins in the last 10 mins
                 if not channel_istance.last_win_date or\
-                    channel_istance.last_win_date < time - timedelta(minutes=9):
-                    file, embed = self.createQuestion(guild_obj, channel_id=channel_obj.id)
+                    parser.parse(channel_istance.last_win_date) < time - timedelta(minutes=9):
+                    file, embed = await self.createQuestion(guild_obj, channel_id=channel_obj.id)
                     if file:
                         await channel_obj.send(file=file, embed=embed)
 

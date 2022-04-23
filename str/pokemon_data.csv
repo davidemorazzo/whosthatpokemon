@@ -318,7 +318,7 @@ frosmoth,873.0,./gifs/clear/frosmoth.gif,./gifs/blacked/frosmoth.gif,0.0,,mottin
 furfrou-dandy,,./gifs/clear/furfrou-dandy.gif,./gifs/blacked/furfrou-dandy.gif,,,furfrou dandy,furfrou dandy,furfrou dandy,furfrou dandy,furfrou dandy,furfrou dandy,furfrou dandy,furfrou dandy,furfrou dandy
 furfrou-debutante,,./gifs/clear/furfrou-debutante.gif,./gifs/blacked/furfrou-debutante.gif,,,furfrou debutante,furfrou debutante,furfrou debutante,furfrou debutante,furfrou debutante,furfrou debutante,furfrou debutante,furfrou debutante,furfrou debutante
 furfrou-diamond,,./gifs/clear/furfrou-diamond.gif,./gifs/blacked/furfrou-diamond.gif,,,furfrou diamond,furfrou diamond,furfrou diamond,furfrou diamond,furfrou diamond,furfrou diamond,furfrou diamond,furfrou diamond,furfrou diamond
-frufrou-heart,,./gifs/clear/furfrou-heart.gif,./gifs/blacked/furfrou-heart.gif,,,frufrou heart,frufrou heart,frufrou heart,frufrou heart,frufrou heart,frufrou heart,frufrou heart,frufrou heart,frufrou heart
+furfrou-heart,,./gifs/clear/furfrou-heart.gif,./gifs/blacked/furfrou-heart.gif,,,furfrou heart,furfrou heart,furfrou heart,furfrou heart,furfrou heart,furfrou heart,furfrou heart,furfrou heart,furfrou heart
 furfrou-kabuki,,./gifs/clear/furfrou-kabuki.gif,./gifs/blacked/furfrou-kabuki.gif,,,furfrou kabuki,furfrou kabuki,furfrou kabuki,furfrou kabuki,furfrou kabuki,furfrou kabuki,furfrou kabuki,furfrou kabuki,furfrou kabuki
 furfrou-le-reine,,./gifs/clear/furfrou-lareine.gif,./gifs/blacked/furfrou-lareine.gif,,,furfrou le reine,furfrou le reine,furfrou le reine,furfrou le reine,furfrou le reine,furfrou le reine,furfrou le reine,furfrou le reine,furfrou le reine
 furfrou-matron,,./gifs/clear/furfrou-matron.gif,./gifs/blacked/furfrou-matron.gif,,,furfrou matron,furfrou matron,furfrou matron,furfrou matron,furfrou matron,furfrou matron,furfrou matron,furfrou matron,furfrou matron
@@ -1050,7 +1050,7 @@ zweilous,634.0,./gifs/clear/zweilous.gif,./gifs/blacked/zweilous.gif,0.0,unova,d
 zygarde-10%-forme,,./gifs/clear/zygarde-10.gif,./gifs/blacked/zygarde-10.gif,,,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme,zygarde 10% forme
 zygarde-complete-forme,,./gifs/clear/zygarde-complete.gif,./gifs/blacked/zygarde-complete.gif,,,zygarde complete forme,zygarde complete forme,zygarde complete forme,zygarde complete forme,zygarde complete forme,zygarde complete forme,zygarde complete forme,zygarde complete forme,zygarde complete forme
 zygarde,,./gifs/clear/zygarde.gif,./gifs/blacked/zygarde.gif,,,zygarde,zygarde,ジガルデ,지가르데,基格尔德,zygarde,zygarde,zygarde,zygarde
-furfrou-natural,,,,,,furfrou natural,furfrou natural,furfrou natural,furfrou natural,furfrou natural,furfrou natural,furfrou natural,furfrou natural,furfrou natural
+furfrou,,./gifs/clear/furfrou.gif,./gifs/blacked/furfrou.gif,,,furfrou,furfrou,furfrou,furfrou,furfrou,furfrou,furfrou,furfrou,furfrou
 zygarde-50%-forme,,,,,,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme,zygarde 50% forme
 lycanroc-midday,,,,,,lycanroc midday,lycanroc midday,lycanroc midday,lycanroc midday,lycanroc midday,lycanroc midday,lycanroc midday,lycanroc midday,lycanroc midday
 wishiwashi-solo-form,,,,,,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form,wishiwashi solo form
@@ -1066,3 +1066,27 @@ charizard-y-mega,,./gifs/clear/charizard-megay.gif,./gifs/blacked/charizard-mega
 charizard-x-mega,,./gifs/clear/charizard-megax.gif,./gifs/blacked/charizard-megax.gif,,mega,charizard x mega,charizard x mega,charizard x mega,charizard x mega,charizard x mega,charizard x mega,charizard x mega,charizard x mega,charizard x mega
 mewtwo-y-mega,,./gifs/clear/mewtwo-megay.gif,./gifs/blacked/mewtwo-megay.gif,,mega,mewtwo y mega,mewtwo y mega,mewtwo y mega,mewtwo y mega,mewtwo y mega,mewtwo y mega,mewtwo y mega,mewtwo y mega,mewtwo y mega
 mewtwo-x-mega,,./gifs/clear/mewtwo-megax.gif,./gifs/blacked/mewtwo-megay.gif,,mega,mewtwo x mega,mewtwo x mega,mewtwo x mega,mewtwo x mega,mewtwo x mega,mewtwo x mega,mewtwo x mega,mewtwo x mega,mewtwo x mega
+unown-alpha,,./gifs/clear/unown-alpha.gif,./gifs/blacked/unown-alpha.gif,,,unown alpha,unown alpha,unown alpha,unown alpha,unown alpha,unown alpha,unown alpha,unown alpha,unown alpha
+unown-bravo,,./gifs/clear/unown-bravo.gif,./gifs/blacked/unown-bravo.gif,,,unown bravo,unown bravo,unown bravo,unown bravo,unown bravo,unown bravo,unown bravo,unown bravo,unown bravo
+unown-charlie,,./gifs/clear/unown-charlie.gif,./gifs/blacked/unown-charlie.gif,,,unown charlie,unown charlie,unown charlie,unown charlie,unown charlie,unown charlie,unown charlie,unown charlie,unown charlie
+unown-delta,,./gifs/clear/unown-delta.gif,./gifs/blacked/unown-delta.gif,,,unown delta,unown delta,unown delta,unown delta,unown delta,unown delta,unown delta,unown delta,unown delta
+unown-echo,,./gifs/clear/unown-echo.gif,./gifs/blacked/unown-echo.gif,,,unown echo,unown echo,unown echo,unown echo,unown echo,unown echo,unown echo,unown echo,unown echo
+unown-exclamation,,./gifs/clear/unown-exclamation.gif,./gifs/blacked/unown-exclamation.gif,,,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation
+unown-foxtrot,,./gifs/clear/unown-foxtrot.gif,./gifs/blacked/unown-foxtrot.gif,,,unown foxtrot,unown foxtrot,unown foxtrot,unown foxtrot,unown foxtrot,unown foxtrot,unown foxtrot,unown foxtrot,unown foxtrot
+unown-golf,,./gifs/clear/unown-golf.gif,./gifs/blacked/unown-golf.gif,,,unown golf,unown golf,unown golf,unown golf,unown golf,unown golf,unown golf,unown golf,unown golf
+unown-interrogation,,./gifs/clear/unown-interrogation.gif,./gifs/blacked/unown-interrogation.gif,,,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation
+unown-juliet,,./gifs/clear/unown-juliet.gif,./gifs/blacked/unown-juliet.gif,,,unown juliet,unown juliet,unown juliet,unown juliet,unown juliet,unown juliet,unown juliet,unown juliet,unown juliet
+unown-kilo,,./gifs/clear/unown-kilo.gif,./gifs/blacked/unown-kilo.gif,,,unown kilo,unown kilo,unown kilo,unown kilo,unown kilo,unown kilo,unown kilo,unown kilo,unown kilo
+unown-lima,,./gifs/clear/unown-lima.gif,./gifs/blacked/unown-lima.gif,,,unown lima,unown lima,unown lima,unown lima,unown lima,unown lima,unown lima,unown lima,unown lima
+unown-mike,,./gifs/clear/unown-mike.gif,./gifs/blacked/unown-mike.gif,,,unown mike,unown mike,unown mike,unown mike,unown mike,unown mike,unown mike,unown mike,unown mike
+unown-november,,./gifs/clear/unown-november.gif,./gifs/blacked/unown-november.gif,,,unown november,unown november,unown november,unown november,unown november,unown november,unown november,unown november,unown november
+unown-oscar,,./gifs/clear/unown-oscar.gif,./gifs/blacked/unown-oscar.gif,,,unown oscar,unown oscar,unown oscar,unown oscar,unown oscar,unown oscar,unown oscar,unown oscar,unown oscar
+unown-papa,,./gifs/clear/unown-papa.gif,./gifs/blacked/unown-papa.gif,,,unown papa,unown papa,unown papa,unown papa,unown papa,unown papa,unown papa,unown papa,unown papa
+unown-quebec,,./gifs/clear/unown-quebec.gif,./gifs/blacked/unown-quebec.gif,,,unown quebec,unown quebec,unown quebec,unown quebec,unown quebec,unown quebec,unown quebec,unown quebec,unown quebec
+unown-romeo,,./gifs/clear/unown-romeo.gif,./gifs/blacked/unown-romeo.gif,,,unown romeo,unown romeo,unown romeo,unown romeo,unown romeo,unown romeo,unown romeo,unown romeo,unown romeo
+unown-sierra,,./gifs/clear/unown-sierra.gif,./gifs/blacked/unown-sierra.gif,,,unown sierra,unown sierra,unown sierra,unown sierra,unown sierra,unown sierra,unown sierra,unown sierra,unown sierra
+unown-tango,,./gifs/clear/unown-tango.gif,./gifs/blacked/unown-tango.gif,,,unown tango,unown tango,unown tango,unown tango,unown tango,unown tango,unown tango,unown tango,unown tango
+unown-uniform,,./gifs/clear/unown-uniform.gif,./gifs/blacked/unown-uniform.gif,,,unown uniform,unown uniform,unown uniform,unown uniform,unown uniform,unown uniform,unown uniform,unown uniform,unown uniform
+unown-xray,,./gifs/clear/unown-xray.gif,./gifs/blacked/unown-xray.gif,,,unown xray,unown xray,unown xray,unown xray,unown xray,unown xray,unown xray,unown xray,unown xray
+unown-yankee,,./gifs/clear/unown-yankee.gif,./gifs/blacked/unown-yankee.gif,,,unown yankee,unown yankee,unown yankee,unown yankee,unown yankee,unown yankee,unown yankee,unown yankee,unown yankee
+unown-zulu,,./gifs/clear/unown-zulu.gif,./gifs/blacked/unown-zulu.gif,,,unown zulu,unown zulu,unown zulu,unown zulu,unown zulu,unown zulu,unown zulu,unown zulu,unown zulu
