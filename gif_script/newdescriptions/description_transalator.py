@@ -26,7 +26,7 @@ async def main():
 		t = [i for i in t if i.done()==False]
 	
 	await asyncio.sleep(1)
-	description_df.to_csv('str/strings.csv')
+	description_df.to_csv('str/descriptions.csv')
 	pass
 	
 

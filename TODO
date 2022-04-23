@@ -9,12 +9,6 @@ TODO add command Wtp!shinyrecord or /shinyrecord This will show what shiny Poké
 
 
 TODO Check patreon verification
-TODO GIFS DATABASE
-	X Save descriptions into a dataframe and try to parse the pokemon of correspondance
-	X All the new gifs don't have the black version
-	X Integrate the pokemon_data.csv with all the new pokemons
-	X create another csv file only for descriptions with all the languages
-	- add all of the unowns (A,B,C,D...)
 	
 
 
@@ -22,13 +16,19 @@ TODO GIFS DATABASE
 ----------------------------------------------------------
 # ANCHOR TO BE TESTED
 
-TODO test the pokemon database for index and gif path
 TODO accept answer also without the attribute gmax, galar ...
+TODO GIFS DATABASE
+	X Save descriptions into a dataframe and try to parse the pokemon of correspondance
+	X All the new gifs don't have the black version
+	X Integrate the pokemon_data.csv with all the new pokemons
+	X create another csv file only for descriptions with all the languages
+	X add all of the unowns (A,B,C,D...)
 
 
 
 ----------------------------------------------------------
 # ANCHOR DONE
+- test the pokemon database for index and gif path
 - Pokémon to spawn every 10 minutes
 - I would like double points option for individual users for patreons
 - Generation selection only for patreons
