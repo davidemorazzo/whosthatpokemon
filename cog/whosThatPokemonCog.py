@@ -73,7 +73,7 @@ class whosThatPokemon(commands.Cog):
                         '日本':'jp', 
                         '简体中文':'zh'}
         self.strings = string_translator('./str/strings.csv', self.async_session)
-        self.pokemon_spawn.start()
+        # self.pokemon_spawn.start()
 
     def embedText(self, text):
         text = text.replace('"', '\"').replace("'", "\'")
