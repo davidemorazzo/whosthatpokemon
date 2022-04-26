@@ -1,12 +1,8 @@
 # folders
-base_gifs/
 .vscode/
 __pycache__/
-gifs/original/
 pycord-env/
 
 # files
-copyHerokuDB.BAT
 profiling/logs.csv
 discord.log
-upgradePycord.BAT
