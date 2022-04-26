@@ -4,7 +4,7 @@ from database import botGuilds
 
 class GenButtons(discord.ui.View):
     def __init__(self, poke_cog, active_gens, guild_id, lang_id:str):
-        super().__init__(timeout=60)
+        super().__init__(timeout=None)
         self.poke_cog = poke_cog
         self.string_db = poke_cog.strings
         self.active_gens = active_gens

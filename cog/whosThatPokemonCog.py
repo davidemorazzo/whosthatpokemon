@@ -340,8 +340,8 @@ class whosThatPokemon(commands.Cog):
                     currentUser = newUser
                 ## => INCREASE POINTS
                 pointsToAdd = 1
-                #if guildInfo.patreon:
-                #    pointsToAdd = 2
+                if guildInfo.patreon:
+                    pointsToAdd = 2
                 currentUser.points = currentUser.points + pointsToAdd #global points
                 currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
@@ -588,7 +588,7 @@ class whosThatPokemon(commands.Cog):
     
 
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=10)
     async def pokemon_spawn(self):
         async with self.async_session() as session:
             stmt = select(botChannelIstance

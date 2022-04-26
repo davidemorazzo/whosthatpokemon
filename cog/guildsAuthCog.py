@@ -29,7 +29,7 @@ class guildsAuthCog(commands.Cog):
         self.async_session = sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
         self.color = Colour.red()
-        # self.verification.start()
+        self.verification.start()
         self.free_period = True
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
@@ -64,7 +64,12 @@ class guildsAuthCog(commands.Cog):
                 if not patreon.discord_id in patreons_dict.keys():
                     ## => USER IS NOT A PATREON ANYMORE
                     await session.delete(patreon)
+                elif patreons_dict[patreon.discord_id]['declined_since'] == 'None':
+                    ## => USER HAS BEEN DECLINED
+                    await session.delete(patreon)
+                    patreons_dict.pop(patreon.discord_id)
                 else:
+                    # Check if patreon is not declined
                     patreons_dict.pop(patreon.discord_id)
             
             ## => ADD NEW PATREONS
@@ -162,13 +167,13 @@ class guildsAuthCog(commands.Cog):
                             guild.patreon = True
                             guild.patreon_discord_id = None
             
-            # Check all the guilds in a async way
-            await asyncio.gather(*map(activate_guild, guilds))
-            await session.commit()
+                # Check all the guilds in a async way
+                await asyncio.gather(*map(activate_guild, guilds))
+                await session.commit()
 
         toc = datetime.now()
         delta = toc-tic
-        self.logger.debug("Verification executed in: ", delta)
+        self.logger.debug(f"Verification executed in: {str(delta)}")
 
     @slash_command(name = "help", description="Show this message")
     async def help(self, ctx:discord.ApplicationContext):

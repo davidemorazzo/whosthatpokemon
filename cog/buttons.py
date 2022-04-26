@@ -25,7 +25,7 @@ class FourButtons(discord.ui.View):
         # Check cooldown for spicific messages or for the channel
         if self.poke_cog.cooldown.is_on_cooldown(interaction.channel_id,
                                                 btn_name,
-                                                60):
+                                                30):
             self.logger.debug(f"{interaction.message.id}/{interaction.custom_id} on cooldown")
             string = await self.string_db.get('btn_cooldown', interaction.guild_id)
             await interaction.response.send_message(embed=self.poke_cog.embedText(string), ephemeral=True)

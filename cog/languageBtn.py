@@ -4,7 +4,7 @@ from database import botGuilds
 
 class LangButtons(discord.ui.View):
     def __init__(self, poke_cog, guild_id, lang_id:str):
-        super().__init__(timeout=60)
+        super().__init__(timeout=None)
         self.poke_cog = poke_cog
         self.langs = poke_cog.languages
         self.add_item(Dropdown(self.poke_cog, self.langs, guild_id, lang_id))
