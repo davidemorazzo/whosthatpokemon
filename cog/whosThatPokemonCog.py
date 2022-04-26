@@ -90,9 +90,12 @@ class whosThatPokemon(commands.Cog):
         compare = lambda x, y: Counter(x)==Counter(y)
 
         # Get solution in 'en' and the guild language
-        en_solution = self.pokedexDataFrame.loc[solution,'en']
-        translated_solution = self.pokedexDataFrame.loc[solution, language_id]
-        
+        try:
+            en_solution = self.pokedexDataFrame.loc[solution,'en']
+            translated_solution = self.pokedexDataFrame.loc[solution, language_id]
+        except:
+            return False
+
         ## => DECIDE IF THE GUESS IS CORRECT
         identifiers = ['gigantamax', 'galar', 'alola', 'mega', 'x', 'y', 'forme', 'style']
         no_ident = en_solution.split(' ')
