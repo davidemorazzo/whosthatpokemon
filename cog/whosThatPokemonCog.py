@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 from discord import Embed, File, Colour
 from discord.commands import slash_command, Option, permissions
+from discord.ext.commands import Cooldown, CooldownMapping, BucketType
 
 import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -394,7 +395,9 @@ class whosThatPokemon(commands.Cog):
                 
         # await self.bot.process_commands(message)
     
-    @slash_command(name="start", description="Start guessing a pokémon")
+    @slash_command(name="start", 
+                    description="Start guessing a pokémon",
+                    cooldown=CooldownMapping(Cooldown(1, 30), BucketType.channel))
     async def startGuess(self, ctx):
         ## => CHECK IF ALREADY STARTED
         async with self.async_session() as session:
@@ -415,7 +418,8 @@ class whosThatPokemon(commands.Cog):
         
         ## => GET NEW POKEMON
         file, embed = await self.createQuestion(ctx.guild, channel_id=str(ctx.channel.id))
-        await ctx.send_response(file=file, embed=embed, view=FourButtons(self))
+        lang_id = await self.get_guild_lang(ctx.guild.id)
+        await ctx.send_response(file=file, embed=embed, view=FourButtons(self, lang_id))
             
 
     @slash_command(name="stop", description="Stop guessing a pokémon")
@@ -478,7 +482,7 @@ class whosThatPokemon(commands.Cog):
         
         language_id = await self.get_guild_lang(guild_id)
         description = self.descriptionDataFrame.loc[raw_solution][language_id]
-        if description.strip() != "":
+        if pd.notna(description) and description.strip() != "":
             clearEmbed = Embed(color=self.color)
             clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
             clearEmbed.description = description
@@ -504,7 +508,8 @@ class whosThatPokemon(commands.Cog):
         ## => SEND PREVIOUS SOLUTION
         await ctx.defer()
         solution_embed, clear_thumb = await self.solution_embed(ctx.guild_id, ctx.channel_id)
-        await ctx.respond(file=clear_thumb, embed=solution_embed)
+        if solution_embed:
+            await ctx.respond(file=clear_thumb, embed=solution_embed)
 
         file, embed = await self.createQuestion(ctx.guild, skip=True, channel_id=str(ctx.channel.id))
         if not file:

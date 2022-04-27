@@ -16,6 +16,7 @@ class FourButtons(discord.ui.View):
         self.rank_btn_label = self.string_db.s_get('lrank_btn', lang_id)
         self.global_rank_btn_label = self.string_db.s_get('grank_btn', lang_id)
         # Assign to buttons labels
+        self.lang_id = lang_id
         self.children[0].label = self.hint_btn_label
         self.children[1].label = self.skip_btn_label
         self.children[2].label = self.rank_btn_label
