@@ -626,3 +626,13 @@ class whosThatPokemon(commands.Cog):
         for channel in channels:
             asyncio.create_task(spawn(channel, now))
         self.logger.debug('Spawning pokemon tasks running')
+    
+    @commands.command(aliases=['start', 'skip', 'hint', 'stop', 'rank'])
+    async def old_command(self, ctx):
+        """
+        This command is deprecated. Use the slash commands instead.
+        """
+        string = "This command is deprecated. Use the slash commands instead. To enable them click on this link to add the permission to the bot.\
+            https://discord.com/oauth2/authorize?client_id=866987691631575060&permissions=117760&scope=bot%20applications.commands"
+        embed = self.embedText(string)
+        await ctx.send(embed=embed)
