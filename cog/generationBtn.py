@@ -8,6 +8,7 @@ class GenButtons(discord.ui.View):
         self.poke_cog = poke_cog
         self.string_db = poke_cog.strings
         self.active_gens = active_gens
+        self.lang_id = lang_id
         self.add_item(Dropdown(self.poke_cog, active_gens, guild_id, lang_id))
 
 
@@ -16,6 +17,7 @@ class Dropdown(discord.ui.Select):
         self.poke_cog = poke_cog
         self.active_gens = active_gens
         self.guild_id = guild_id
+        self.lang_id = lang_id
         # Set the options that will be presented inside the dropdown
         generations = list(self.poke_cog.pokemonGenerations.keys())
         options = [
@@ -47,7 +49,7 @@ class Dropdown(discord.ui.Select):
             guildInfo.poke_generation = selection_string
             await session.commit()
         
-        string = await self.poke_cog.strings.get('generation_ok', self.guild_id)
+        string = self.poke_cog.strings.s_get('generation_ok', self.lang_id)
         embed = self.poke_cog.embedText(string)
         await interaction.response.edit_message(
                                     embed = embed, 

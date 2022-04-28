@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 from discord import Embed, File, Colour
-from discord.commands import slash_command, Option, permissions
+from discord.commands import slash_command, Option
 from discord.ext.commands import Cooldown, CooldownMapping, BucketType
 
 import sqlalchemy
@@ -89,42 +89,21 @@ class whosThatPokemon(commands.Cog):
         """
 
         compare = lambda x, y: Counter(x)==Counter(y)
-
         # Get solution in 'en' and the guild language
         try:
             en_solution = self.pokedexDataFrame.loc[solution,'en']
             translated_solution = self.pokedexDataFrame.loc[solution, language_id]
         except:
             return False
-
         ## => DECIDE IF THE GUESS IS CORRECT
         identifiers = ['gigantamax', 'galar', 'alola', 'mega', 'x', 'y', 'forme', 'style']
         no_ident = en_solution.split(' ')
         no_ident = [word for word in no_ident if word not in identifiers]
-        # no_ident = en_solution.replace('gigantamax', ''
-        #                     ).replace('galar', ''
-        #                     ).replace('alola', ''
-        #                     ).replace('mega', ''
-        #                     ).replace('x', ''
-        #                     ).replace('y', ''
-        #                     ).replace('forme', ''
-        #                     ).split(' ')
         en_solution = en_solution.lower().strip().split(' ')
         translated_solution = translated_solution.lower().strip().split(' ')
+        first_word = en_solution[0]
         wordGuess = guess.lower().split(' ')
         # No identifiers solution is also valid
-        
-        
-        ## => REPLACE IDENTIFIERS
-        # if "y" in wordGuess and "mega" in wordGuess:
-        #     wordGuess.remove("mega")
-        #     wordGuess.remove("y")
-        #     wordGuess.append("megay")
-        # if "x" in wordGuess and "mega" in wordGuess:
-        #     wordGuess.remove("mega")
-        #     wordGuess.remove("x")
-        #     wordGuess.append("megax")
-        
         if "gmax" in wordGuess:
             wordGuess.remove("gmax")
             wordGuess.append("gigantamax")   
@@ -134,20 +113,20 @@ class whosThatPokemon(commands.Cog):
         if "alolan" in wordGuess:
             wordGuess.remove("alolan")
             wordGuess.append("alola")
-
         ## => FINAL COMPARISON
         result = compare(en_solution, wordGuess) or \
                 compare(translated_solution, wordGuess) or \
-                compare(no_ident, wordGuess)
+                compare(no_ident, wordGuess) or \
+                compare(first_word, wordGuess)
 
         return result
 
-    async def get_guild_lang(self, guild_id) -> str:
+    async def get_guild_lang(self, channel_id:int) -> str:
         """
         Return the guild language ID
         """
         async with self.async_session() as session:
-            stmt = select(botGuilds.language).where(botGuilds.guild_id == str(guild_id))
+            stmt = select(botChannelIstance.language).where(botChannelIstance.channel_id == str(channel_id))
             result = await session.execute(stmt)
             language = result.scalars().first()
             return language
@@ -182,19 +161,18 @@ class whosThatPokemon(commands.Cog):
         return gifList
             
     async def createQuestion(self, guild:discord.Guild, skip=False, channel_id:int=None) -> tuple:
-        async with self.async_session() as session:
-            p = BaseProfiler("createQuestion")
+        # async with self.async_session() as session:
+            # p = BaseProfiler("createQuestion")
             # get guild patreon tier
-            query = await session.execute(select(botGuilds.guild_id, patreonUsers.tier
-                        ).join(patreonUsers, patreonUsers.discord_id == botGuilds.patreon_discord_id
-                        ).filter(botGuilds.guild_id == str(guild.id)))
+            # query = await session.execute(select(botGuilds.guild_id, patreonUsers.tier
+            #             ).join(patreonUsers, patreonUsers.discord_id == botGuilds.patreon_discord_id
+            #             ).filter(botGuilds.guild_id == str(guild.id)))
 	        
-            r = query.first()
-            if r:
-                guildTier = r[1]
-            else:
-                guildTier = 0
-            await session.close()
+            # r = query.first()
+            # if r:
+            #     guildTier = r[1]
+            # else:
+            #     guildTier = 0
 
         availableGifs = await self.getGuildGifList(guild)
         if availableGifs:
@@ -202,7 +180,7 @@ class whosThatPokemon(commands.Cog):
             ## => SEND EMBED
             embed = Embed(color=self.color)
             embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar.url)
-            embed.description = await self.strings.get('question', guild.id)
+            embed.description = await self.strings.get('question', channel_id)
             thumb = File(self.pokedexDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
             embed.set_thumbnail(url="attachment://gif.gif")
             
@@ -224,29 +202,31 @@ class whosThatPokemon(commands.Cog):
     
     async def getHint(self, guild_id, channel_id):
         ## => CREATE HINT EMBED
+        strings = await self.strings.get_batch(['not_guessing', 'hint'], channel_id)
         async with self.async_session() as session:
-            thisGuild = await GetChannelIstance(session,guild_id, channel_id)
-            strings = await self.strings.get_batch(['not_guessing', 'hint'], guild_id)
+            channel = await GetChannelIstance(session,guild_id, channel_id)
+            lang_id = channel.language
 
-            if not thisGuild or not thisGuild.guessing:
-                embed=self.embedText(strings[0])
-                return embed
+        if not channel or not channel.guessing:
+            embed=self.embedText(strings[0])
+            return embed
+        else:
+            ## => SCRAMBLE THE SOLUTION
+            raw_solution = channel.current_pokemon
+            solution = self.pokedexDataFrame.loc[raw_solution, lang_id]
+            solution = list(solution)
+            if len(solution) <= 3:
+                scrambled = "_ _ _"
             else:
-                ## => SCRAMBLE THE SOLUTION
-                solution = list(thisGuild.current_pokemon)
-                if len(solution) <= 3:
-                    scrambled = "_ _ _"
-                else:
-                    for i in range(0,len(solution)):
-                        if i%2 == 1:
-                            solution[i] = '~'
-
-                # shuffle(solution)
-                scrambled = ''.join(solution).replace("-", " ")
-                embed = self.embedText(f"{strings[1]} {scrambled}")
-                return embed
+                for i in range(0,len(solution)):
+                    if i%2 == 1:
+                        if solution[i] != ' ':
+                            solution[i] = '\_'
+            scrambled = ''.join(solution).replace("-", " ")
+            embed = self.embedText(f"{strings[1]} {scrambled}")
+            return embed
     
-    async def getRank(self, global_flag, number, guild_id):
+    async def getRank(self, global_flag, number, guild_id, channel_id):
         p = BaseProfiler("getRank")
         ## => SQL QUERY
         async with self.async_session() as session:
@@ -259,33 +239,31 @@ class whosThatPokemon(commands.Cog):
             else:
                 res = await session.execute(select(userPoints).filter_by(guild_id=str(guild_id)).order_by(desc(userPoints.points_from_reset)).limit(2*number))
                 users = res.scalars().fetchall()
-            ## => FORMAT TEXT
-            num = 0 
-            text = ''
-            for user in users:
-                ## => GET IF USERNAME IS IN DB, OTHERWISE FETCH FROM API
-                if user.username != None:
-                    username = user.username
-                else:
-                    try:
-                        user_obj = await self.bot.fetch_user(int(user.user_id))
-                        username = user_obj.name
-                    except :
-                        username = None
-
-                if username: # if username not founded => not added to the leaderboard
-                    string = await self.strings.get('win_count', guild_id)
-                    if global_flag:
-                        text = text + f"#{num+1} {username} | {string}: {user[2]}\n"
-                    else:
-                        text = text + f"#{num+1} {username} | {string}: {user.points_from_reset}\n"
-                    
-                    num = num + 1
-                
-                ## => STOP AT REQUESTED ENTRIES REACHED
-                if num >= number:
-                    break
         
+        ## => FORMAT TEXT
+        num = 0 
+        text = ''
+        for user in users:
+            ## => GET IF USERNAME IS IN DB, OTHERWISE FETCH FROM API
+            if user.username != None:
+                username = user.username
+            else:
+                try:
+                    user_obj = await self.bot.fetch_user(int(user.user_id))
+                    username = user_obj.name
+                except :
+                    username = None
+            if username: # if username not founded => not added to the leaderboard
+                string = await self.strings.get('win_count', channel_id)
+                if global_flag:
+                    text = text + f"#{num+1} {username} | {string}: {user[2]}\n"
+                else:
+                    text = text + f"#{num+1} {username} | {string}: {user.points_from_reset}\n"
+                
+                num = num + 1
+            ## => STOP AT REQUESTED ENTRIES REACHED
+            if num >= number:
+                break
         if text == '':
             text = '.'
         return text
@@ -299,7 +277,7 @@ class whosThatPokemon(commands.Cog):
             return True
         else:
             await ctx.delete()
-            string = await self.strings.get('only_admin', ctx.guild.id)
+            string = await self.strings.get('only_admin', ctx.channel_id)
             raise commands.errors.NotOwner(string)
 	
     @commands.Cog.listener()
@@ -365,15 +343,16 @@ class whosThatPokemon(commands.Cog):
                 await session.commit()
 
             # Get description and strings in the correct language
-            language_id = await self.get_guild_lang(message.guild.id)
+            language_id = await self.get_guild_lang(message.channel.id)
             description = self.descriptionDataFrame.loc[raw_solution][language_id]
-            t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks'], message.guild.id)
-            correct_s, points_s, server_s, global_s, ranks_s = t
-            
+            t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks', 'it_is'], message.channel.id)
+            correct_s, points_s, server_s, global_s, ranks_s, it_is = t
+            translated_solution = self.pokedexDataFrame.loc[raw_solution][language_id]
             # Create and send response embed
             embed = Embed(color=self.color)
             embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
             embed.description = f"{message.author.mention} ** {correct_s} **"
+            embed.description = embed.description + f"\n {it_is} ** {translated_solution} **\n"
             embed.add_field(name=points_s, value=f"``` {server_s}: {serverWins}\n {global_s}: {userGlobalPoints} ```", inline=False)
             embed.set_footer(text=ranks_s)
             if description.strip() != "":
@@ -391,7 +370,7 @@ class whosThatPokemon(commands.Cog):
             ## => SEND NEW QUESTION
             if channelIstance.guessing:
                 file, embed = await self.createQuestion(message.guild, channel_id=channelIstance.channel_id)
-                await message.channel.send(file=file, embed=embed, view=FourButtons(self, language_id))
+                await message.channel.send(file=file, embed=embed, view=FourButtons(self))
                 
         # await self.bot.process_commands(message)
     
@@ -411,15 +390,15 @@ class whosThatPokemon(commands.Cog):
                 await session.commit()
 
             elif guildInfo.guessing:
-                string = await self.strings.get('start_error', ctx.guild.id)
+                string = await self.strings.get('start_error', ctx.channel_id)
                 embed = self.embedText(string)
                 await ctx.send_response(embed=embed)
                 return
         
         ## => GET NEW POKEMON
         file, embed = await self.createQuestion(ctx.guild, channel_id=str(ctx.channel.id))
-        lang_id = await self.get_guild_lang(ctx.guild.id)
-        await ctx.send_response(file=file, embed=embed, view=FourButtons(self, lang_id))
+        lang_id = await self.get_guild_lang(ctx.channel.id)
+        await ctx.send_response(file=file, embed=embed, view=FourButtons(self))
             
 
     @slash_command(name="stop", description="Stop guessing a pokémon")
@@ -427,7 +406,7 @@ class whosThatPokemon(commands.Cog):
         ## => UPDATE THE DB
         async with self.async_session() as session:
             thisGuild = await GetChannelIstance(session, ctx.guild.id , ctx.channel.id)
-            t = await self.strings.get_batch(['stop_error', 'stop_ok'], ctx.guild.id)
+            t = await self.strings.get_batch(['stop_error', 'stop_ok'], ctx.channel_id)
             stop_error, stop_ok = t
             
             if not thisGuild:
@@ -459,7 +438,7 @@ class whosThatPokemon(commands.Cog):
             global_flag = False
         number = length
 
-        text = await self.getRank(global_flag, number, ctx.guild.id)
+        text = await self.getRank(global_flag, number, ctx.guild.id, ctx.channel_id)
                    
         ## => SEND EMBED     
         embed = Embed(color=self.color)
@@ -480,7 +459,7 @@ class whosThatPokemon(commands.Cog):
             channelIstance = await GetChannelIstance(session, guild_id, channel_id)
             raw_solution = channelIstance.current_pokemon
         
-        language_id = await self.get_guild_lang(guild_id)
+        language_id = await self.get_guild_lang(channel_id)
         description = self.descriptionDataFrame.loc[raw_solution][language_id]
         if pd.notna(description) and description.strip() != "":
             clearEmbed = Embed(color=self.color)
@@ -498,7 +477,7 @@ class whosThatPokemon(commands.Cog):
         cooldownAmount = 20
         id = ctx.channel_id
         if self.cooldown.is_on_cooldown(id, 'skip_btn', cooldownAmount):
-            string = await self.strings.get('skip_cooldown', ctx.guild.id)
+            string = await self.strings.get('skip_cooldown', ctx.channel_id)
             await ctx.response.send_message(embed=self.embedText(string), ephemeral=True)
             self.logger.debug(f"{id}/skip_btn  ->  on cooldown")
             return
@@ -514,12 +493,12 @@ class whosThatPokemon(commands.Cog):
         file, embed = await self.createQuestion(ctx.guild, skip=True, channel_id=str(ctx.channel.id))
         if not file:
             ## => GUILD NOT GUESSING
-            string = await self.strings.get('skip_error', ctx.guild.id)
+            string = await self.strings.get('skip_error', ctx.channel_id)
             embed = self.embedText(string)
             await ctx.respond(embed=embed)
             return
-        lang_id = await self.get_guild_lang(ctx.guild_id)
-        await ctx.respond(file=file, embed=embed, view=FourButtons(self, lang_id))
+        lang_id = await self.get_guild_lang(ctx.channel_id)
+        await ctx.respond(file=file, embed=embed, view=FourButtons(self))
         
     @slash_command(name="resetrank", 
                     description="Reset to zero the points of this server players. Global points will be kept. Only administrator")
@@ -534,7 +513,7 @@ class whosThatPokemon(commands.Cog):
             for player in guildPlayers:
                 player.points_from_reset = 0
             await session.commit()
-        string = await self.strings.get('reset_ok', ctx.guild.id)
+        string = await self.strings.get('reset_ok', ctx.channel_id)
         embed = self.embedText(string)
         await ctx.send_response(embed=embed)
 
@@ -557,9 +536,9 @@ class whosThatPokemon(commands.Cog):
 
         await self.only_admin(ctx)
         try:
-            await self.is_patreon(ctx.guild.id)
+            await self.is_patreon(ctx.guild_id, ctx.channel_id)
         except:
-            string = await self.strings.get('patreon_error', ctx.guild.id)
+            string = await self.strings.get('patreon_error', ctx.channel_id)
             embed = self.embedText(string)
             await ctx.send_response(embed=embed)
             return
@@ -567,7 +546,7 @@ class whosThatPokemon(commands.Cog):
         view = await self.generationButtons(ctx.guild)
         await ctx.send_response(view=view)
 
-    async def is_patreon(self, guild_id):
+    async def is_patreon(self, guild_id, channel_id):
         """
         Check if the guild is patreon. Used for check
         """
@@ -575,22 +554,22 @@ class whosThatPokemon(commands.Cog):
             guild = await session.execute(select(botGuilds).filter_by(guild_id=str(guild_id)))
             guild = guild.scalars().first()
             if guild.patreon == False:
-                string = await self.strings.get('patreon_error', guild_id)
+                string = await self.strings.get('patreon_error', channel_id)
                 raise Exception(string)
 
     @slash_command(name="selectlanguage",
                  description="Select the language used in the game. Admin only")
-    async def selectLanguage(self, ctx):
+    async def selectLanguage(self, ctx:discord.ApplicationContext):
         await self.only_admin(ctx)
         try:
-            await self.is_patreon(ctx.guild.id)
+            await self.is_patreon(ctx.guild_id, ctx.channel_id)
         except:
-            string = await self.strings.get('patreon_error', ctx.guild.id)
+            string = await self.strings.get('patreon_error', ctx.channel_id)
             embed = self.embedText(string)
             await ctx.send_response(embed=embed)
             return
         
-        lang_id = await self.get_guild_lang(ctx.guild_id)
+        lang_id = await self.get_guild_lang(ctx.channel_id)
         view = LangButtons(self, ctx.guild.id, lang_id)
         await ctx.send_response(view=view)
     
@@ -627,7 +606,7 @@ class whosThatPokemon(commands.Cog):
             asyncio.create_task(spawn(channel, now))
         self.logger.debug('Spawning pokemon tasks running')
     
-    @commands.command(aliases=['start', 'skip', 'hint', 'stop', 'rank'])
+    @commands.command(aliases=['start', 'skip', 'hint', 'stop', 'rank', 'help'])
     async def old_command(self, ctx):
         """
         This command is deprecated. Use the slash commands instead.

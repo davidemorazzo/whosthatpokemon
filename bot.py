@@ -20,25 +20,6 @@ def noDirectMessage(ctx):
         return True
     raise commands.errors.NoPrivateMessage
 
-async def getServerPrefix(bot, message):
-    p = BaseProfiler("getServerPrefix")
-    
-    if message.guild:
-        ## => SERVER MESSAGE
-        prefixes = COMMAND_PREFIX
-        try:
-            serverPrefix = bot.customGuildPrefixes[message.guild.id]
-        except :
-            serverPrefix = None
-        
-        if serverPrefix:
-            prefixes = prefixes + [serverPrefix]
-                
-        return prefixes
-        
-    else:
-        ## => DIRECT MESSAGE
-        return COMMAND_PREFIX
 
 if __name__ == '__main__':
     load_dotenv()
@@ -75,7 +56,7 @@ if __name__ == '__main__':
     intents = discord.Intents.default()
     intents.message_content = True
 
-    bot = commands.AutoShardedBot(command_prefix=getServerPrefix, intents=intents)
+    bot = commands.AutoShardedBot(command_prefix=COMMAND_PREFIX, intents=intents)
     bot.remove_command("help")
     bot.add_cog(guildsAuthCog(bot, os.getenv("PATREON_TOKEN"), os.getenv("PATREON_CREATOR_ID"), engine))
     bot.add_cog(whosThatPokemon(bot, engine, POKEMON_DATAFRAME, POKEMON_DESCRIPTIONS))

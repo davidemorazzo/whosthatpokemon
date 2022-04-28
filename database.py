@@ -56,6 +56,7 @@ class botChannelIstance(Base):
     current_pokemon = Column(String)
     is_guessed = Column(Boolean)
     last_win_date = Column(String)
+    language = Column(String, default='en')
     UniqueConstraint(guild_id, channel_id)
 
 

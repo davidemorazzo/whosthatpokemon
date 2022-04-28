@@ -9,7 +9,13 @@ TODO add command Wtp!shinyrecord or /shinyrecord This will show what shiny Poké
 
 
 TODO Check patreon verification
-	
+
+ANCHOR bug to fix
+FIXME gigantamax snorlax
+FIXME unown letters to normal letters
+FIXME guess is correct without modifiers
+FIXME mr.rime possible mixup with mr.mime
+FIXME memory excess???	
 
 
 
@@ -36,3 +42,8 @@ TODO GIFS DATABASE
 - Different languages free option where they can select which language of the bot they'd like to use (Only admin and owner). The bot 
 	accepts answers in multiple languages
 - Please disable the one time click for the buttons please so only is the cooldown timer that we are using to prevent people from spamming.
+
+- buttons without label, only emoji
+- underscore in hint
+- correct embed layout
+- language different in each channel

@@ -196,7 +196,7 @@ class guildsAuthCog(commands.Cog):
             )
 
         t = await self.strings.get_batch(['activation', 'whitelist', 'free_bot', 'trial_days', 'activation_ok', 'activation_error', 'instructions'], 
-                                ctx.guild.id)
+                                ctx.channel_id)
         activation, whitelist, free_bot, trial_days, activation_ok, activation_error, instructions = t
 
         if ctx.guild.id in self.guildWhiteList:
@@ -245,11 +245,11 @@ class guildsAuthCog(commands.Cog):
             await session.commit()
 
             ## => LOAD PREFIXES IN THE DICTIONARY
-            res = await session.execute(select(botGuilds.guild_id, botGuilds.prefix))
-            serverPrefixes = res.all()
-            for prefix in serverPrefixes:
-                self.bot.customGuildPrefixes[int(prefix.guild_id)] = prefix.prefix
-            self.logger.info('prefixes loaded')
+            # res = await session.execute(select(botGuilds.guild_id, botGuilds.prefix))
+            # serverPrefixes = res.all()
+            # for prefix in serverPrefixes:
+            #     self.bot.customGuildPrefixes[int(prefix.guild_id)] = prefix.prefix
+            # self.logger.info('prefixes loaded')
 
 
 
@@ -264,7 +264,7 @@ class guildsAuthCog(commands.Cog):
         elif isinstance(error, commands.errors.NoPrivateMessage):
             return
         elif isinstance(error, guildNotActive):
-            string = self.strings.get('expired', ctx.guild.id)
+            string = self.strings.get('expired', ctx.channel.id)
             embed = self.embedText(f"{string} {self.patreon_link}")
             await ctx.send(embed = embed)
             self.logger.debug("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)

@@ -1,6 +1,6 @@
 import discord
 from sqlalchemy import select
-from database import botGuilds
+from database import botChannelIstance, botGuilds
 
 class LangButtons(discord.ui.View):
     def __init__(self, poke_cog, guild_id, lang_id:str):
@@ -14,6 +14,7 @@ class Dropdown(discord.ui.Select):
     def __init__(self, poke_cog, langs, guild_id, lang_id:str):
         self.poke_cog = poke_cog
         self.langs = langs
+        self.lang_id = lang_id
         self.guild_id = guild_id
         # Set the options that will be presented inside the dropdown
         options = [
@@ -35,12 +36,12 @@ class Dropdown(discord.ui.Select):
         """
         lang = self.values[0]
         async with self.poke_cog.async_session() as session:
-            guildInfo = await session.execute(select(botGuilds).filter_by(guild_id=str(self.guild_id)))
+            guildInfo = await session.execute(select(botChannelIstance).filter_by(channel_id=str(interaction.channel.id)))
             guildInfo = guildInfo.scalars().first()
             guildInfo.language = lang
             await session.commit()
         
-        string = await self.poke_cog.strings.get('lang_ok', interaction.guild_id)
+        string = self.poke_cog.strings.s_get('lang_ok', lang)
         embed = self.poke_cog.embedText(string)
         await interaction.response.edit_message(
                                     embed = embed, 

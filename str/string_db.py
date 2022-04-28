@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
-from database import botGuilds
+from database import botChannelIstance
 
 class string_translator():
 	def __init__(self, string_db:str, sessionmaker:sessionmaker) -> str:
@@ -14,12 +14,12 @@ class string_translator():
 		"""
 		return str(self.df.loc[id, lang_id])
 	
-	async def get (self, id:str, guild_id:str):
+	async def get (self, id:str, channel_id:str):
 		"""
 		Get a single string given the id
 		"""
 		async with self.a_session() as session:
-			stmt = select(botGuilds).where(botGuilds.guild_id == str(guild_id))
+			stmt = select(botChannelIstance).where(botChannelIstance.channel_id == str(channel_id))
 			result = await session.execute(stmt)
 			guild_info = result.scalars().first()
 			if guild_info:
@@ -27,12 +27,12 @@ class string_translator():
 		
 		return str(self.df.loc[id, language])
 	
-	async def get_batch(self, ids:list, guild_id:str) -> tuple:
+	async def get_batch(self, ids:list, channel_id:str) -> tuple:
 		"""
 		Get a list of strings given a list of ids
 		"""
 		async with self.a_session() as session:
-			stmt = select(botGuilds).where(botGuilds.guild_id == str(guild_id))
+			stmt = select(botChannelIstance).where(botChannelIstance.channel_id == str(channel_id))
 			result = await session.execute(stmt)
 			guild_info = result.scalars().first()
 			if guild_info:
