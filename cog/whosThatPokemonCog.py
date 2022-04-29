@@ -48,10 +48,11 @@ class whosThatPokemon(commands.Cog):
         self.async_session = sqlalchemy.orm.sessionmaker(self.db_engine, expire_on_commit=False, class_=AsyncSession)
         self.color = Colour.red()
         self.pokedexDataFrame = pd.read_csv(data_path, index_col='name')
-        complete_data = self.pokedexDataFrame['clear_path'].notna() & \
-                        self.pokedexDataFrame['blacked_path'].notna() 
-        self.pokedexDataFrame = self.pokedexDataFrame[complete_data]
         self.descriptionDataFrame = pd.read_csv(description_path, index_col='name')
+        complete_data = self.pokedexDataFrame['clear_path'].notna() & \
+                        self.pokedexDataFrame['blacked_path'].notna() & \
+                        self.descriptionDataFrame['en'].notna()
+        self.pokedexDataFrame = self.pokedexDataFrame[complete_data] # take out incomplete data
         self.cooldown = cooldown()
         self.pokemonGenerations = {
             'kanto':'1', 
@@ -101,7 +102,7 @@ class whosThatPokemon(commands.Cog):
         no_ident = [word for word in no_ident if word not in identifiers]
         en_solution = en_solution.lower().strip().split(' ')
         translated_solution = translated_solution.lower().strip().split(' ')
-        first_word = en_solution[0]
+        first_word = [en_solution[0]]
         wordGuess = guess.lower().split(' ')
         # No identifiers solution is also valid
         if "gmax" in wordGuess:
@@ -322,8 +323,8 @@ class whosThatPokemon(commands.Cog):
                     currentUser = newUser
                 ## => INCREASE POINTS
                 pointsToAdd = 1
-                if guildInfo.patreon:
-                    pointsToAdd = 2
+                # if guildInfo.patreon:
+                    # pointsToAdd = 2
                 currentUser.points = currentUser.points + pointsToAdd #global points
                 currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
@@ -351,8 +352,7 @@ class whosThatPokemon(commands.Cog):
             # Create and send response embed
             embed = Embed(color=self.color)
             embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-            embed.description = f"{message.author.mention} ** {correct_s} **"
-            embed.description = embed.description + f"\n {it_is} ** {translated_solution} **\n"
+            embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} **\n"
             embed.add_field(name=points_s, value=f"``` {server_s}: {serverWins}\n {global_s}: {userGlobalPoints} ```", inline=False)
             embed.set_footer(text=ranks_s)
             if description.strip() != "":
