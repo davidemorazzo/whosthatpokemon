@@ -35,6 +35,7 @@ class Dropdown(discord.ui.Select):
         record the selected language in the database
         """
         lang = self.values[0]
+        self.poke_cog.channel_cache[interaction.channel_id] = lang #save in the cache
         async with self.poke_cog.async_session() as session:
             guildInfo = await session.execute(select(botChannelIstance).filter_by(channel_id=str(interaction.channel.id)))
             guildInfo = guildInfo.scalars().first()

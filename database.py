@@ -71,7 +71,7 @@ def init_database(url:String):
     return async_engine
 
 
-async def GetChannelIstance(session, guild_id, ch_id):
+async def GetChannelIstance(session, guild_id, ch_id) -> botChannelIstance:
     result = await session.execute(select(botChannelIstance).filter_by(guild_id=str(guild_id),
                                                                     channel_id=str(ch_id)))
     thisGuild = result.scalars().first()  

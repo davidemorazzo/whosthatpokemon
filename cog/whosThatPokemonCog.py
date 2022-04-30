@@ -66,15 +66,16 @@ class whosThatPokemon(commands.Cog):
             'galar':'j'}
         self.logger = logging.getLogger('discord')
         self.languages = {'English':'en', 
-                        'Français':'fr',
-                        'Español':'es',
-                        'Italiano':'it',
-                        '한국인':'ko',
-                        'Deutsch':'de',
-                        'हिन्दी':'hi', 
-                        '日本':'jp', 
-                        '简体中文':'zh'}
+            'Français':'fr',
+            'Español':'es',
+            'Italiano':'it',
+            '한국인':'ko',
+            'Deutsch':'de',
+            'हिन्दी':'hi', 
+            '日本':'jp', 
+            '简体中文':'zh'}
         self.strings = string_translator('./str/strings.csv', self.async_session)
+        self.channel_cache = {}
         # self.pokemon_spawn.start()
 
     def embedText(self, text):
@@ -129,11 +130,17 @@ class whosThatPokemon(commands.Cog):
         """
         Return the guild language ID
         """
-        async with self.async_session() as session:
-            stmt = select(botChannelIstance.language).where(botChannelIstance.channel_id == str(channel_id))
-            result = await session.execute(stmt)
-            language = result.scalars().first()
-            return language
+        if channel_id in self.channel_cache:
+            # try get from cache
+            return self.channel_cache[channel_id]
+        else:
+            # get from database
+            async with self.async_session() as session:
+                stmt = select(botChannelIstance).where(botChannelIstance.channel_id == str(channel_id))
+                result = await session.execute(stmt)
+                channel_info = result.scalars().first()
+            return channel_info.language
+                
     
     async def getGuildGifList(self, guildObj) -> list:
         """Get list of available gifs for the specified guild. They are chosen by the selected
@@ -165,19 +172,6 @@ class whosThatPokemon(commands.Cog):
         return gifList
             
     async def createQuestion(self, guild:discord.Guild, skip=False, channel_id:int=None) -> tuple:
-        # async with self.async_session() as session:
-            # p = BaseProfiler("createQuestion")
-            # get guild patreon tier
-            # query = await session.execute(select(botGuilds.guild_id, patreonUsers.tier
-            #             ).join(patreonUsers, patreonUsers.discord_id == botGuilds.patreon_discord_id
-            #             ).filter(botGuilds.guild_id == str(guild.id)))
-	        
-            # r = query.first()
-            # if r:
-            #     guildTier = r[1]
-            # else:
-            #     guildTier = 0
-
         availableGifs = await self.getGuildGifList(guild)
         if availableGifs:
             gif_name = choice(availableGifs)
@@ -291,13 +285,12 @@ class whosThatPokemon(commands.Cog):
             return
 
         ## => FETCH GUILD DATA FROM DATABASE
+        if message.channel.id not in self.channel_cache:
+            return 
+
         async with self.async_session() as session:
             channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
-            if not channelIstance:
-                return
             guildInfo = await GetGuildInfo(session, message.guild.id)
-            # if not guildActivation.patreon:
-            #     return
 
         ## => CHECK FOR THE CORRECT SOLUTION
         raw_solution = channelIstance.current_pokemon
@@ -380,37 +373,38 @@ class whosThatPokemon(commands.Cog):
     @slash_command(name="start", 
                     description="Start guessing a pokémon",
                     cooldown=CooldownMapping(Cooldown(1, 30), BucketType.channel))
-    async def startGuess(self, ctx):
+    async def startGuess(self, ctx:discord.ApplicationContext):
         ## => CHECK IF ALREADY STARTED
         async with self.async_session() as session:
-            guildInfo = await GetChannelIstance(session, ctx.guild.id, ctx.channel.id)
-            if not guildInfo:
+            channel_info = await GetChannelIstance(session, ctx.guild.id, ctx.channel.id)
+            if not channel_info:
                 ## => ADD CHANNEL ISTANCE  
-                channelIstance = botChannelIstance(guild_id = str(ctx.guild.id),
+                channel_info = botChannelIstance(guild_id = str(ctx.guild.id),
                                                     channel_id = str(ctx.channel.id),
                                                     guessing = True)
-                session.add(channelIstance)
+                session.add(channel_info)
                 await session.commit()
 
-            elif guildInfo.guessing:
+            elif channel_info.guessing:
                 string = await self.strings.get('start_error', ctx.channel_id)
                 embed = self.embedText(string)
                 await ctx.send_response(embed=embed)
                 return
         
         ## => GET NEW POKEMON
+        self.channel_cache[ctx.channel_id] = channel_info.language #cache the language
         file, embed = await self.createQuestion(ctx.guild, channel_id=str(ctx.channel.id))
-        lang_id = await self.get_guild_lang(ctx.channel.id)
         await ctx.send_response(file=file, embed=embed, view=FourButtons(self))
             
 
     @slash_command(name="stop", description="Stop guessing a pokémon")
-    async def stopGuess(self, ctx):
+    async def stopGuess(self, ctx:discord.ApplicationContext):
         ## => UPDATE THE DB
         async with self.async_session() as session:
             thisGuild = await GetChannelIstance(session, ctx.guild.id , ctx.channel.id)
             t = await self.strings.get_batch(['stop_error', 'stop_ok'], ctx.channel_id)
             stop_error, stop_ok = t
+            del self.channel_cache[ctx.channel_id] #delete channel from cache
             
             if not thisGuild:
                 embed = self.embedText(stop_error)
@@ -618,3 +612,15 @@ class whosThatPokemon(commands.Cog):
             https://discord.com/oauth2/authorize?client_id=866987691631575060&permissions=117760&scope=bot%20applications.commands"
         embed = self.embedText(string)
         await ctx.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await asyncio.sleep(1)
+        async with self.async_session() as session:
+            stmt = select(botChannelIstance.channel_id, botChannelIstance.language
+                    ).where(botChannelIstance.guessing == True)
+            result = await session.execute(stmt)
+            channels = result.all()
+        for channel in channels:
+            self.channel_cache[int(channel.channel_id)] = channel.language
+        self.logger.info('Cached channels')
