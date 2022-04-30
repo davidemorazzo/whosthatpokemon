@@ -1,11 +1,16 @@
 import pandas as pd
 import glob
 import os
+from colorama import init
+init() # init colorama
+from colorama import Fore, Style
 
 gif_folder = 'gifs/'
 pokemon_data = pd.read_csv('str/pokemon_data.csv', index_col='name')
 descriptions = pd.read_csv('str/descriptions.csv', index_col='name')
 VERBOSE = True
+PASS = Fore.GREEN+'--- PASS ---'+Style.RESET_ALL
+FAIL = Fore.RED+'--- FAIL ---'+Style.RESET_ALL
 
 # Name translation missing
 print("## => Name translation test:")
@@ -19,9 +24,9 @@ for lang in ['de','fr','jp','ko','zh','en']:
 		print(f"	- {lang} missing translations: ",missing_transl)
 
 if success:
-	print('--- PASS ---')
+	print(PASS)
 else:
-	print('--- FAIL ---')
+	print(FAIL)
 
 
 # Index matching
@@ -31,11 +36,11 @@ descriptions_idx = set(descriptions.index)
 diff = (pokemon_data_idx - descriptions_idx) | (descriptions_idx - pokemon_data_idx)
 diff = list(diff)
 if len(diff) == 0:
-	print('--- PASS ---')
+	print(PASS)
 else:
-	print('--- FAIL ---')
+	print(FAIL)
 	if VERBOSE:
-		print(f"	MISHMATCHES: {diff}") 
+		print(Fore.YELLOW+f"	MISHMATCHES: {diff}"+Style.RESET_ALL)
 
 
 # Description translation missing:
@@ -46,12 +51,12 @@ for lang in ['de','fr','jp','ko','zh','en']:
 	if len(missing_transl) != 0:
 		success = False
 		if VERBOSE:
-			print(f"	- {lang} missing translations: ",missing_transl)
+			print(Fore.YELLOW+f"	- {lang} missing translations: {missing_transl}" + Style.RESET_ALL)
 
 if success:
-	print('--- PASS ---')
+	print(PASS)
 else:
-	print('--- FAIL ---')
+	print(FAIL)
 
 
 # gifs path matching
@@ -74,12 +79,38 @@ for idx in pokemon_data.index:
 		errors_blacked.add(idx)
 
 if success:
-	print('--- PASS ---')
+	print(PASS)
 else:
 	if VERBOSE:
-		print(f"	FILES NOT FOUND:")
+		print(Fore.YELLOW+f"	FILES NOT FOUND:")
 		print(f"		- clear: {errors_clear}")
 		print('number of errors: ', len(errors_clear))
 		print(f"		- blacked: {errors_blacked}")
 		print('number of errors: ', len(errors_blacked))
-	print('--- FAIL ---')
+		print(Style.RESET_ALL)
+	print(FAIL)
+
+
+# missing gifs 
+print('\n## => Missing gifs test:')
+success = True
+clear_missing = []
+blacked_missing = []
+for idx in pokemon_data.index:
+	if pd.isna(pokemon_data.loc[idx, 'clear_path']):
+		clear_missing.append(idx)
+		success = False
+	if pd.isna(pokemon_data.loc[idx, 'blacked_path']):
+		success = False
+		blacked_missing.append(idx)
+if success:
+	print(PASS)
+else:
+	print(FAIL)
+	if VERBOSE:
+		print(Fore.YELLOW+f"	MISSING GIFS:")
+		print(f"		- clear: {clear_missing}")
+		print('number of errors: ', len(clear_missing))
+		print(f"		- blacked: {blacked_missing}")
+		print('number of errors: ', len(blacked_missing))
+		print(Style.RESET_ALL)

@@ -87,6 +87,7 @@ class whosThatPokemon(commands.Cog):
             - Guild language with identifiers
             - English with identifiers
             - English with no identifiers
+            - English or language first word
         """
 
         compare = lambda x, y: Counter(x)==Counter(y)
@@ -103,6 +104,7 @@ class whosThatPokemon(commands.Cog):
         en_solution = en_solution.lower().strip().split(' ')
         translated_solution = translated_solution.lower().strip().split(' ')
         first_word = [en_solution[0]]
+        translated_first_word = [translated_solution[0]]
         wordGuess = guess.lower().split(' ')
         # No identifiers solution is also valid
         if "gmax" in wordGuess:
@@ -118,7 +120,8 @@ class whosThatPokemon(commands.Cog):
         result = compare(en_solution, wordGuess) or \
                 compare(translated_solution, wordGuess) or \
                 compare(no_ident, wordGuess) or \
-                compare(first_word, wordGuess)
+                compare(first_word, wordGuess) or \
+                compare(translated_first_word, wordGuess)
 
         return result
 
@@ -300,7 +303,7 @@ class whosThatPokemon(commands.Cog):
         raw_solution = channelIstance.current_pokemon
         if not raw_solution or channelIstance.is_guessed:
             return
-        if self.correctGuess(message.content, raw_solution, guildInfo.language):
+        if self.correctGuess(message.content, raw_solution, channelIstance.language):
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
