@@ -418,7 +418,7 @@ hippowdon,450.0,./gifs/clear/hippowdon.gif,./gifs/blacked/hippowdon.gif,0.0,,hip
 hitmonchan,107.0,./gifs/clear/hitmonchan.gif,./gifs/blacked/hitmonchan.gif,0.0,kanto,nockchan,tygnon,エビワラー,홍수몬,快拳郎,hitmonchan,hitmonchan,hitmonchan,hitmonchan
 hitmonlee,106.0,./gifs/clear/hitmonlee.gif,./gifs/blacked/hitmonlee.gif,0.0,kanto,kicklee,kicklee,サワムラー,시라소몬,飛腿郎,hitmonlee,hitmonlee,hitmonlee,hitmonlee
 hitmontop,237.0,./gifs/clear/hitmontop.gif,./gifs/blacked/hitmontop.gif,0.0,johto,kapoera,kapoera,カポエラー,카포에라,戰舞郎,hitmontop,hitmontop,hitmontop,hitmontop
-ho-oh,250.0,./gifs/clear/ho-oh.gif,./gifs/blacked/ho-oh.gif,0.0,johto,ho-oh,ho-oh,ホウオウ,칠색조,鳳王,ho oh,ho oh,ho oh,ho oh
+ho-oh,250.0,./gifs/clear/ho-oh.gif,./gifs/blacked/ho-oh.gif,0.0,johto,ho-oh,ho-oh,ホウオウ,칠색조,鳳王,ho-oh,ho-oh,ho-oh,ho-oh
 honchkrow,430.0,./gifs/clear/honchkrow.gif,./gifs/blacked/honchkrow.gif,0.0,,kramshef,corboss,ドンカラス,돈크로우,烏鴉頭頭,honchkrow,honchkrow,honchkrow,honchkrow
 honedge,679.0,./gifs/clear/honedge.gif,./gifs/blacked/honedge.gif,0.0,kalos,gramokles,monorpale,ヒトツキ,단칼빙,獨劍鞘,honedge,honedge,honedge,honedge
 hoopa-unbound,,./gifs/clear/hoopa-unbound.gif,./gifs/blacked/hoopa-unbound.gif,,,hoopa unbound,hoopa unbound,hoopa unbound,hoopa unbound,hoopa unbound,hoopa unbound,hoopa unbound,hoopa unbound,hoopa unbound
@@ -584,7 +584,7 @@ milcery,868.0,./gifs/clear/milcery.gif,./gifs/blacked/milcery.gif,0.0,,hokumil,c
 milotic,350.0,./gifs/clear/milotic.gif,./gifs/blacked/milotic.gif,0.0,hoenn,milotic,milobellus,ミロカロス,밀로틱,美納斯,milotic,milotic,milotic,milotic
 miltank,241.0,./gifs/clear/miltank.gif,./gifs/blacked/miltank.gif,0.0,johto,miltank,écrémeuh,ミルタンク,밀탱크,大奶罐,miltank,miltank,miltank,miltank
 mime-jr.,,./gifs/clear/mime_jr.gif,./gifs/blacked/mime_jr.gif,,,mime jr.,mime jr.,mime jr.,mime jr.,mime jr.,mime jr.,mime jr.,mime jr.,mime jr.
-mimikyu-busted-form,,./gifs/clear/mimikyu-busted.gif,./gifs/blacked/mimikyu-busted.gif,,,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form
+mimikyu-busted-form,,,,,,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form,mimikyu busted form
 mimikyu,778.0,./gifs/clear/mimikyu.gif,./gifs/blacked/mimikyu.gif,0.0,alola,mimigma,mimiqui,ミミッキュ,따라큐,謎擬ｑ,mimikyu,mimikyu,mimikyu,mimikyu
 minccino,572.0,./gifs/clear/minccino.gif,./gifs/blacked/minccino.gif,0.0,unova,picochilla,chinchidou,チラーミィ,치라미,泡沫栗鼠,minccino,minccino,minccino,minccino
 minior,774.0,./gifs/clear/minior.gif,./gifs/blacked/minior.gif,0.0,alola,meteno,météno,メテノ,메테노,小隕星,minior,minior,minior,minior
@@ -1067,10 +1067,10 @@ unown-bravo,,./gifs/clear/unown-bravo.gif,./gifs/blacked/unown-bravo.gif,,,unown
 unown-charlie,,./gifs/clear/unown-charlie.gif,./gifs/blacked/unown-charlie.gif,,,unown c,unown c,unown c,unown c,unown c,unown c,unown c,unown c,unown c
 unown-delta,,./gifs/clear/unown-delta.gif,./gifs/blacked/unown-delta.gif,,,unown d,unown d,unown d,unown d,unown d,unown d,unown d,unown d,unown d
 unown-echo,,./gifs/clear/unown-echo.gif,./gifs/blacked/unown-echo.gif,,,unown e,unown e,unown e,unown e,unown e,unown e,unown e,unown e,unown e
-unown-exclamation,,./gifs/clear/unown-exclamation.gif,./gifs/blacked/unown-exclamation.gif,,,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation,unown exclamation
+unown-exclamation,,./gifs/clear/unown-exclamation.gif,./gifs/blacked/unown-exclamation.gif,,,"unown !","unown !","unown !","unown !","unown !","unown !","unown !","unown !","unown !"
 unown-foxtrot,,./gifs/clear/unown-foxtrot.gif,./gifs/blacked/unown-foxtrot.gif,,,unown f,unown f,unown f,unown f,unown f,unown f,unown f,unown f,unown f
 unown-golf,,./gifs/clear/unown-golf.gif,./gifs/blacked/unown-golf.gif,,,unown g,unown g,unown g,unown g,unown g,unown g,unown g,unown g,unown g
-unown-interrogation,,./gifs/clear/unown-interrogation.gif,./gifs/blacked/unown-interrogation.gif,,,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation,unown interrogation
+unown-interrogation,,./gifs/clear/unown-interrogation.gif,./gifs/blacked/unown-interrogation.gif,,,"unown ?","unown ?","unown ?","unown ?","unown ?","unown ?","unown ?","unown ?","unown ?"
 unown-juliet,,./gifs/clear/unown-juliet.gif,./gifs/blacked/unown-juliet.gif,,,unown j,unown j,unown j,unown j,unown j,unown j,unown j,unown j,unown j
 unown-kilo,,./gifs/clear/unown-kilo.gif,./gifs/blacked/unown-kilo.gif,,,unown k,unown k,unown k,unown k,unown k,unown k,unown k,unown k,unown k
 unown-lima,,./gifs/clear/unown-lima.gif,./gifs/blacked/unown-lima.gif,,,unown l,unown l,unown l,unown l,unown l,unown l,unown l,unown l,unown l

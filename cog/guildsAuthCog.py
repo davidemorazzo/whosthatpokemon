@@ -21,7 +21,7 @@ from str.string_db import string_translator
 import asyncio
 
 class guildsAuthCog(commands.Cog):
-    def __init__(self, bot, patreonKey, patreonCreatorId, engine):
+    def __init__(self, bot:discord.Bot, patreonKey, patreonCreatorId, engine):
         self.patreonKey = patreonKey
         self.patreonCreatorId = patreonCreatorId
         self.bot = bot
@@ -187,8 +187,8 @@ class guildsAuthCog(commands.Cog):
 
         embed = Embed(title="Commands help", colour=self.color)        
         # If there are no arguments, just list the commands:
-        for i,x in enumerate(self.bot.all_commands):
-            cmd = self.bot.all_commands[x]
+        for i,x in enumerate(self.bot.application_commands):
+            cmd = x
             embed.add_field(
                 name=cmd.name+' ',
                 value=cmd.description,
