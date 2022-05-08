@@ -6,7 +6,7 @@ init() # init colorama
 from colorama import Fore, Style
 
 gif_folder = 'gifs/'
-pokemon_data = pd.read_csv('str/pokemon_data.csv', index_col='name')
+pokemon_data = pd.read_csv('str/pokemon_data1.csv', index_col='name')
 descriptions = pd.read_csv('str/descriptions.csv', index_col='name')
 VERBOSE = True
 PASS = Fore.GREEN+'--- PASS ---'+Style.RESET_ALL
@@ -66,8 +66,11 @@ fname_clear = glob.glob(gif_folder + 'clear/*.gif')
 fname_clear = [os.path.normpath(i) for i in fname_clear]
 fname_blacked = glob.glob(gif_folder + 'blacked/*.gif')
 fname_blacked = [os.path.normpath(i) for i in fname_blacked]
+fname_shiny = glob.glob(gif_folder + 'shiny/*.gif')
+fname_shiny = [os.path.normpath(i) for i in fname_shiny]
 errors_clear = set([])
 errors_blacked = set([])
+errors_shiny = set([])
 for idx in pokemon_data.index:
 	if (not pd.isna(pokemon_data.loc[idx, 'clear_path'])) and\
 		 os.path.normpath(pokemon_data.loc[idx, 'clear_path']) not in fname_clear:
@@ -77,6 +80,10 @@ for idx in pokemon_data.index:
 		os.path.normpath(pokemon_data.loc[idx, 'blacked_path']) not in fname_blacked:
 		success = False
 		errors_blacked.add(idx)
+	if (not pd.isna(pokemon_data.loc[idx, 'shiny_path'])) and\
+		os.path.normpath(pokemon_data.loc[idx, 'shiny_path']) not in fname_shiny:
+		success = False
+		errors_shiny.add(idx)
 
 if success:
 	print(PASS)
@@ -87,6 +94,8 @@ else:
 		print('number of errors: ', len(errors_clear))
 		print(f"		- blacked: {errors_blacked}")
 		print('number of errors: ', len(errors_blacked))
+		print(f"		- shiny: {errors_shiny}")
+		print('number of errors: ', len(errors_shiny))
 		print(Style.RESET_ALL)
 	print(FAIL)
 

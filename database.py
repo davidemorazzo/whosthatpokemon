@@ -59,6 +59,16 @@ class botChannelIstance(Base):
     language = Column(String, default='en')
     UniqueConstraint(guild_id, channel_id)
 
+class shinyWin(Base):
+    __tablename__ = "shiny_win"
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(String, nullable=False)
+    channel_id = Column(String, primary_key=True, nullable=False)
+    user_id = Column(String, nullable=False)
+    pokemon_id = Column(String, nullable=False)
+    time = Column(String, nullable=False)
+    
+
 
 def init_database(url:String):
 
