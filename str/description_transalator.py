@@ -35,5 +35,5 @@ async def main(dataframe_str:str):
 
 
 if __name__ == '__main__':
-	dataframe_str = 'str/descriptions.csv'
+	dataframe_str = 'str/strings.csv'
 	asyncio.run(main(dataframe_str))

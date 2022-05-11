@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import text
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
-from sqlalchemy import desc
+from sqlalchemy import desc, text
 
 from dotenv import load_dotenv
 from random import choice
@@ -280,14 +280,16 @@ class whosThatPokemon(commands.Cog):
 	
     @commands.Cog.listener()
     async def on_message(self, message):
-        p = BaseProfiler("on_message_global")
+        """
+        On message routine. Here check if guess is correct
+        """
+        
         if message.author == self.bot.user or message.guild == None:
             return
-
-        ## => FETCH GUILD DATA FROM DATABASE
         if message.channel.id not in self.channel_cache:
             return 
 
+        ## => FETCH GUILD DATA FROM DATABASE
         async with self.async_session() as session:
             channelIstance = await GetChannelIstance(session, message.guild.id, message.channel.id)
             guildInfo = await GetGuildInfo(session, message.guild.id)
@@ -337,20 +339,44 @@ class whosThatPokemon(commands.Cog):
                 userGlobalPoints = 0
                 for entry in userGlobally:
                     userGlobalPoints += entry.points
+
+                ## => FETCH USER POSITION IN RANK
+                stmt = text(f"""
+                with point_table as (
+                    select 	sum(user_points.points) as points, 
+                            user_points.user_id as id
+                    from user_points
+                    group by user_points.user_id
+                    order by points desc
+                ), temp as (
+                    select id, row_number() over (order by points desc) as rownum
+                    from point_table
+                )
+                select rownum
+                from temp
+                where id = '{message.author.id}'""")
+                result = await session.execute(stmt)
+                user_rank_position = result.scalars().first()
                 await session.commit()
 
             # Get description and strings in the correct language
             language_id = await self.get_guild_lang(message.channel.id)
             description = self.descriptionDataFrame.loc[raw_solution][language_id]
-            t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks', 'it_is'], message.channel.id)
-            correct_s, points_s, server_s, global_s, ranks_s, it_is = t
+            t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks', 'it_is', 'rank_position'], message.channel.id)
+            correct_s, points_s, server_s, global_s, ranks_s, it_is, rank_position = t
             translated_solution = self.pokedexDataFrame.loc[raw_solution][language_id]
             # Create and send response embed
             embed = Embed(color=self.color)
             embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
             embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} **\n"
-            embed.add_field(name=points_s, value=f"``` {server_s}: {serverWins}\n {global_s}: {userGlobalPoints} ```", inline=False)
             embed.set_footer(text=ranks_s)
+            
+            stats = []
+            stats.append(f"{server_s}: {serverWins}\n")
+            stats.append(f"{global_s}: {userGlobalPoints}\n")
+            stats.append(f"{rank_position}: {user_rank_position}\n")
+            embed.add_field(name=points_s, value=f"```{''.join(stats)}```", inline=False)
+            
             if description.strip() != "":
                 ## => SEND CORRECT-GUESS MESSAGE WITH DESCRIPTION
                 embed.description += "\n" + description + "\n."
