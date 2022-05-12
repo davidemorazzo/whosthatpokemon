@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import asyncio
 from dateutil import parser
+import random
 
 from database import (
     botGuilds, 
@@ -359,42 +360,50 @@ class whosThatPokemon(commands.Cog):
                 user_rank_position = result.scalars().first()
                 await session.commit()
 
+            ## => CREATE CORRECT GUESS EMBED ALSO SHINY
+
             # Get description and strings in the correct language
             language_id = await self.get_guild_lang(message.channel.id)
             description = self.descriptionDataFrame.loc[raw_solution][language_id]
             t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks', 'it_is', 'rank_position'], message.channel.id)
             correct_s, points_s, server_s, global_s, ranks_s, it_is, rank_position = t
             translated_solution = self.pokedexDataFrame.loc[raw_solution][language_id]
+            
             # Create and send response embed
             embed = Embed(color=self.color)
             embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-            embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} **\n"
             embed.set_footer(text=ranks_s)
             
+            # Stats section creation
             stats = []
             stats.append(f"{server_s}: {serverWins}\n")
             stats.append(f"{global_s}: {userGlobalPoints}\n")
             stats.append(f"{rank_position}: {user_rank_position}\n")
             embed.add_field(name=points_s, value=f"```{''.join(stats)}```", inline=False)
             
+            # Shiny win randomly
+            shiny_win = random.randint(0,1) <= 1/300
+
             if description.strip() != "":
-                ## => SEND CORRECT-GUESS MESSAGE WITH DESCRIPTION
-                embed.description += "\n" + description + "\n."
-                clearThumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
-                embed.set_thumbnail(url="attachment://clear.gif")
-                await message.channel.send(file=clearThumb, embed=embed)
-            else:
-                ## => SEND CORRECT-GUESS MESSAGE STANDARD
-                pika = File("./gifs/pikachu.gif", "pikachu.gif")
-                embed.set_thumbnail(url="attachment://pikachu.gif")
-                await message.channel.send(file=pika, embed=embed)
+                if shiny_win:
+                    embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} SHINY! ✨**\n"
+                    embed.description += "\n" + description + "\n."
+                    thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
+                    embed.set_thumbnail(url="attachment://shiny.gif")
+                else:
+                    embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} **\n"
+                    embed.description += "\n" + description + "\n."
+                    thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+                    embed.set_thumbnail(url="attachment://clear.gif")
+                
+                # Send correct response embed
+                await message.channel.send(file=thumb, embed=embed)
 
             ## => SEND NEW QUESTION
             if channelIstance.guessing:
                 file, embed = await self.createQuestion(message.guild, channel_id=channelIstance.channel_id)
                 await message.channel.send(file=file, embed=embed, view=FourButtons(self))
                 
-        # await self.bot.process_commands(message)
     
     @slash_command(name="start", 
                     description="Start guessing a pokémon",
