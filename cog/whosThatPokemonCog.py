@@ -25,6 +25,7 @@ from database import (
     userPoints, 
     botChannelIstance, 
     patreonUsers,
+    shinyWin,
     GetChannelIstance,
     GetGuildInfo)
 from profiling.profiler import BaseProfiler
@@ -267,6 +268,15 @@ class whosThatPokemon(commands.Cog):
             text = '.'
         return text
     
+    async def getShinyRank(self) -> list:
+        async with self.async_session() as session:
+            stmt = select(shinyWin.user_id, func.count(shinyWin.user_id)
+                    ).group_by(shinyWin.user_id
+                    ).order_by(desc(func.count(shinyWin.user_id))
+                    ).limit(20)
+            result = await session.execute(stmt)
+            users = result.all()
+        return users
 
     async def cog_check(self, ctx):
         return True
@@ -300,6 +310,10 @@ class whosThatPokemon(commands.Cog):
         if not raw_solution or channelIstance.is_guessed:
             return
         if self.correctGuess(message.content, raw_solution, channelIstance.language):
+
+            # Shiny win randomly
+            shiny_win = random.random() <= 1/300
+            shiny_win = True
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
@@ -358,7 +372,21 @@ class whosThatPokemon(commands.Cog):
                 where id = '{message.author.id}'""")
                 result = await session.execute(stmt)
                 user_rank_position = result.scalars().first()
+                
+                ## => STORE SHINY WIN
+                if shiny_win:
+                    shiny_win_entry = shinyWin(
+                        guild_id=str(message.guild.id),
+                        channel_id=str(message.channel.id),
+                        user_id=str(message.author.id),
+                        pokemon_id=channelIstance.current_pokemon,
+                        time=str(datetime.utcnow())
+                    )
+                    session.add(shiny_win_entry)
+                
                 await session.commit()
+
+
 
             ## => CREATE CORRECT GUESS EMBED ALSO SHINY
 
@@ -381,14 +409,15 @@ class whosThatPokemon(commands.Cog):
             stats.append(f"{rank_position}: {user_rank_position}\n")
             embed.add_field(name=points_s, value=f"```{''.join(stats)}```", inline=False)
             
-            # Shiny win randomly
-            shiny_win = random.randint(0,1) <= 1/300
 
             if description.strip() != "":
                 if shiny_win:
+                    try:
+                        thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
+                    except:
+                        thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
                     embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} SHINY! ✨**\n"
                     embed.description += "\n" + description + "\n."
-                    thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
                     embed.set_thumbnail(url="attachment://shiny.gif")
                 else:
                     embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} **\n"

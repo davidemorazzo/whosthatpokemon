@@ -104,3 +104,29 @@ class FourButtons(discord.ui.View):
         await interaction.followup.send(embed=embed, file=thumbnail, ephemeral=False)
         self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
 
+    
+    @discord.ui.button(style=discord.ButtonStyle.grey,
+                emoji = '✨')
+    async def shiny_btn(self, btn:discord.ui.Button, interaction:discord.Interaction):
+        """
+        Get shiny cathes rank
+        """
+        id = 'shiny_btn'
+        cldwn = await self.on_cooldown(id, interaction)
+        if cldwn:
+            return
+
+        await interaction.response.defer()
+        rank = await self.poke_cog.getShinyRank()
+        # Create text
+        text = '\n'.join([f"<@{u[0]}> | {u[1]}" for u in rank])
+        ## => SEND EMBED
+        embed = discord.Embed(color=self.poke_cog.color)
+        embed.set_author(name=self.poke_cog.bot.user.name)
+        string = await self.string_db.get('shiny_rank', interaction.channel_id)
+        embed.add_field(name=f"{string} ✨", value = text)
+        thumbnail = discord.File("./gifs/globe.gif", "trophy.gif")
+        embed.set_thumbnail(url="attachment://trophy.gif")
+        await interaction.followup.send(embed=embed, file=thumbnail, ephemeral=False)
+        self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
+        

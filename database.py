@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.future import select
 from datetime import datetime
@@ -61,7 +61,7 @@ class botChannelIstance(Base):
 
 class shinyWin(Base):
     __tablename__ = "shiny_win"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     guild_id = Column(String, nullable=False)
     channel_id = Column(String, primary_key=True, nullable=False)
     user_id = Column(String, nullable=False)
