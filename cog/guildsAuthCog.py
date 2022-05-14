@@ -298,3 +298,5 @@ class guildsAuthCog(commands.Cog):
     async def on_application_command_error(self, ctx:discord.ApplicationContext, error):
         if isinstance(error, commands.errors.CommandOnCooldown):
             await ctx.send_response(f"This command is on cooldown. Try again in {error.retry_after:.2f} seconds.", ephemeral=True)
+        else:
+            self.logger.warning(error)

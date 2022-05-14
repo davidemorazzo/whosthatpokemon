@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands, tasks, pages
 from discord import Embed, File, Colour
 from discord.commands import slash_command, Option
 from discord.ext.commands import Cooldown, CooldownMapping, BucketType
@@ -370,7 +370,7 @@ class whosThatPokemon(commands.Cog):
         if self.correctGuess(message.content, raw_solution, channelIstance.language):
 
             # Shiny win randomly
-            shiny_win = random.random() <= 1/300
+            shiny_win = random.random() <= 1/300 and guildInfo.patreon
             shiny_win = True
            
             ## => DB OPERATIONS
@@ -662,13 +662,6 @@ class whosThatPokemon(commands.Cog):
                  description="Select the language used in the game. Admin only")
     async def selectLanguage(self, ctx:discord.ApplicationContext):
         await self.only_admin(ctx)
-        try:
-            await self.is_patreon(ctx.guild_id, ctx.channel_id)
-        except:
-            string = await self.strings.get('patreon_error', ctx.channel_id)
-            embed = self.embedText(string)
-            await ctx.send_response(embed=embed)
-            return
         
         lang_id = await self.get_guild_lang(ctx.channel_id)
         view = LangButtons(self, ctx.guild.id, lang_id)
@@ -728,3 +721,61 @@ class whosThatPokemon(commands.Cog):
         for channel in channels:
             self.channel_cache[int(channel.channel_id)] = channel.language
         self.logger.info('Cached channels')
+
+    @slash_command(name="shinyrank",
+                    description="Global shiny leaderboard")
+    async def shiny_rank(self, ctx:discord.ApplicationContext):
+        # Get ranks and format text
+        ranks = await self.getShinyRank()
+        shiny_count_str = await self.strings.get('shiny_count', str(ctx.channel_id))
+        text = '\n'.join([f"<@{r[0]}> | {shiny_count_str}: {r[1]}" for r in ranks])
+
+        embed = Embed(
+                    colour=self.color, 
+                    title="Shiny Ranks",
+                    description=text
+                ).set_author(
+                    name=self.bot.user.display_name, 
+                    icon_url=self.bot.user.avatar.url)
+
+        await ctx.respond(embed=embed)
+
+    @slash_command(name="shinyprofile",
+                    description="List all of the Pokémon that you catched")
+    async def shiny_profile(self, ctx:discord.ApplicationContext):
+        
+        try:
+            await self.is_patreon(ctx.guild_id, ctx.channel_id)
+        except:
+            string = await self.strings.get('patreon_error', ctx.channel_id)
+            embed = self.embedText(string)
+            await ctx.send_response(embed=embed)
+            return
+        
+        # get pokemon list from DB
+        async with self.async_session() as session:
+            stmt = select(shinyWin.pokemon_id
+                    ).distinct(shinyWin.pokemon_id
+                    ).where(shinyWin.user_id == str(ctx.author.id))
+            result = await session.execute(stmt)
+            pokemon_ids = result.scalars().all()
+        
+        # Create pages embed
+        lang_id = await self.get_guild_lang(ctx.channel_id)
+        page_list = []
+        page_number = (len(pokemon_ids) // 20) + 1
+        for i in range(page_number):
+            embed = Embed(
+                    colour=self.color, 
+                    title="Shiny Profile",
+                    description="\n".join([f"{20*i+cnt+1}. ** {self.pokedexDataFrame.loc[pokemon_id, lang_id].title()} **" for cnt,pokemon_id in enumerate(pokemon_ids[i*20:(i+1)*20])])
+                ).set_author(
+                    name=ctx.author.display_name
+                )
+            
+            page_list.append(embed)
+        
+        paginator = pages.Paginator(
+                        pages=page_list,
+                        use_default_buttons=True)
+        await paginator.respond(ctx.interaction, ephemeral=False)

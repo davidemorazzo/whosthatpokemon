@@ -38,6 +38,7 @@ lang_btn,Choose the language...,언어 선택...,选择语言...,Scegli la lingu
 it_is,It's,그것은,它是,È,Es,C'est,Es ist,यह है,これは,,
 rank_position,World rank,세계 순위,世界排名,Classifica mondiale,Categoría mundial,Classement mondial,Weltrang,विश्व रैंक,世界ランク,,
 shiny_rank,Shiny Rank,샤이니 랭크,闪亮等级,Grado brillante,Rango brillante,Rang brillant,Glänzender Rang,चमकदार रैंक,シャイニーランク,,
-shiny_win_1,"Congratulations! You now have"
-shiny_win_2,"shiny Pokémon! To check your shiny profile use command /shinyprofile or check your /shinyrank"
-shiny,Shiny
+shiny_win_1,Congratulations! You now have,축하합니다! 당신은 이제,恭喜！你现在有,Congratulazioni! Ora hai,¡Felicidades! Ahora tienes,Toutes nos félicitations! Vous avez maintenant,Herzliche Glückwünsche! Sie haben jetzt,बधाई हो! अब आपके पास है,おめでとう！あなたは今持っています,,
+shiny_win_2,shiny Pokémon! To check your shiny profile use command /shinyprofile or check your /shinyrank,빛나는 포켓몬! 반짝이는 프로필을 확인하려면 /shinyprofile 명령을 사용하거나 /shinyrank를 확인하십시오.,闪亮的宝可梦！要检查您的闪亮配置文件，请使用命令 /shinyprofile 或检查您的 /shinyrank,Pokémon splendenti! Per controllare il tuo profilo lucido usa il comando /shinyprofile o controlla il tuo /shinyrank,"¡Pokémon brillante! Para verificar su perfil brillante, use el comando /shinyprofile o verifique su /shinyrank","des Pokémon brillants ! Pour vérifier votre profil brillant, utilisez la commande /shinyprofile ou vérifiez votre /shinyrank","glänzendes Pokémon! Um Ihr glänzendes Profil zu überprüfen, verwenden Sie den Befehl /shinyprofile oder überprüfen Sie Ihren /shinyrank",चमकदार पोकेमोन! अपने चमकदार प्रोफाइल की जांच करने के लिए कमांड / शाइनीप्रोफाइल का उपयोग करें या अपना / शाइनीरैंक देखें,ピカピカポケモン！光沢のあるプロファイルを確認するには、コマンド/ shinyprofileを使用するか、/shinyrankを確認します,,
+shiny,Shiny,빛나는,闪亮的,Lucente,Brillante,Brillant,Glänzend,चमकदार,ピカピカ,,
+shiny_count,Shiny count,샤이니 카운트,闪亮的计数,Conte brillante,cuenta brillante,Compte brillant,Glänzende Zählung,चमकदार गिनती,ピカピカカウント,,
