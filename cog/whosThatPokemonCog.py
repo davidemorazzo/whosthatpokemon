@@ -289,6 +289,64 @@ class whosThatPokemon(commands.Cog):
             string = await self.strings.get('only_admin', ctx.channel_id)
             raise commands.errors.NotOwner(string)
 	
+    async def create_shiny_embed(self, raw_solution:str, user:discord.Member, stats:list, lang_id, shiny_count:int):
+        # get translated strings
+        points_str = self.strings.s_get('points', lang_id)
+        ranks_str = self.strings.s_get('ranks', lang_id)
+        it_is_str = self.strings.s_get('it_is', lang_id)
+        shiny_win_1 = self.strings.s_get('shiny_win_1', lang_id)
+        shiny_win_2 = self.strings.s_get('shiny_win_2', lang_id)
+
+        # get shiny count
+        
+
+        # get translated description and name
+        translated_description = self.descriptionDataFrame.loc[raw_solution][lang_id]
+        translated_name = self.pokedexDataFrame.loc[raw_solution][lang_id]
+        # create embed
+        embed = Embed(color=self.color)
+        embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
+        embed.set_footer(text=ranks_str)
+        embed.description = f"{user.mention} {it_is_str}** Shiny {translated_name.title()}**\n"
+        embed.description += "\n" + f"{shiny_win_1} {shiny_count} {shiny_win_2}\n"
+        embed.description += "\n" + translated_description + "\n."
+        embed.set_thumbnail(url="attachment://shiny.gif")
+        # Add stats
+        embed.add_field(name=points_str, value=f"```{''.join(stats)}```", inline=False)
+        
+        # Attach shiny gif
+        try:
+            thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
+        except:
+            thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+
+        return embed, thumb
+
+        
+    async def create_win_embed(self, user:discord.Member, lang_id:str, raw_solution:str, stats:list):
+        """
+        Create embed for win. Not shiny win
+        """
+        # get strings
+        ranks_str = self.strings.s_get('ranks', lang_id)
+        it_is_str = self.strings.s_get('it_is', lang_id)
+        points_str = self.strings.s_get('points', lang_id)
+        # get translated description and name
+        translated_description = self.descriptionDataFrame.loc[raw_solution][lang_id]
+        translated_name = self.pokedexDataFrame.loc[raw_solution][lang_id]
+
+        embed = Embed(color=self.color)
+        embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
+        embed.set_footer(text=ranks_str)
+        embed.description = f"{user.mention} {it_is_str}** {translated_name.title()} **\n"
+        embed.description += "\n" + translated_description + "\n."
+        thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+        embed.set_thumbnail(url="attachment://clear.gif")
+        #add stats
+        embed.add_field(name=points_str, value=f"```{''.join(stats)}```", inline=False)
+
+        return embed, thumb
+    
     @commands.Cog.listener()
     async def on_message(self, message):
         """
@@ -382,51 +440,33 @@ class whosThatPokemon(commands.Cog):
                         pokemon_id=channelIstance.current_pokemon,
                         time=str(datetime.utcnow())
                     )
-                    session.add(shiny_win_entry)
-                
+                    session.add(shiny_win_entry)                
                 await session.commit()
 
-
-
             ## => CREATE CORRECT GUESS EMBED ALSO SHINY
-
             # Get description and strings in the correct language
             language_id = await self.get_guild_lang(message.channel.id)
-            description = self.descriptionDataFrame.loc[raw_solution][language_id]
-            t = await self.strings.get_batch(['correct', 'points', 'server', 'global', 'ranks', 'it_is', 'rank_position'], message.channel.id)
-            correct_s, points_s, server_s, global_s, ranks_s, it_is, rank_position = t
-            translated_solution = self.pokedexDataFrame.loc[raw_solution][language_id]
-            
-            # Create and send response embed
-            embed = Embed(color=self.color)
-            embed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
-            embed.set_footer(text=ranks_s)
-            
+            t = await self.strings.get_batch(['points', 'server', 'global', 'rank_position', 'shiny'], message.channel.id)
+            points_s, server_s, global_s, rank_position, shiny_s = t
             # Stats section creation
+            async with self.async_session() as session:
+                stmt = select(func.count(shinyWin.user_id)
+                        ).group_by(shinyWin.user_id
+                        ).where(shinyWin.user_id == str(message.author.id))
+                result = await session.execute(stmt)
+                shiny_count = result.scalars().first()
+
             stats = []
             stats.append(f"{server_s}: {serverWins}\n")
             stats.append(f"{global_s}: {userGlobalPoints}\n")
             stats.append(f"{rank_position}: {user_rank_position}\n")
-            embed.add_field(name=points_s, value=f"```{''.join(stats)}```", inline=False)
-            
-
-            if description.strip() != "":
-                if shiny_win:
-                    try:
-                        thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
-                    except:
-                        thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
-                    embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} SHINY! ✨**\n"
-                    embed.description += "\n" + description + "\n."
-                    embed.set_thumbnail(url="attachment://shiny.gif")
-                else:
-                    embed.description = f"{message.author.mention} {it_is}** {translated_solution.title()} **\n"
-                    embed.description += "\n" + description + "\n."
-                    thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
-                    embed.set_thumbnail(url="attachment://clear.gif")
-                
-                # Send correct response embed
-                await message.channel.send(file=thumb, embed=embed)
+            stats.append(f"{shiny_s}: {shiny_count}")
+            # Create embed and send
+            if shiny_win:
+                embed, thumb = await self.create_shiny_embed(raw_solution, message.author, stats, language_id, shiny_count)
+            else:
+                embed, thumb = await self.create_win_embed(message.author, language_id, raw_solution, stats)                
+            await message.channel.send(file=thumb, embed=embed)
 
             ## => SEND NEW QUESTION
             if channelIstance.guessing:
