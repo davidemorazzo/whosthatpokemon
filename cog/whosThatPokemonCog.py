@@ -31,7 +31,8 @@ from database import (
 from profiling.profiler import BaseProfiler
 import logging
 from .utils import(
-    cooldown
+    cooldown,
+    create_shiny_paginator
 )
 
 from str.string_db import string_translator
@@ -369,9 +370,7 @@ class whosThatPokemon(commands.Cog):
             return
         if self.correctGuess(message.content, raw_solution, channelIstance.language):
 
-            # Shiny win randomly
-            shiny_win = random.random() <= 1/300 and guildInfo.patreon
-            shiny_win = True
+
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
@@ -430,6 +429,10 @@ class whosThatPokemon(commands.Cog):
                 where id = '{message.author.id}'""")
                 result = await session.execute(stmt)
                 user_rank_position = result.scalars().first()
+
+
+                # Shiny win every 2000 points
+                shiny_win = (userGlobalPoints % 2000 == 0) and guildInfo.patreon
                 
                 ## => STORE SHINY WIN
                 if shiny_win:
@@ -459,8 +462,8 @@ class whosThatPokemon(commands.Cog):
             stats = []
             stats.append(f"{server_s}: {serverWins}\n")
             stats.append(f"{global_s}: {userGlobalPoints}\n")
+            stats.append(f"{shiny_s}: {shiny_count}\n")
             stats.append(f"{rank_position}: {user_rank_position}\n")
-            stats.append(f"{shiny_s}: {shiny_count}")
             # Create embed and send
             if shiny_win:
                 embed, thumb = await self.create_shiny_embed(raw_solution, message.author, stats, language_id, shiny_count)
@@ -736,14 +739,14 @@ class whosThatPokemon(commands.Cog):
                     description=text
                 ).set_author(
                     name=self.bot.user.display_name, 
-                    icon_url=self.bot.user.avatar.url)
-
-        await ctx.respond(embed=embed)
+                    icon_url=self.bot.user.avatar.url
+                ).set_thumbnail(url="attachment://spinning_star.gif")
+        thumb = discord.File('./gifs/spinnig_star.gif', 'spinnig_star.gif')
+        await ctx.respond(embed=embed, file=thumb)
 
     @slash_command(name="shinyprofile",
                     description="List all of the Pokémon that you catched")
     async def shiny_profile(self, ctx:discord.ApplicationContext):
-        
         try:
             await self.is_patreon(ctx.guild_id, ctx.channel_id)
         except:
@@ -762,20 +765,20 @@ class whosThatPokemon(commands.Cog):
         
         # Create pages embed
         lang_id = await self.get_guild_lang(ctx.channel_id)
-        page_list = []
-        page_number = (len(pokemon_ids) // 20) + 1
-        for i in range(page_number):
+        paginated_pokemons = create_shiny_paginator(pokemon_ids, lang_id, self.pokedexDataFrame)
+        embed_list = []
+        for p in paginated_pokemons:
             embed = Embed(
                     colour=self.color, 
                     title="Shiny Profile",
-                    description="\n".join([f"{20*i+cnt+1}. ** {self.pokedexDataFrame.loc[pokemon_id, lang_id].title()} **" for cnt,pokemon_id in enumerate(pokemon_ids[i*20:(i+1)*20])])
+                    description='\n'.join(p)
                 ).set_author(
                     name=ctx.author.display_name
                 )
             
-            page_list.append(embed)
+            embed_list.append(embed)
         
         paginator = pages.Paginator(
-                        pages=page_list,
+                        pages=embed_list,
                         use_default_buttons=True)
         await paginator.respond(ctx.interaction, ephemeral=False)

@@ -1,4 +1,7 @@
 from datetime import datetime, timedelta
+import pandas as pd
+
+
 class cooldown:
     def __init__(self):
         self.on_cooldown = {}
@@ -31,3 +34,43 @@ class cooldown:
                 return False
         else:
             return False
+
+
+def create_shiny_paginator(pokemon_owned:list, lang_id:str, pokedex_df:pd.DataFrame) -> list:
+    """
+    Return a list of the pages that can be used to create the Paginator
+    """
+    rows = []
+    pokemon_idxs = pokedex_df.loc[pokedex_df.pokedex_num.notna()] # get all the pokemons with pokedex number
+    max_index = pokemon_idxs.pokedex_num.max()
+    for i in range(1,int(max_index)+1):
+        try:
+            pokemon_id = pokedex_df.loc[pokedex_df.pokedex_num == i].index.values[0]
+            name = pokedex_df.loc[pokemon_id, lang_id]            
+            if pokemon_id in pokemon_owned:
+                new_row = f"{i}. ** {name.title()} **"
+            else:
+                new_row = f"{i}. ???? "
+
+        except:
+            new_row = f"{i}. MISSING FROM POKEDEX"
+
+        rows.append(new_row)
+    
+    # Pagination
+    row_per_page = 30
+    pgs = []
+    for i in range(len(rows) // row_per_page + 1):
+        temp = []
+        for j in range(row_per_page):
+            if row_per_page*i+j >= len(rows) - 1:
+                break
+            temp.append(rows[row_per_page*i+j])
+        pgs.append(temp)
+
+    return pgs
+
+
+
+
+

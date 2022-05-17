@@ -125,8 +125,8 @@ class FourButtons(discord.ui.View):
         embed.set_author(name=self.poke_cog.bot.user.name)
         string = await self.string_db.get('shiny_rank', interaction.channel_id)
         embed.add_field(name=f"{string} ✨", value = text)
-        thumbnail = discord.File("./gifs/globe.gif", "trophy.gif")
-        embed.set_thumbnail(url="attachment://trophy.gif")
+        thumbnail = discord.File("./gifs/spinning_star.gif", "spinning_star.gif")
+        embed.set_thumbnail(url="attachment://spinning_star.gif")
         await interaction.followup.send(embed=embed, file=thumbnail, ephemeral=False)
         self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
         
