@@ -59,7 +59,7 @@ def convert_gif(original_filename, base_directory, num):
     shutil.rmtree( frames_dir, onerror = on_rm_error )
 
 async def main():
-    BASE_DIRECTORY = "D:/Programmazione/Fiverr/whosthatpokemon/gifs/clear"
+    BASE_DIRECTORY = "D:/Programmazione/Fiverr/whosthatpokemon/gifs/shiny"
     files = [f for f in os.listdir(BASE_DIRECTORY+"") if f.endswith(".gif")]
     loop = asyncio.get_event_loop()
     t = []

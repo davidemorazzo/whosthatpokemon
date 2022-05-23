@@ -315,7 +315,7 @@ class whosThatPokemon(commands.Cog):
         # Add stats
         embed.add_field(name=points_str, value=f"```{''.join(stats)}```", inline=False)
         
-        # Attach shiny gif
+        # Attach shiny gif. If shiny gif don't exists then put the normal clear gif
         try:
             thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
         except:
