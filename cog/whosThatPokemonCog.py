@@ -317,7 +317,7 @@ class whosThatPokemon(commands.Cog):
         
         # Attach shiny gif. If shiny gif don't exists then put the normal clear gif
         try:
-            thumb = File(self.pokedexDataFrame.loc[raw_solution]['shiny_path'], filename="shiny.gif")
+            thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="shiny.gif")
         except:
             thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
 
@@ -740,9 +740,10 @@ class whosThatPokemon(commands.Cog):
                 ).set_author(
                     name=self.bot.user.display_name, 
                     icon_url=self.bot.user.avatar.url
-                ).set_thumbnail(url="attachment://spinning_star.gif")
-        thumb = discord.File('./gifs/spinnig_star.gif', 'spinnig_star.gif')
-        await ctx.respond(embed=embed, file=thumb)
+                )# ).set_thumbnail(url="attachment://spinning_star.gif")
+        # thumb = discord.File('gifs\spinnig_star.gif', 'spinnig_star.gif')
+        # await ctx.respond(embed=embed, file=thumb)
+        await ctx.respond(embed=embed)
 
     @slash_command(name="shinyprofile",
                     description="List all of the Pokémon that you catched")
