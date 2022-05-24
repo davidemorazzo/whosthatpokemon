@@ -117,16 +117,8 @@ class FourButtons(discord.ui.View):
             return
 
         await interaction.response.defer()
-        rank = await self.poke_cog.getShinyRank()
-        # Create text
-        text = '\n'.join([f"<@{u[0]}> | {u[1]}" for u in rank])
+        embed, file = await self.poke_cog.get_shiny_rank(str(interaction.channel_id))
         ## => SEND EMBED
-        embed = discord.Embed(color=self.poke_cog.color)
-        embed.set_author(name=self.poke_cog.bot.user.name)
-        string = await self.string_db.get('shiny_rank', interaction.channel_id)
-        embed.add_field(name=f"{string} ✨", value = text)
-        thumbnail = discord.File("./gifs/spinnig_star.gif", "spinning_star.gif")
-        embed.set_thumbnail(url="attachment://spinning_star.gif")
-        await interaction.followup.send(embed=embed, file=thumbnail, ephemeral=False)
+        await interaction.followup.send(embed=embed, file=file, ephemeral=False)
         self.poke_cog.cooldown.add_cooldown(interaction.channel_id, id)
         

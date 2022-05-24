@@ -731,9 +731,7 @@ class whosThatPokemon(commands.Cog):
             self.channel_cache[int(channel.channel_id)] = channel.language
         self.logger.info('Cached channels')
 
-    @slash_command(name="shinyrank",
-                    description="Global shiny leaderboard")
-    async def shiny_rank(self, ctx:discord.ApplicationContext):
+    async def get_shiny_rank(self, channel_id) -> tuple:
         # Get ranks and format text
         ranks = await self.getShinyRank()
         # Get usernames
@@ -748,9 +746,10 @@ class whosThatPokemon(commands.Cog):
                 if username:
                     username_ranks.append((username, points))
 
-        shiny_count_str = await self.strings.get('shiny_count', str(ctx.channel_id))
+        shiny_count_str = await self.strings.get('shiny_count', str(channel_id))
         text = '\n'.join([f"{r[0]} | {shiny_count_str}: {r[1]}" for r in username_ranks])
 
+        thumb = discord.File('./gifs/spinnig_star.gif', 'spinnig_star.gif')
         embed = Embed(
                     colour=self.color, 
                     title="Shiny Ranks",
@@ -758,10 +757,15 @@ class whosThatPokemon(commands.Cog):
                 ).set_author(
                     name=self.bot.user.display_name, 
                     icon_url=self.bot.user.avatar.url
-                )# ).set_thumbnail(url="attachment://spinning_star.gif")
-        # thumb = discord.File('gifs\spinnig_star.gif', 'spinnig_star.gif')
-        # await ctx.respond(embed=embed, file=thumb)
-        await ctx.respond(embed=embed)
+                ).set_thumbnail(url="attachment://spinnig_star.gif")
+        return embed, thumb
+
+
+    @slash_command(name="shinyrank",
+                    description="Global shiny leaderboard")
+    async def shiny_rank(self, ctx:discord.ApplicationContext):
+        embed, file = await self.get_shiny_rank(ctx.channel_id)
+        await ctx.respond(embed=embed, file=file)
 
     @slash_command(name="shinyprofile",
                     description="List all of the Pokémon that you catched")
