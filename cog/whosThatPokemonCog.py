@@ -481,6 +481,9 @@ class whosThatPokemon(commands.Cog):
                     description="Start guessing a pokémon",
                     cooldown=CooldownMapping(Cooldown(1, 30), BucketType.channel))
     async def startGuess(self, ctx:discord.ApplicationContext):
+        ## => ONLY ADMIN
+        await self.only_admin(ctx)
+        
         ## => CHECK IF ALREADY STARTED
         async with self.async_session() as session:
             channel_info = await GetChannelIstance(session, ctx.guild.id, ctx.channel.id)
@@ -506,6 +509,9 @@ class whosThatPokemon(commands.Cog):
 
     @slash_command(name="stop", description="Stop guessing a pokémon")
     async def stopGuess(self, ctx:discord.ApplicationContext):
+        ## => ONLY ADMIN
+        await self.only_admin(ctx)
+
         ## => UPDATE THE DB
         async with self.async_session() as session:
             thisGuild = await GetChannelIstance(session, ctx.guild.id , ctx.channel.id)
@@ -730,8 +736,20 @@ class whosThatPokemon(commands.Cog):
     async def shiny_rank(self, ctx:discord.ApplicationContext):
         # Get ranks and format text
         ranks = await self.getShinyRank()
+        # Get usernames
+        username_ranks = []
+        async with self.async_session() as session:
+            for id,points in ranks:
+                stmt = select(userPoints.username
+                    ).where(userPoints.user_id == id
+                    ).where(userPoints.username != None)
+                result = await session.execute(stmt)
+                username = result.scalars().first()
+                if username:
+                    username_ranks.append((username, points))
+
         shiny_count_str = await self.strings.get('shiny_count', str(ctx.channel_id))
-        text = '\n'.join([f"<@{r[0]}> | {shiny_count_str}: {r[1]}" for r in ranks])
+        text = '\n'.join([f"{r[0]} | {shiny_count_str}: {r[1]}" for r in username_ranks])
 
         embed = Embed(
                     colour=self.color, 

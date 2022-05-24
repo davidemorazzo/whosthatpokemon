@@ -43,20 +43,11 @@ def create_shiny_paginator(pokemon_owned:list, lang_id:str, pokedex_df:pd.DataFr
     rows = []
     pokemon_idxs = pokedex_df.loc[pokedex_df.pokedex_num.notna()] # get all the pokemons with pokedex number
     max_index = pokemon_idxs.pokedex_num.max()
-    for i in range(1,int(max_index)+1):
-        try:
-            pokemon_id = pokedex_df.loc[pokedex_df.pokedex_num == i].index.values[0]
-            name = pokedex_df.loc[pokemon_id, lang_id]            
-            if pokemon_id in pokemon_owned:
-                new_row = f"{i}. ** {name.title()} **"
-            else:
-                new_row = f"{i}. ???? "
-
-        except:
-            new_row = f"{i}. MISSING FROM POKEDEX"
-
+    for i,poke in enumerate(pokemon_owned):
+        name = pokedex_df.loc[poke, lang_id]     
+        new_row = f"{i+1}. ** {name.title()} **"
         rows.append(new_row)
-    
+
     # Pagination
     row_per_page = 30
     pgs = []
