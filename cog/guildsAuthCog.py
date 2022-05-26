@@ -244,15 +244,6 @@ class guildsAuthCog(commands.Cog):
                 session.add(newGuild)
             await session.commit()
 
-            ## => LOAD PREFIXES IN THE DICTIONARY
-            # res = await session.execute(select(botGuilds.guild_id, botGuilds.prefix))
-            # serverPrefixes = res.all()
-            # for prefix in serverPrefixes:
-            #     self.bot.customGuildPrefixes[int(prefix.guild_id)] = prefix.prefix
-            # self.logger.info('prefixes loaded')
-
-
-
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -298,5 +289,7 @@ class guildsAuthCog(commands.Cog):
     async def on_application_command_error(self, ctx:discord.ApplicationContext, error):
         if isinstance(error, commands.errors.CommandOnCooldown):
             await ctx.send_response(f"This command is on cooldown. Try again in {error.retry_after:.2f} seconds.", ephemeral=True)
+        elif isinstance(error, discord.ApplicationCommandError):
+            await ctx.send_followup(embed=self.embedText(error), ephemeral=True)
         else:
             self.logger.warning(error)

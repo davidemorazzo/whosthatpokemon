@@ -65,12 +65,6 @@ def create_shiny_paginator(pokemon_owned:list, lang_id:str, pokedex_df:pd.DataFr
 
     return pgs
 
-async def get_pokemon_data(pokemon_id:str, smkr:sessionmaker) -> pokemonData:
-    async with smkr() as session:
-        stmt = select(pokemonData).where(pokemonData.id == pokemon_id)
-        result = await session.execute(stmt)
-        return result.scalars().first()
-
 async def get_clear_gif(pokemon_id:str, smkr:sessionmaker) -> BytesIO:
     async with smkr() as session:
         stmt = select(pokemonData.clear_img).where(pokemonData.id == pokemon_id)

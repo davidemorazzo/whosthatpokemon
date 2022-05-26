@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks, pages
-from discord import Embed, File, Colour
+from discord import Embed, File, Colour, default_permissions
 from discord.commands import slash_command, Option
 from discord.ext.commands import Cooldown, CooldownMapping, BucketType
 
@@ -18,8 +18,6 @@ from datetime import datetime, timedelta
 import pandas as pd
 import asyncio
 from dateutil import parser
-import random
-from io import BytesIO
 
 from database import (
     botGuilds, 
@@ -34,7 +32,6 @@ import logging
 from .utils import(
     cooldown,
     create_shiny_paginator,
-    get_pokemon_data,
     get_clear_gif,
     get_blacked_gif,
     get_shiny_gif
@@ -284,17 +281,6 @@ class whosThatPokemon(commands.Cog):
             result = await session.execute(stmt)
             users = result.all()
         return users
-
-    async def cog_check(self, ctx):
-        return True
-    
-    async def only_admin(self, ctx:discord.ApplicationContext):
-        if ctx.author.guild_permissions.administrator:
-            return True
-        else:
-            await ctx.delete()
-            string = await self.strings.get('only_admin', ctx.channel_id)
-            raise commands.errors.NotOwner(string)
 	
     async def create_shiny_embed(self, raw_solution:str, user:discord.Member, stats:list, lang_id, shiny_count:int):
         # get translated strings
@@ -303,9 +289,6 @@ class whosThatPokemon(commands.Cog):
         it_is_str = self.strings.s_get('it_is', lang_id)
         shiny_win_1 = self.strings.s_get('shiny_win_1', lang_id)
         shiny_win_2 = self.strings.s_get('shiny_win_2', lang_id)
-
-        # get shiny count
-        
 
         # get translated description and name
         translated_description = self.descriptionDataFrame.loc[raw_solution][lang_id]
@@ -488,9 +471,8 @@ class whosThatPokemon(commands.Cog):
     @slash_command(name="start", 
                     description="Start guessing a pokémon",
                     cooldown=CooldownMapping(Cooldown(1, 30), BucketType.channel))
+    @default_permissions(administrator=True)
     async def startGuess(self, ctx:discord.ApplicationContext):
-        ## => ONLY ADMIN
-        await self.only_admin(ctx)
         
         ## => CHECK IF ALREADY STARTED
         async with self.async_session() as session:
@@ -516,9 +498,8 @@ class whosThatPokemon(commands.Cog):
             
 
     @slash_command(name="stop", description="Stop guessing a pokémon")
+    @default_permissions(administrator=True)
     async def stopGuess(self, ctx:discord.ApplicationContext):
-        ## => ONLY ADMIN
-        await self.only_admin(ctx)
 
         ## => UPDATE THE DB
         async with self.async_session() as session:
@@ -621,9 +602,9 @@ class whosThatPokemon(commands.Cog):
         
     @slash_command(name="resetrank", 
                     description="Reset to zero the points of this server players. Global points will be kept. Only administrator")
+    @default_permissions(administrator=True)
     async def resetrank(self, ctx):   
 
-        await self.only_admin(ctx)
         ## => POINTS_FROM_RESET TO 0 IN THE DB
         async with self.async_session() as session:
             guildPlayers = await session.execute(select(userPoints
@@ -651,9 +632,9 @@ class whosThatPokemon(commands.Cog):
 
     @slash_command(name="selectgenerations",
                  description="Select the pokemon generations that are used in the game. Admin only")
+    @default_permissions(administrator=True)
     async def selectGen(self, ctx):
 
-        await self.only_admin(ctx)
         try:
             await self.is_patreon(ctx.guild_id, ctx.channel_id)
         except:
@@ -678,8 +659,8 @@ class whosThatPokemon(commands.Cog):
 
     @slash_command(name="selectlanguage",
                  description="Select the language used in the game. Admin only")
+    @default_permissions(administrator=True)
     async def selectLanguage(self, ctx:discord.ApplicationContext):
-        await self.only_admin(ctx)
         
         lang_id = await self.get_guild_lang(ctx.channel_id)
         view = LangButtons(self, ctx.guild.id, lang_id)
