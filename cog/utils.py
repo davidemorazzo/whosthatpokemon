@@ -1,5 +1,11 @@
 from datetime import datetime, timedelta
+from numpy import ScalarType
 import pandas as pd
+from io import BytesIO
+
+from database import pokemonData
+from sqlalchemy import select
+from sqlalchemy.orm import sessionmaker
 
 
 class cooldown:
@@ -59,7 +65,29 @@ def create_shiny_paginator(pokemon_owned:list, lang_id:str, pokedex_df:pd.DataFr
 
     return pgs
 
+async def get_pokemon_data(pokemon_id:str, smkr:sessionmaker) -> pokemonData:
+    async with smkr() as session:
+        stmt = select(pokemonData).where(pokemonData.id == pokemon_id)
+        result = await session.execute(stmt)
+        return result.scalars().first()
 
+async def get_clear_gif(pokemon_id:str, smkr:sessionmaker) -> BytesIO:
+    async with smkr() as session:
+        stmt = select(pokemonData.clear_img).where(pokemonData.id == pokemon_id)
+        result = await session.execute(stmt)
+        file_bin = result.scalars().first()
+        return BytesIO(file_bin)
 
+async def get_blacked_gif(pokemon_id:str, smkr:sessionmaker) -> BytesIO:
+    async with smkr() as session:
+        stmt = select(pokemonData.blacked_img).where(pokemonData.id == pokemon_id)
+        result = await session.execute(stmt)
+        file_bin = result.scalars().first()
+        return BytesIO(file_bin)
 
-
+async def get_shiny_gif(pokemon_id:str, smkr:sessionmaker) -> BytesIO:
+    async with smkr() as session:
+        stmt = select(pokemonData.shiny_img).where(pokemonData.id == pokemon_id)
+        result = await session.execute(stmt)
+        file_bin = result.scalars().first()
+        return BytesIO(file_bin)

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import Column, Integer, String, Boolean, Sequence
+from sqlalchemy import Column, Integer, String, Boolean, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.future import select
 from datetime import datetime
@@ -67,6 +67,29 @@ class shinyWin(Base):
     user_id = Column(String, nullable=False)
     pokemon_id = Column(String, nullable=False)
     time = Column(String, nullable=False)
+
+class pokemonData(Base):
+    __tablename__ = "pokemon_data"
+    id = Column(String, primary_key=True, nullable=False)
+    pokedex_num = Column(Integer, nullable=True)
+    clear_img = Column(LargeBinary)
+    blacked_img = Column(LargeBinary)
+    shiny_img = Column(LargeBinary)
+    patreon_tier = Column(Integer)
+    generation = Column(String)
+    de = Column(String)
+    fr = Column(String)
+    jp = Column(String)
+    ko = Column(String)
+    zh = Column(String)
+    en = Column(String)
+    es = Column(String)
+    it = Column(String)
+    hi = Column(String)
+
+    def __repr__(self):
+        return "<Pokemon(id=%d, pokedex_num=%d, patreon_tier=%d, generation=%s)>" % (
+            self.id, self.pokedex_num, self.patreon_tier, self.generation)
     
 
 

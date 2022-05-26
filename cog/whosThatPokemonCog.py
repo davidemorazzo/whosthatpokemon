@@ -19,6 +19,7 @@ import pandas as pd
 import asyncio
 from dateutil import parser
 import random
+from io import BytesIO
 
 from database import (
     botGuilds, 
@@ -32,7 +33,11 @@ from profiling.profiler import BaseProfiler
 import logging
 from .utils import(
     cooldown,
-    create_shiny_paginator
+    create_shiny_paginator,
+    get_pokemon_data,
+    get_clear_gif,
+    get_blacked_gif,
+    get_shiny_gif
 )
 
 from str.string_db import string_translator
@@ -182,7 +187,8 @@ class whosThatPokemon(commands.Cog):
             embed = Embed(color=self.color)
             embed.set_author(name = "Who's That Pokemon?", icon_url=self.bot.user.avatar.url)
             embed.description = await self.strings.get('question', channel_id)
-            thumb = File(self.pokedexDataFrame.loc[gif_name]['blacked_path'], filename="gif.gif")
+            gif_file = await get_blacked_gif(gif_name, self.async_session)
+            thumb = File(gif_file, filename="gif.gif")
             embed.set_thumbnail(url="attachment://gif.gif")
             
             ## => MEMORIZE THE SOLUTION
@@ -316,10 +322,10 @@ class whosThatPokemon(commands.Cog):
         embed.add_field(name=points_str, value=f"```{''.join(stats)}```", inline=False)
         
         # Attach shiny gif. If shiny gif don't exists then put the normal clear gif
-        try:
-            thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="shiny.gif")
-        except:
-            thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+        shiny_gif = await get_shiny_gif(raw_solution, self.async_session)
+        if not shiny_gif:
+            shiny_gif = await get_clear_gif(raw_solution, self.async_session)
+        thumb  = File(shiny_gif, filename="shiny.gif")
 
         return embed, thumb
 
@@ -341,7 +347,8 @@ class whosThatPokemon(commands.Cog):
         embed.set_footer(text=ranks_str)
         embed.description = f"{user.mention} {it_is_str}** {translated_name.title()} **\n"
         embed.description += "\n" + translated_description + "\n."
-        thumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+        gif_file = await get_clear_gif(raw_solution, self.async_session)
+        thumb = File(gif_file, filename="clear.gif")
         embed.set_thumbnail(url="attachment://clear.gif")
         #add stats
         embed.add_field(name=points_str, value=f"```{''.join(stats)}```", inline=False)
@@ -432,7 +439,8 @@ class whosThatPokemon(commands.Cog):
 
 
                 # Shiny win every 2000 points
-                shiny_win = (userGlobalPoints % 2000 == 0) and guildInfo.patreon
+                shiny_win = (userGlobalPoints % 2000 == 0)
+                shiny_win=True
                 
                 ## => STORE SHINY WIN
                 if shiny_win:
@@ -575,7 +583,8 @@ class whosThatPokemon(commands.Cog):
             clearEmbed = Embed(color=self.color)
             clearEmbed.set_author(name="Who's That Pokémon?", icon_url=self.bot.user.avatar.url)
             clearEmbed.description = description
-            clearThumb = File(self.pokedexDataFrame.loc[raw_solution]['clear_path'], filename="clear.gif")
+            gif_file = await get_clear_gif(raw_solution, self.async_session)
+            clearThumb = File(gif_file, filename="clear.gif")
             clearEmbed.set_thumbnail(url="attachment://clear.gif")
             return clearEmbed, clearThumb
         else:
@@ -730,6 +739,8 @@ class whosThatPokemon(commands.Cog):
         for channel in channels:
             self.channel_cache[int(channel.channel_id)] = channel.language
         self.logger.info('Cached channels')
+
+
 
     async def get_shiny_rank(self, channel_id) -> tuple:
         # Get ranks and format text
