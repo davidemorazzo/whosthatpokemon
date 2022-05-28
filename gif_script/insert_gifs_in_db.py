@@ -59,7 +59,7 @@ async def main():
 		rows.append(obj)
 	
 	## => Database connection
-	smkr = sessionmaker(init_database('postgresql+asyncpg://postgres:root@localhost/whosthatpokemon'),
+	smkr = sessionmaker(init_database('postgresql+asyncpg://wdomuberrwkvzh:f3b37ae66dd1397e652ccb0bd0851d6fd6b30c0db76bc2182183cafe7dd67232@ec2-52-209-171-51.eu-west-1.compute.amazonaws.com:5432/d2ioeuuac8amki'),
 				expire_on_commit=False,
 				class_=AsyncSession
 				)

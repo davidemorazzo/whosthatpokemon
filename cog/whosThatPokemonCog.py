@@ -422,8 +422,7 @@ class whosThatPokemon(commands.Cog):
 
 
                 # Shiny win every 2000 points
-                shiny_win = (userGlobalPoints % 2000 == 0)
-                shiny_win=True
+                shiny_win = (userGlobalPoints % 400 == 0)
                 
                 ## => STORE SHINY WIN
                 if shiny_win:
