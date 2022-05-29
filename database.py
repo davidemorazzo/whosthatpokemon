@@ -90,6 +90,11 @@ class pokemonData(Base):
     def __repr__(self):
         return "<Pokemon(id=%d, pokedex_num=%d, patreon_tier=%d, generation=%s)>" % (
             self.id, self.pokedex_num, self.patreon_tier, self.generation)
+
+class settings(Base):
+    __tablename__ = 'settings'
+    id = Column(String, primary_key=True)
+    value = Column(String)
     
 
 

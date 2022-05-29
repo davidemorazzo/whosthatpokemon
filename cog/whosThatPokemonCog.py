@@ -25,6 +25,7 @@ from database import (
     botChannelIstance, 
     patreonUsers,
     shinyWin,
+    settings,
     GetChannelIstance,
     GetGuildInfo)
 from profiling.profiler import BaseProfiler
@@ -81,6 +82,7 @@ class whosThatPokemon(commands.Cog):
             '简体中文':'zh'}
         self.strings = string_translator('./str/strings.csv', self.async_session)
         self.channel_cache = {}
+        self.shiny_rate = None
         # self.pokemon_spawn.start()
 
     def embedText(self, text):
@@ -421,8 +423,8 @@ class whosThatPokemon(commands.Cog):
                 user_rank_position = result.scalars().first()
 
 
-                # Shiny win every 2000 points
-                shiny_win = (userGlobalPoints % 400 == 0)
+                # Shiny win every X points
+                shiny_win = (userGlobalPoints % self.shiny_rate == 0)
                 
                 ## => STORE SHINY WIN
                 if shiny_win:
@@ -712,6 +714,13 @@ class whosThatPokemon(commands.Cog):
     async def on_ready(self):
         await asyncio.sleep(1)
         async with self.async_session() as session:
+            # Load shiny rate from the db
+            stmt = select(settings.value
+                    ).where(settings.id == 'shiny_rate')
+            result = await session.execute(stmt)
+            self.shiny_rate = int(result.scalars().first())
+
+            # Load channel in local cache
             stmt = select(botChannelIstance.channel_id, botChannelIstance.language
                     ).where(botChannelIstance.guessing == True)
             result = await session.execute(stmt)
@@ -719,6 +728,7 @@ class whosThatPokemon(commands.Cog):
         for channel in channels:
             self.channel_cache[int(channel.channel_id)] = channel.language
         self.logger.info('Cached channels')
+     
 
 
 
@@ -738,12 +748,12 @@ class whosThatPokemon(commands.Cog):
                     username_ranks.append((username, points))
 
         shiny_count_str = await self.strings.get('shiny_count', str(channel_id))
-        text = '\n'.join([f"{r[0]} | {shiny_count_str}: {r[1]}" for r in username_ranks])
+        text = '\n'.join([f"#{cnt+1} {r[0]} | {shiny_count_str}: {r[1]}" for cnt, r in enumerate(username_ranks)])
 
         thumb = discord.File('./gifs/spinnig_star.gif', 'spinnig_star.gif')
         embed = Embed(
                     colour=self.color, 
-                    title="Shiny Ranks",
+                    title="Shiny Rank",
                     description=text
                 ).set_author(
                     name=self.bot.user.display_name, 
@@ -796,3 +806,26 @@ class whosThatPokemon(commands.Cog):
                         pages=embed_list,
                         use_default_buttons=True)
         await paginator.respond(ctx.interaction, ephemeral=False)
+
+
+
+    @commands.command(name="shinyrate")
+    async def change_shiny_rate(self, ctx:commands.Context, points:int) -> None:
+        # Check if command author is ac2010
+        if True: # ctx.author.id == 632748792998789140:
+            sett_obj = settings(
+                id = 'shiny_rate',
+                value = str(points)
+            )
+            try:
+                # Update valude in the database
+                async with self.async_session() as session:
+                    await session.merge(sett_obj)
+                    await session.commit()
+                    self.shiny_rate = points
+                    embed = self.embedText(f'Shiny rate set: {points}')
+            except :
+                embed = self.embedText("Something went wrong")
+            
+            await ctx.send(embed=embed)
+
