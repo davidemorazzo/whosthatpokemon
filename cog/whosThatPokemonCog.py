@@ -35,7 +35,8 @@ from .utils import(
     create_shiny_paginator,
     get_clear_gif,
     get_blacked_gif,
-    get_shiny_gif
+    get_shiny_gif,
+    is_user_patreon
 )
 
 from str.string_db import string_translator
@@ -362,7 +363,8 @@ class whosThatPokemon(commands.Cog):
             return
         if self.correctGuess(message.content, raw_solution, channelIstance.language):
 
-
+            # Check if user is patreon
+            patreon_user = await is_user_patreon(message.author.id, self.async_session)
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
@@ -384,9 +386,10 @@ class whosThatPokemon(commands.Cog):
                     session.add(newUser)
                     currentUser = newUser
                 ## => INCREASE POINTS
-                pointsToAdd = 1
-                # if guildInfo.patreon:
-                    # pointsToAdd = 2
+                if patreon_user:
+                    pointsToAdd = 2
+                else:
+                    pointsToAdd = 1
                 currentUser.points = currentUser.points + pointsToAdd #global points
                 currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
@@ -770,15 +773,7 @@ class whosThatPokemon(commands.Cog):
 
     @slash_command(name="shinyprofile",
                     description="List all of the Pokémon that you catched")
-    async def shiny_profile(self, ctx:discord.ApplicationContext):
-        try:
-            await self.is_patreon(ctx.guild_id, ctx.channel_id)
-        except:
-            string = await self.strings.get('patreon_error', ctx.channel_id)
-            embed = self.embedText(string)
-            await ctx.send_response(embed=embed)
-            return
-        
+    async def shiny_profile(self, ctx:discord.ApplicationContext):     
         # get pokemon list from DB
         async with self.async_session() as session:
             stmt = select(shinyWin.pokemon_id

@@ -41,16 +41,11 @@ class guildsAuthCog(commands.Cog):
 
         ## => ASSIGN TO THE GUILD THE CORRECT PATREON
         discordGuild = self.bot.get_guild(int(guildObj.guild_id))
-        
-        if guildObj.patreon_discord_id in patreonIds:
-            return guildObj.patreon_discord_id ## => KEEP THE CURRENT PATREON
+        if str(guildObj.owner.id) in patreonIds:
+            return str(guildObj.owner.id)
         else:
-            for patreonId in patreonIds:
-                # FIXME: controllare
-                user = discordGuild.owner
-                if user.guild_permissions.administrator:
-                    return patreonId
-            return None ## => NO PATREON FOUNDED
+            return None
+
 
     async def updatePatreons(self):
         ## => FETCH PATREONS FROM API
@@ -142,10 +137,6 @@ class guildsAuthCog(commands.Cog):
                     guild.patreon = True
                     guild.patreon_discord_id = None
 
-                elif self.free_period:
-                    ## => DISABLE PATREON IN THE FREE PERIOD
-                    guild.patreon=True
-
                 else:
                     ## => CHECK FOR PATREON SUBSCRIPTION
                     patreonId = await self.verifyPatreon(guild, patreonIds)
@@ -155,18 +146,6 @@ class guildsAuthCog(commands.Cog):
                         guild.patreon = True
                         guild.patreon_discord_id = str(patreonId)
 
-                    else:
-                        ## => CHECK FOR TRIAL PERIOD
-                        now = datetime.utcnow()
-                        joined = parser.parse(guild.joined_utc)
-                        guild.patreon_discord_id = None
-                        if now-joined > timedelta(days=self.trial_days):
-                            guild.patreon = False
-                            guild.patreon_discord_id = None
-                        else:
-                            guild.patreon = True
-                            guild.patreon_discord_id = None
-            
                 # Check all the guilds in a async way
                 await asyncio.gather(*map(activate_guild, guilds))
                 await session.commit()

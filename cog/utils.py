@@ -3,7 +3,7 @@ from numpy import ScalarType
 import pandas as pd
 from io import BytesIO
 
-from database import pokemonData
+from database import patreonUsers, pokemonData
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 
@@ -85,3 +85,20 @@ async def get_shiny_gif(pokemon_id:str, smkr:sessionmaker) -> BytesIO:
         result = await session.execute(stmt)
         file_bin = result.scalars().first()
         return BytesIO(file_bin)
+
+
+async def is_user_patreon(user_id:int, smkr:sessionmaker) -> bool:
+    """
+    Check in the database if the user is pateron
+    """
+    async with smkr() as session:
+        stmt = select(patreonUsers
+            ).where(patreonUsers.id == str(user_id)
+            ).where(patreonUsers.sub_status == None)
+        result = await session.execute(stmt)
+        patreon = result.scalars().first()
+        if patreon:
+            return True
+        else:
+            return False
+        
