@@ -364,7 +364,7 @@ class whosThatPokemon(commands.Cog):
         if self.correctGuess(message.content, raw_solution, channelIstance.language):
 
             # Check if user is patreon
-            patreon_user = await is_user_patreon(message.author.id, self.async_session)
+            # patreon_user = await is_user_patreon(message.author.id, self.async_session)
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
@@ -386,10 +386,11 @@ class whosThatPokemon(commands.Cog):
                     session.add(newUser)
                     currentUser = newUser
                 ## => INCREASE POINTS
-                if patreon_user:
-                    pointsToAdd = 2
-                else:
-                    pointsToAdd = 1
+                # if patreon_user:
+                #     pointsToAdd = 2
+                # else:
+                #     pointsToAdd = 1
+                pointsToAdd = 1
                 currentUser.points = currentUser.points + pointsToAdd #global points
                 currentUser.points_from_reset = currentUser.points_from_reset + pointsToAdd
                 currentUser.last_win_date = str(datetime.utcnow())
@@ -807,7 +808,7 @@ class whosThatPokemon(commands.Cog):
     @commands.command(name="shinyrate")
     async def change_shiny_rate(self, ctx:commands.Context, points:int) -> None:
         # Check if command author is ac2010
-        if True: # ctx.author.id == 632748792998789140:
+        if ctx.author.id == 632748792998789140:
             sett_obj = settings(
                 id = 'shiny_rate',
                 value = str(points)
