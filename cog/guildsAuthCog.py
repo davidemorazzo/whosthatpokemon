@@ -35,6 +35,7 @@ class guildsAuthCog(commands.Cog):
         self.guildWhiteList = [752464482424586290, 822033257142288414]
         self.logger = logging.getLogger('discord')
         self.strings = string_translator('str/strings.csv', self.async_session)
+        self.default_poke_gen = '123456'
 
     async def verifyPatreon(self, guildObj: botGuilds, patreonIds:list) -> str:
         """Return the discord id of the patreon if there is a match, None otherwise"""
@@ -121,9 +122,12 @@ class guildsAuthCog(commands.Cog):
         await self.bot.wait_until_ready()
         ## => VERIFY EVERY GUILD
         async with self.async_session() as session:
-            patreons = await session.execute(select(patreonUsers))
+            # Query users eligible for guild activation
+            patreons = await session.execute(select(patreonUsers
+                                    ).where(patreonUsers.sub_status != 'None'
+                                    ).where(patreonUsers.tier >= 500))
             patreons = patreons.scalars().all()
-            patreonIds = [p.discord_id for p in patreons if not p.sub_status]
+            patreonIds = [p.discord_id for p in patreons]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
             
@@ -145,10 +149,16 @@ class guildsAuthCog(commands.Cog):
                         ## => ACTIVATE THE GUILD WITH PATREON
                         guild.patreon = True
                         guild.patreon_discord_id = str(patreonId)
+                    else:
+                        ## => DEACTIVATE THE GUILD
+                        # guild.patreon = False
+                        # guild.patreon_discord_id = None
+                        # guild.poke_generation = self.default_poke_gen
+                        pass
 
-                # Check all the guilds in a async way
-                await asyncio.gather(*map(activate_guild, guilds))
-                await session.commit()
+            # Check all the guilds in a async way
+            await asyncio.gather(*map(activate_guild, guilds))
+            await session.commit()
 
         toc = datetime.now()
         delta = toc-tic
