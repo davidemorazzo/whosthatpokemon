@@ -6,7 +6,7 @@ init() # init colorama
 from colorama import Fore, Style
 
 gif_folder = 'gifs/'
-pokemon_data = pd.read_csv('str/pokemon_data1.csv', index_col='name')
+pokemon_data = pd.read_csv('str/pokemon_data.csv', index_col='name')
 descriptions = pd.read_csv('str/descriptions.csv', index_col='name')
 VERBOSE = True
 PASS = Fore.GREEN+'--- PASS ---'+Style.RESET_ALL
