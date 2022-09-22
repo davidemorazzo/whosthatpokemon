@@ -10,6 +10,7 @@ from cog.guildsAuthCog import guildsAuthCog
 from database import init_database
 from profiling.profiler import BaseProfiler
 import logging
+from datetime import datetime
 
 COMMAND_PREFIX = ["Wtp!", "wtp!"]
 POKEMON_DATAFRAME = "str/pokemon_data.csv"
@@ -46,7 +47,7 @@ if __name__ == '__main__':
             engine = init_database(HEROKU_DB_STRING)
             BOT_TOKEN = os.getenv("DISCORD_TOKEN")
             logger.setLevel(logging.INFO)
-            consoleHandler = logging.FileHandler('./logs/discord.log', encoding='utf-8', mode='w')
+            consoleHandler = logging.FileHandler('./logs/{:%Y-%m-%d_%H-%M}.log'.format(datetime.now()), encoding='utf-8', mode='w')
             consoleHandler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
             logger.addHandler(consoleHandler)
             logger.info("Bot inizialied for Heroku server")
