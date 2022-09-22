@@ -2,7 +2,9 @@
 .vscode/
 __pycache__/
 pycord-env/
+logs/
 
 # files
 profiling/logs.csv
 discord.log
+.env
