@@ -111,7 +111,7 @@ class guildsAuthCog(commands.Cog):
             if newGuild:
                 newGuild.currently_joined= False
                 await session.commit()
-                self.logger.debug("BOT LEFT GUILD: ", guild.name)
+                self.logger.info("BOT LEFT GUILD: ", guild.name)
 
     @tasks.loop(minutes=10)
     async def verification(self):
@@ -124,10 +124,9 @@ class guildsAuthCog(commands.Cog):
         async with self.async_session() as session:
             # Query users eligible for guild activation
             patreons = await session.execute(select(patreonUsers
-                                    ).where(patreonUsers.sub_status != 'None'
-                                    ).where(patreonUsers.tier >= 500))
+                                    ).where(patreonUsers.sub_status != 'None'))
             patreons = patreons.scalars().all()
-            patreonIds = [p.discord_id for p in patreons]
+            patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 500]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
             
@@ -136,6 +135,11 @@ class guildsAuthCog(commands.Cog):
                 Coroutine to check if a patreon is the owner of this guild and 
                 update the database.bot_guilds and database.patreon_users
                 """
+                if self.free_period:
+                    guild.patreon=True
+                    guild.patreon_discord_id=None
+                    return
+
                 if int(guild.guild_id) in self.guildWhiteList:
                     ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
                     guild.patreon = True
@@ -151,9 +155,9 @@ class guildsAuthCog(commands.Cog):
                         guild.patreon_discord_id = str(patreonId)
                     else:
                         ## => DEACTIVATE THE GUILD
-                        # guild.patreon = False
-                        # guild.patreon_discord_id = None
-                        # guild.poke_generation = self.default_poke_gen
+                        guild.patreon = False
+                        guild.patreon_discord_id = None
+                        guild.poke_generation = self.default_poke_gen
                         pass
 
             # Check all the guilds in a async way
@@ -162,7 +166,7 @@ class guildsAuthCog(commands.Cog):
 
         toc = datetime.now()
         delta = toc-tic
-        self.logger.debug(f"Verification executed in: {str(delta)}")
+        self.logger.info(f"Verification executed in: {str(delta)}")
 
     @slash_command(name = "help", description="Show this message")
     async def help(self, ctx:discord.ApplicationContext):
@@ -247,7 +251,7 @@ class guildsAuthCog(commands.Cog):
             string = self.strings.get('expired', ctx.channel.id)
             embed = self.embedText(f"{string} {self.patreon_link}")
             await ctx.send(embed = embed)
-            self.logger.debug("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
+            self.logger.info("GUILD WITHOUT PERMISSION DENIED: ", ctx.guild.name)
         elif isinstance(error, commands.errors.MissingPermissions):
             return
         elif isinstance(error, commands.errors.CommandOnCooldown):
@@ -282,12 +286,12 @@ class guildsAuthCog(commands.Cog):
         
         elif isinstance(error, discord.ApplicationCommandError):
             if isinstance(error, discord.errors.ApplicationCommandInvokeError):
-                self.logger.debug(error)
+                self.logger.info(error)
             else:
                 await ctx.send_followup(embed=self.embedText(error), ephemeral=True)
         
         elif isinstance(error, discord.errors.NotFound):
-            self.logger.debug(error)
+            self.logger.info(error)
         
         else:
             self.logger.warning(error)
