@@ -30,7 +30,7 @@ class guildsAuthCog(commands.Cog):
         self.trial_days = int(os.getenv("DAYS_OF_TRIAL"))
         self.color = Colour.red()
         self.verification.start()
-        self.free_period = True
+        self.free_period = False
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
         self.guildWhiteList = [752464482424586290, 822033257142288414]
         self.logger = logging.getLogger('discord')
@@ -41,7 +41,7 @@ class guildsAuthCog(commands.Cog):
         """Return the discord id of the patreon if there is a match, None otherwise"""
 
         ## => ASSIGN TO THE GUILD THE CORRECT PATREON
-        discordGuild = self.bot.get_guild(int(guildObj.guild_id))
+        # discordGuild = self.bot.get_guild(int(guildObj.guild_id))
         if str(guildObj.owner.id) in patreonIds:
             return str(guildObj.owner.id)
         else:
@@ -96,7 +96,7 @@ class guildsAuthCog(commands.Cog):
                 newGuild = botGuilds(guild_id=str(guild.id),
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
-                                    patreon=True)
+                                    patreon=False)
                 session.add(newGuild)
 
             newGuild.currently_joined=True
@@ -124,7 +124,7 @@ class guildsAuthCog(commands.Cog):
         async with self.async_session() as session:
             # Query users eligible for guild activation
             patreons = await session.execute(select(patreonUsers
-                                    ).where(patreonUsers.sub_status != 'None'))
+                                    ).where(patreonUsers.sub_status == 'None'))
             patreons = patreons.scalars().all()
             patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 500]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
@@ -229,7 +229,7 @@ class guildsAuthCog(commands.Cog):
             ## => ADD THE GUILD THAT JOINED BUT NOT IN THE DB
             for guildId in botJoinedGuildsIds:
                 newGuild = botGuilds(guild_id = str(guildId),
-                                        patreon=True,
+                                        patreon=False,
                                         currently_joined=True,
                                         joined_utc=str(datetime.utcnow()),
                                         patreon_discord_id = None,
@@ -271,7 +271,7 @@ class guildsAuthCog(commands.Cog):
                     newGuild = botGuilds(guild_id=str(ctx.guild.id),
                                     joined_utc=str(datetime.utcnow()),
                                     currently_joined = True,
-                                    patreon=True)
+                                    patreon=False)
                     session.add(newGuild)
                     await session.commit()
                     self.logger.warning("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)

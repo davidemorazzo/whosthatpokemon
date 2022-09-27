@@ -160,15 +160,15 @@ class whosThatPokemon(commands.Cog):
             # sections of the pokedex
             poke_generation = guildInfo.poke_generation
             # Get guild tier
-            row = await session.execute(select(patreonUsers).filter_by(guild_id=str(guildObj.id)))
-            patreon_info = row.scalars().first()
-            if patreon_info:
-                guild_tier = patreon_info.tier
-            else:
-                guild_tier = 0
+            # row = await session.execute(select(patreonUsers).filter_by(guild_id=str(guildObj.id)))
+            # patreon_info = row.scalars().first()
+            # if patreon_info:
+            #     guild_tier = patreon_info.tier
+            # else:
+            #     guild_tier = 0
 
         ## => CREATE LIST OF GIFS
-        tier_filter = self.pokedexDataFrame['tier'].notna() >= guild_tier
+        # tier_filter = self.pokedexDataFrame['tier'].notna() >= guild_tier
         no_gen_filter =  self.pokedexDataFrame['generation'].isna()
 
         # Add to the list the correct generations
@@ -364,7 +364,7 @@ class whosThatPokemon(commands.Cog):
         if self.correctGuess(message.content, raw_solution, channelIstance.language):
 
             # Check if user is patreon
-            patreon_user = False # await is_user_patreon(message.author.id, self.async_session)
+            patreon_user = await is_user_patreon(message.author.id, self.async_session)
            
             ## => DB OPERATIONS
             async with self.async_session() as session:
