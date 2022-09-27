@@ -41,8 +41,8 @@ class guildsAuthCog(commands.Cog):
         """Return the discord id of the patreon if there is a match, None otherwise"""
 
         ## => ASSIGN TO THE GUILD THE CORRECT PATREON
-        # discordGuild = self.bot.get_guild(int(guildObj.guild_id))
-        if str(guildObj.owner.id) in patreonIds:
+        discordGuild = self.bot.get_guild(int(guildObj.guild_id))
+        if str(discordGuild.owner_id) in patreonIds:
             return str(guildObj.owner.id)
         else:
             return None
