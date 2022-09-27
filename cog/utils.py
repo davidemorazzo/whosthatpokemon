@@ -93,7 +93,7 @@ async def is_user_patreon(user_id:int, smkr:sessionmaker) -> bool:
     """
     async with smkr() as session:
         stmt = select(patreonUsers
-            ).where(patreonUsers.id == str(user_id)
+            ).where(patreonUsers.discord_id == str(user_id)
             ).where(patreonUsers.sub_status == 'None')
         result = await session.execute(stmt)
         patreon = result.scalars().first()

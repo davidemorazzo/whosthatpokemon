@@ -126,7 +126,7 @@ class guildsAuthCog(commands.Cog):
             patreons = await session.execute(select(patreonUsers
                                     ).where(patreonUsers.sub_status == 'None'))
             patreons = patreons.scalars().all()
-            patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 500]
+            patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 450]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
             
