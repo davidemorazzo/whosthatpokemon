@@ -53,29 +53,14 @@ class guildsAuthCog(commands.Cog):
         patreons_dict = await fetch_patreons(os.getenv("PATREON_TOKEN"))
         ## => KEEP IN THE DB ONLY THE ACTIVE PATRONS
         async with self.async_session() as session:
-            patreonsDb = await session.execute(select(patreonUsers))
-            patreonsDb = patreonsDb.scalars().all()
-            ## => CHECK PATREONS IN THE DATABASE
-            for patreon in patreonsDb:
-                if not patreon.discord_id in patreons_dict.keys():
-                    ## => USER IS NOT A PATREON ANYMORE
-                    await session.delete(patreon)
-                elif patreons_dict[patreon.discord_id]['declined_since'] == 'None':
-                    ## => USER HAS BEEN DECLINED
-                    await session.delete(patreon)
-                    patreons_dict.pop(patreon.discord_id)
-                else:
-                    # Check if patreon is not declined
-                    patreons_dict.pop(patreon.discord_id)
-            
             ## => ADD NEW PATREONS
             for newPatreonId in patreons_dict.keys():
                 patreonObj = patreonUsers(discord_id = newPatreonId,
                                             tier = patreons_dict[newPatreonId]['tier'],
                                             sub_status = patreons_dict[newPatreonId]['declined_since'],
                                             guild_id = None)
-                session.add(patreonObj)
-
+                
+                await session.merge(patreonObj)
             await session.commit()
 
 
@@ -262,7 +247,7 @@ class guildsAuthCog(commands.Cog):
             embed = self.embedText(str(error))
             await ctx.send(embed=embed)
         elif isinstance(error, commands.errors.CommandError):
-            self.logger.warning(error)
+            self.logger.exception(error)
             
             ## => CHECK IF GUILD IS IN THE DB
             async with self.async_session() as session:
@@ -276,7 +261,7 @@ class guildsAuthCog(commands.Cog):
                     await session.commit()
                     self.logger.warning("GUILD ADDED TO THE DB IN ERROR HANDLER: ", ctx.guild.name)
         else:
-            self.logger.warning(error)
+            self.logger.exception(error)
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx:discord.ApplicationContext, error):
@@ -286,13 +271,13 @@ class guildsAuthCog(commands.Cog):
         
         elif isinstance(error, discord.ApplicationCommandError):
             if isinstance(error, discord.errors.ApplicationCommandInvokeError):
-                self.logger.info(error)
+                self.logger.exception(error)
             else:
                 await ctx.send_followup(embed=self.embedText(error), ephemeral=True)
         
         elif isinstance(error, discord.errors.NotFound):
-            self.logger.info(error)
+            self.logger.exception(error)
         
         else:
-            self.logger.warning(error)
+            self.logger.exception(error)
 

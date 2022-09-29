@@ -1,3 +1,4 @@
+from pprint import pprint
 import patreon
 import asyncio
 
@@ -42,5 +43,7 @@ async def fetch_patreons(ACCESS_TOKEN) -> dict:
 
 
 if __name__ == '__main__':
-    DICT = fetch_patreons(AC_TOKEN)
-    print(DICT)
+    loop = asyncio.get_event_loop()
+    dict = loop.run_until_complete(fetch_patreons(AC_TOKEN))
+    # DICT = fetch_patreons(AC_TOKEN)
+    pprint(dict)
