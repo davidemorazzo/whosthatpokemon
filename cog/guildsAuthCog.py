@@ -86,6 +86,7 @@ class guildsAuthCog(commands.Cog):
 
             newGuild.currently_joined=True
             await session.commit()
+        self.logger.info(f"Joined new guild: {guild.name}")
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
@@ -96,7 +97,7 @@ class guildsAuthCog(commands.Cog):
             if newGuild:
                 newGuild.currently_joined= False
                 await session.commit()
-                self.logger.info("BOT LEFT GUILD: ", guild.name)
+                self.logger.info(f"BOT LEFT GUILD: {guild.name}")
 
     @tasks.loop(minutes=10)
     async def verification(self):
@@ -111,7 +112,7 @@ class guildsAuthCog(commands.Cog):
             patreons = await session.execute(select(patreonUsers
                                     ).where(patreonUsers.sub_status == 'None'))
             patreons = patreons.scalars().all()
-            patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 450]
+            patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 400]
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
             
@@ -184,7 +185,7 @@ class guildsAuthCog(commands.Cog):
         elif trial_flag:
             embed.description = f"**{activation}:**  {days_left} {trial_days} [Patreon link]({self.patreon_link})"+instructions+"\n"
         elif guildInfo.patreon == False:
-            embed.descriprion = f"**{activation}:**  {activation_error} [Patreon link]({self.patreon_link})"+instructions
+            embed.description = f"**{activation}:**  {activation_error} [Patreon link]({self.patreon_link})"+instructions
         elif guildInfo.patreon_discord_id != None:
             embed.set_footer(text=f"{activation}:  {activation_ok}")
 

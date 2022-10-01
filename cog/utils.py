@@ -97,5 +97,8 @@ async def is_user_patreon(user_id:int, smkr:sessionmaker) -> bool:
             ).where(patreonUsers.sub_status == 'None')
         result = await session.execute(stmt)
         patreon = result.scalars().first()
-        return bool(patreon)
+        if patreon:
+            return int(patreon.tier) >= 320
+        else:
+            return False
         
