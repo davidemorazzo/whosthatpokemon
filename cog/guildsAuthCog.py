@@ -1,6 +1,7 @@
 import logging
 import discord
 from discord.ext import commands, tasks
+from discord.utils import get
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,7 +33,10 @@ class guildsAuthCog(commands.Cog):
         self.verification.start()
         self.free_period = False
         self.patreon_link = "https://www.patreon.com/whosthatpokemon"
-        self.guildWhiteList = [752464482424586290, 822033257142288414]
+        self.guildWhiteList = [
+            752464482424586290,
+            822033257142288414, 
+            857605521715626044]
         self.logger = logging.getLogger('discord')
         self.strings = string_translator('str/strings.csv', self.async_session)
         self.default_poke_gen = '123456'
@@ -99,6 +103,33 @@ class guildsAuthCog(commands.Cog):
                 await session.commit()
                 self.logger.info(f"BOT LEFT GUILD: {guild.name}")
 
+
+    async def activate_guild(self, guild:botGuilds, patreons:list[patreonUsers]) -> None:
+        """
+        Given patreon object activate all the guilds the patreon is owner of.
+        """
+        raise Exception("qwerty")
+        if int(guild.guild_id) in self.guildWhiteList:
+            # Whitelist activation
+            guild.patreon = True
+            guild.patreon_discord_id = None
+        else:
+            # Normal activation
+            discord_guild = self.bot.get_guild(int(guild.guild_id))
+            if discord_guild:
+                patreon = get(patreons, discord_id=str(discord_guild.owner_id))
+                if patreon:
+                    if patreon.sub_status == 'None' and int(patreon.tier) >= 400:
+                        # Activation
+                        guild.patreon = True
+                        guild.patreon_discord_id = patreon.discord_id
+                        return
+            
+            # Not active
+            guild.patreon = False
+            guild.patreon_discord_id = None
+
+
     @tasks.loop(minutes=10)
     async def verification(self):
         
@@ -106,49 +137,26 @@ class guildsAuthCog(commands.Cog):
         ## => UPDATE PATREONS INTO THE DB
         await self.updatePatreons()
         await self.bot.wait_until_ready()
+        
         ## => VERIFY EVERY GUILD
         async with self.async_session() as session:
-            # Query users eligible for guild activation
-            patreons = await session.execute(select(patreonUsers
+            result = await session.execute(select(patreonUsers
                                     ).where(patreonUsers.sub_status == 'None'))
-            patreons = patreons.scalars().all()
-            patreonIds = [p.discord_id for p in patreons if int(p.tier) >= 400]
+            patreons = result.scalars().all()
             guilds = await session.execute(select(botGuilds).filter_by(currently_joined=True))
             guilds = guilds.scalars().all()
-            
-            async def activate_guild(guild):
-                """
-                Coroutine to check if a patreon is the owner of this guild and 
-                update the database.bot_guilds and database.patreon_users
-                """
-                if self.free_period:
-                    guild.patreon=True
-                    guild.patreon_discord_id=None
-                    return
 
-                if int(guild.guild_id) in self.guildWhiteList:
-                    ## => WHITELISTED GUILD DOES NOT NEED VERIFICATION
-                    guild.patreon = True
-                    guild.patreon_discord_id = None
-
-                else:
-                    ## => CHECK FOR PATREON SUBSCRIPTION
-                    patreonId = await self.verifyPatreon(guild, patreonIds)
-                    
-                    if patreonId:
-                        ## => ACTIVATE THE GUILD WITH PATREON
-                        guild.patreon = True
-                        guild.patreon_discord_id = str(patreonId)
-                    else:
-                        ## => DEACTIVATE THE GUILD
-                        guild.patreon = False
-                        guild.patreon_discord_id = None
-                        guild.poke_generation = self.default_poke_gen
-                        pass
-
-            # Check all the guilds in a async way
-            await asyncio.gather(*map(activate_guild, guilds))
+            # # Check all the guilds in a async way
+            results = await asyncio.gather(
+                *[self.activate_guild(g, patreons) for g in guilds], 
+                return_exceptions=True
+            )
             await session.commit()
+
+        # Log results
+        for r in results:
+            if r:
+                self.logger.error(r)
 
         toc = datetime.now()
         delta = toc-tic
