@@ -108,7 +108,7 @@ class guildsAuthCog(commands.Cog):
         """
         Given patreon object activate all the guilds the patreon is owner of.
         """
-        raise Exception("qwerty")
+        
         if int(guild.guild_id) in self.guildWhiteList:
             # Whitelist activation
             guild.patreon = True
