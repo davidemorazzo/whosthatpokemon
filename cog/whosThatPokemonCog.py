@@ -70,7 +70,8 @@ class whosThatPokemon(commands.Cog):
             'alola':'6',
             'mega':'m', 
             'gmax':'g', 
-            'galar':'j'}
+            'galar':'j',
+            'other':'o'}
         self.logger = logging.getLogger('discord')
         self.languages = {'English':'en', 
             'Français':'fr',
@@ -162,10 +163,11 @@ class whosThatPokemon(commands.Cog):
             poke_generation = guildInfo.poke_generation
 
         ## => CREATE LIST OF GIFS
-        no_gen_filter =  self.pokedexDataFrame['generation'].isna()
+        # no_gen_filter =  self.pokedexDataFrame['generation'].isna()
 
         # Add to the list the correct generations
-        gifList = list(self.pokedexDataFrame[no_gen_filter].index)
+        # gifList = list(self.pokedexDataFrame[no_gen_filter].index)
+        gifList = []
         for generation in self.pokemonGenerations.keys():
             if self.pokemonGenerations[generation] in poke_generation:
                 gifList += list(self.pokedexDataFrame[self.pokedexDataFrame['generation']==generation].index)
@@ -465,7 +467,10 @@ class whosThatPokemon(commands.Cog):
             ## => SEND NEW QUESTION
             if channelIstance.guessing:
                 file, embed = await self.createQuestion(message.guild, channel_id=channelIstance.channel_id)
-                await message.channel.send(file=file, embed=embed, view=FourButtons(self))
+                if embed:
+                    await message.channel.send(file=file, embed=embed, view=FourButtons(self))
+                else:
+                    await message.channel.send(embed=self.embedText("No Generation selected. Use /selectgenerations"))
                 
     
     @slash_command(name="start", 
@@ -494,7 +499,10 @@ class whosThatPokemon(commands.Cog):
         ## => GET NEW POKEMON
         self.channel_cache[ctx.channel_id] = channel_info.language #cache the language
         file, embed = await self.createQuestion(ctx.guild, channel_id=str(ctx.channel.id))
-        await ctx.send_response(file=file, embed=embed, view=FourButtons(self))
+        if embed:
+            await ctx.send_response(file=file, embed=embed, view=FourButtons(self))
+        else:
+            await ctx.send_response(embed=self.embedText("No Generation selected. Use /selectgenerations"))
             
 
     @slash_command(name="stop", description="Stop guessing a pokémon")
