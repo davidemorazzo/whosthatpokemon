@@ -150,25 +150,18 @@ class whosThatPokemon(commands.Cog):
             return channel_info.language
                 
     
-    async def getGuildGifList(self, guildObj) -> list:
+    async def getGuildGifList(self, guildObj:discord.Guild) -> list:
         """Get list of available gifs for the specified guild. They are chosen by the selected
             generations in the database"""
 
         async with self.async_session() as session:
             row = await session.execute(select(botGuilds).filter_by(guild_id=str(guildObj.id)))
             guildInfo = row.scalars().first()
+            guildInfo : botGuilds
             # sections of the pokedex
             poke_generation = guildInfo.poke_generation
-            # Get guild tier
-            # row = await session.execute(select(patreonUsers).filter_by(guild_id=str(guildObj.id)))
-            # patreon_info = row.scalars().first()
-            # if patreon_info:
-            #     guild_tier = patreon_info.tier
-            # else:
-            #     guild_tier = 0
 
         ## => CREATE LIST OF GIFS
-        # tier_filter = self.pokedexDataFrame['tier'].notna() >= guild_tier
         no_gen_filter =  self.pokedexDataFrame['generation'].isna()
 
         # Add to the list the correct generations
@@ -179,7 +172,7 @@ class whosThatPokemon(commands.Cog):
 
         return gifList
             
-    async def createQuestion(self, guild:discord.Guild, skip=False, channel_id:int=None) -> tuple:
+    async def createQuestion(self, guild:discord.Guild, skip=False, channel_id:int=None) -> tuple[File, Embed]:
         availableGifs = await self.getGuildGifList(guild)
         if availableGifs:
             gif_name = choice(availableGifs)
