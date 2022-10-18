@@ -59,12 +59,19 @@ class guildsAuthCog(commands.Cog):
         async with self.async_session() as session:
             ## => ADD NEW PATREONS
             for newPatreonId in patreons_dict.keys():
-                patreonObj = patreonUsers(discord_id = newPatreonId,
+                # Fetch existing row
+                patreon_db = await session.get(patreonUsers, str(newPatreonId))
+                if patreon_db:
+                    patreon_db.tier = patreons_dict[newPatreonId]['tier']
+                    patreon_db.sub_status = patreons_dict[newPatreonId]['declined_since']
+                else:
+                    # Insert new obj
+                    patreonObj = patreonUsers(discord_id = newPatreonId,
                                             tier = patreons_dict[newPatreonId]['tier'],
                                             sub_status = patreons_dict[newPatreonId]['declined_since'],
                                             guild_id = None)
                 
-                await session.merge(patreonObj)
+                    session.add(patreonObj)
             await session.commit()
 
 
@@ -118,16 +125,26 @@ class guildsAuthCog(commands.Cog):
             discord_guild = self.bot.get_guild(int(guild.guild_id))
             if discord_guild:
                 patreon = get(patreons, discord_id=str(discord_guild.owner_id))
+                patreon_man = get(patreons, guild_id=str(discord_guild.id))
+                
                 if patreon:
                     if patreon.sub_status == 'None' and int(patreon.tier) >= 400:
                         # Activation
                         guild.patreon = True
                         guild.patreon_discord_id = patreon.discord_id
-                        return
-            
-            # Not active
-            guild.patreon = False
-            guild.patreon_discord_id = None
+                        
+                if patreon_man:
+                    # Activate guild manual override
+                    guild.patreon = True
+                    guild.patreon_discord_id = patreon_man.discord_id
+                    
+
+                if not (patreon and patreon_man):
+                    # Not active
+                    guild.patreon = False
+                    guild.patreon_discord_id = None
+        
+        
 
 
     @tasks.loop(minutes=10)
