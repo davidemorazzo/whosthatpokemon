@@ -139,7 +139,7 @@ class guildsAuthCog(commands.Cog):
                     guild.patreon_discord_id = patreon_man.discord_id
                     
 
-                if not (patreon and patreon_man):
+                if (not patreon) and (not patreon_man):
                     # Not active
                     guild.patreon = False
                     guild.patreon_discord_id = None
