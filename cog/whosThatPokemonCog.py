@@ -85,6 +85,7 @@ class whosThatPokemon(commands.Cog):
         self.strings = string_translator('./str/strings.csv', self.async_session)
         self.channel_cache = {}
         self.shiny_rate = None
+        self.patreon_point_mult = 2
         # self.pokemon_spawn.start()
 
     def embedText(self, text):
@@ -382,7 +383,7 @@ class whosThatPokemon(commands.Cog):
                     currentUser = newUser
                 ## => INCREASE POINTS
                 if patreon_user:
-                    pointsToAdd = 2
+                    pointsToAdd = self.patreon_point_mult
                 else:
                     pointsToAdd = 1
                 currentUser.points = currentUser.points + pointsToAdd #global points
@@ -722,10 +723,21 @@ class whosThatPokemon(commands.Cog):
         await asyncio.sleep(1)
         async with self.async_session() as session:
             # Load shiny rate from the db
-            stmt = select(settings.value
-                    ).where(settings.id == 'shiny_rate')
+            stmt = select(settings)
             result = await session.execute(stmt)
-            self.shiny_rate = int(result.scalars().first())
+            bot_settings = result.scalars().all()
+            
+            for setting in bot_settings:
+                setting : settings
+                if setting.id == 'shiny_rate':
+                    self.shiny_rate = setting.value
+                elif setting.id == 'patreon_point_mult':
+                    self.patreon_point_mult = setting.value
+                else:
+                    self.logger.error(f"Setting {setting.id} not recognised")
+            self.logger.info("settings loaded")
+
+            
 
             # Load channel in local cache
             stmt = select(botChannelIstance.channel_id, botChannelIstance.language
@@ -808,23 +820,40 @@ class whosThatPokemon(commands.Cog):
 
 
 
-    @commands.command(name="shinyrate")
-    async def change_shiny_rate(self, ctx:commands.Context, points:int) -> None:
+    @commands.command(name="settings")
+    async def change_setting(
+        self,
+        ctx:commands.Context,
+        variable_name:str,
+        value:str
+        ):
+        """Edit settings stored in the DB"""
         # Check if command author is ac2010
-        if ctx.author.id == 632748792998789140:
-            sett_obj = settings(
-                id = 'shiny_rate',
-                value = str(points)
-            )
-            try:
-                # Update valude in the database
-                async with self.async_session() as session:
-                    await session.merge(sett_obj)
-                    await session.commit()
-                    self.shiny_rate = points
-                    embed = self.embedText(f'Shiny rate set: {points}')
-            except :
-                embed = self.embedText("Something went wrong")
+        if ctx.author.id != 632748792998789140:
+            return
+
+        sett_obj = settings(
+            id = variable_name,
+            value = value)
+        try:
+            # validate input params
+            if variable_name == 'shiny_rate':
+                self.shiny_rate = int(value)
+            elif variable_name == 'patreon_point_mult':
+                self.patreon_point_mult = int(value)
+            else:
+                raise Exception(f"Variable {variable_name} not found")
+            # Update the database    
+            async with self.async_session() as session:
+                await session.merge(sett_obj)
+                await session.commit()
             
-            await ctx.send(embed=embed)
+            embed = self.embedText(f'{variable_name} set to: {value}')
+        
+        except Exception as e:
+            embed = self.embedText(f"{e}\n**Command usage examples**:\n" + \
+                                    "- settings shiny_rate 150\n" + \
+                                    "- settings patreon_point_mult 3")
+        
+        await ctx.send(embed=embed)
 
