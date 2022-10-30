@@ -730,9 +730,9 @@ class whosThatPokemon(commands.Cog):
             for setting in bot_settings:
                 setting : settings
                 if setting.id == 'shiny_rate':
-                    self.shiny_rate = setting.value
+                    self.shiny_rate = int(setting.value)
                 elif setting.id == 'patreon_point_mult':
-                    self.patreon_point_mult = setting.value
+                    self.patreon_point_mult = int(setting.value)
                 else:
                     self.logger.error(f"Setting {setting.id} not recognised")
             self.logger.info("settings loaded")
